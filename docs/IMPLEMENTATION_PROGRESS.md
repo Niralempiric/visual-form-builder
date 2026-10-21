@@ -104,3 +104,21 @@ not permanent completion of a phase or a claim of score improvement.
 - Known limitations: all application capabilities are planned, no release is usable,
   license/runtime choices remain open, and no independent reviewer or adoption evidence exists.
 - Next eligible task: **D01.2**. Stop here; do not start it in this run.
+
+### Publication attempt and blocker
+
+- Product-brief commit: `ce637e5` (`docs(D01.1): define visual form builder product brief`).
+- `git diff --cached --check` passed before that commit; only the four D01.1 files
+  were staged. The existing Git name/email and remote URL were preserved.
+- `git push origin main` failed: HTTPS GitHub authentication is not configured for
+  terminal use (`could not read Username`). No successful publication is claimed.
+- An existing-SSH fallback check with batch mode and strict host checking also
+  failed because GitHub's host key is absent from the local trusted-host list.
+  No host trust, credentials, Git identity or remote settings were changed.
+- D01.1's document acceptance remains complete locally. Publication is **blocked**
+  until terminal GitHub access to this repository is configured. Phase 3 item 8
+  remains pending; its local commit is available, but remote verification is not.
+- After authentication, push `main` to the already verified `origin` and compare
+  local HEAD with remote `refs/heads/main`. This will also publish the prerequisite
+  planning commit and this publication-status record. Do not force-push.
+- Next implementation task remains **D01.2**; it was not started.
