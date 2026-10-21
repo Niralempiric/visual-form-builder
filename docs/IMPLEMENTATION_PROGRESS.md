@@ -11,7 +11,7 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1 completed**; 119 implementation tasks remain pending.
+Current status: **D01.1 completed and published**; 119 implementation tasks remain pending.
 Next eligible task: **D01.2**. Workspace setup has not started.
 
 ## Per task record template
@@ -122,3 +122,15 @@ not permanent completion of a phase or a claim of score improvement.
   local HEAD with remote `refs/heads/main`. This will also publish the prerequisite
   planning commit and this publication-status record. Do not force-push.
 - Next implementation task remains **D01.2**; it was not started.
+
+### Publication blocker resolved — 21 October 2026
+
+- Retried `git fetch origin main` and `git push origin main` after terminal
+  authentication was configured. Both succeeded; push reported everything up to date.
+- Verified local HEAD and GitHub `refs/heads/main` both equal
+  `239dba59229fed4d0a81dd1b6b97ae82c2bd0c15`. The D01.1 brief commit `ce637e5`
+  and prerequisite planning commit `3aa1f95` are therefore published.
+- The earlier authentication blocker is resolved. Phase 3 checkpoint 8 is
+  completed for this run: the authorized repository contains the task commits.
+- This follow-up records publication evidence only. No Git identity was changed;
+  D01.2 remains pending and is the next eligible implementation task.
