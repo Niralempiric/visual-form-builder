@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1 completed and published**; 119 implementation tasks remain pending.
-Next eligible task: **D01.2**. Workspace setup has not started.
+Current status: **D01.1 and D01.2 completed**; 118 implementation tasks remain pending.
+Next eligible task: **D01.3**. Application services have not been implemented.
 
 ## Per task record template
 
@@ -134,3 +134,101 @@ not permanent completion of a phase or a claim of score improvement.
   completed for this run: the authorized repository contains the task commits.
 - This follow-up records publication evidence only. No Git identity was changed;
   D01.2 remains pending and is the next eligible implementation task.
+
+## D01.2 — TypeScript workspace foundation — 21 October 2026
+
+Status: **Completed**. Prerequisite: D01.1, verified against PROJECT_BRIEF.md and
+its published acceptance record; no unfinished task existed. Modules: M01 and M24.
+
+### Result and affected files
+
+- Actual repository: `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+  Verified fetch/push target: `https://github.com/Niralempiric/visual-form-builder`.
+  `main` started clean at `22900df`; no unrelated work was present.
+- Added private npm workspaces for `apps/web`, `apps/api`, `apps/worker` and four
+  shared packages: form-schema, form-renderer, contracts and test-fixtures.
+- Added strict shared/per-workspace TypeScript configuration, empty typed package
+  entry points, Next.js ambient types and the planned source/infrastructure folders.
+  The placeholders expose no product behaviour or API routes.
+- Added root install/runtime/check/typecheck/shared-package-build scripts,
+  `.nvmrc`, `.node-version`, `.npmrc`, `.gitignore` and `package-lock.json`.
+  The runtime check validates consistent pins and rejects mismatched Node/npm.
+- Updated README with exact install/check commands, workspace responsibilities,
+  selected versions and the current limitations. Recorded package engine/peer
+  compatibility from official npm registry metadata before installation.
+- Runtime: Node **24.21.0**, npm **11.19.0**. Selected external versions:
+  Next **16.4.2**, React/React DOM **19.3.1**, Express **5.3.0**, Zod **4.6.7**,
+  TypeScript **7.0.2**, tsx **4.23.15**, Tailwind/PostCSS integration **4.3.3**,
+  Node types **24.19.2**, React/DOM types **19.3.0**, Express types **5.0.6**.
+- Exact external dependency pins and local workspace links resolve without
+  legacy-peer-deps or force overrides. Approved only the locked `esbuild@0.28.2`
+  install script in package.json; no global install-script policy was changed.
+- Marked D01.2 complete in the plan and task board. D01.1 stays complete;
+  all 118 later tasks remain pending. The reusable growth checklist is unchanged;
+  this run's outcomes are recorded below against the previous baseline.
+
+### Individual acceptance and verification
+
+Individual completion check: **Passed** — a clean dependency installation succeeds
+and chosen versions are recorded in README, manifests, runtime pins and lockfile.
+
+- Initial `npm install --no-fund` generated the root lockfile: 133 packages added,
+  141 audited, zero reported vulnerabilities at verification time.
+- Copied the source to a fresh temporary directory excluding `.git`, node_modules,
+  dist, .next and TypeScript cache files. With no node_modules present,
+  `npm ci --no-fund` succeeded: 133 packages added, 141 audited, zero findings.
+- `npm run check` passed both locally and in the fresh directory: runtime pins,
+  emitted JS/declarations for four shared packages, and all seven workspace typechecks.
+- `npm ls --all --json` succeeded without invalid or missing required dependencies;
+  platform-specific and unused optional packages are not required for this host.
+- `npm exec tsx -- --version` confirmed tsx **4.23.15** on Node **24.21.0**.
+- Clean `npm ci` left the lockfile unchanged. SHA-256: `309b1db92c9153e8048c52bd4c90eca35a68fb4e7af81de41165166e5ee7053a`.
+- One-off negative checks ran the runtime guard under Node **22.22.2**, then Node
+  24 with npm **10.0.0** in the lifecycle agent: both rejected with exit code 1.
+- One-off manifest/ignore checks verified seven private workspaces, exact external
+  direct versions, ignored environment/build/dependency files and an allowed
+  `.env.example` filename. Markdown links and tracker consistency were checked.
+- `git diff --check`, staged-file review and identity/remote checks are the final
+  publication checks. No permanent test runner or browser test was introduced:
+  this task has no UI/service behaviour; test infrastructure is scheduled later.
+
+### Growth checkpoints changed by this run
+
+All phase checkpoints were re-evaluated against the D01.1 baseline; unchanged
+future release/adoption requirements remain pending rather than being duplicated.
+
+- **Phase 0 — Completed for this run:** reverified the implementation path, Niral
+  repository, unchanged Git identity and data hygiene. The existing brief remains
+  the user/journey evidence; a fresh GHFind measurement is still pending.
+- **Phase 1 — Pending overall:** README setup commands, exact runtime/dependency
+  selections and a clean dependency-install example now have evidence (items 2–3,
+  partial installation evidence for item 6). Working forms, environment settings,
+  license choice, synthetic demo and a usable-release installation remain pending.
+- **Phase 2 — Completed for this run:** selected only D01.2 after verifying D01.1,
+  stated its check and kept the foundation coherent. No issue was needed or created;
+  there are no unrelated findings to schedule.
+- **Phase 3 — Completed for this run within foundation scope:** architecture folders,
+  strict types, runtime failure checks, dependency resolution and documentation were
+  self-reviewed. Browser checks and product version/tenant tests do not apply to
+  empty scaffolds. Authorized commit/push targets the verified URL; the final
+  execution report records the resulting commit and remote equality verification.
+- **Phase 4 — Pending:** no running workflow or release gate is claimed. README
+  states limits; application, accessibility, retention and recovery checks are future work.
+- **Phase 5 — Not applicable:** no pinning, tutorial, outreach, feedback or adoption
+  actions are part of this task; no recognition or usage claims are made.
+- **Phase 6 — Completed for this run for dependency compatibility only:** engine/peer
+  resolution and workspace checks passed. Triage, releases, upstream contributions
+  and package extraction are not applicable to this foundation increment.
+- **Phase 7 — Pending:** evidence and next task are recorded; no release outcomes,
+  fresh score comparison or long-term maintenance claim is made.
+
+### Publication, limitations and next task
+
+- Branch: `main`; existing Git name/email and remote URLs are preserved.
+- Identify this task commit with `git log -1 --format=%H -- package-lock.json`.
+  Push verification compares local HEAD with GitHub `refs/heads/main`; the final
+  execution result reports the actual commit and push outcome.
+- Limitations: no Next.js page, Express liveness route, service startup, database,
+  application build, lint/test runner, CI or deployment exists yet. Other planned
+  dependencies will be selected when their implementation tasks introduce them.
+- Next eligible task: **D01.3**. It was not started during this run.

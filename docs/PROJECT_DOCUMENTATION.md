@@ -828,7 +828,7 @@ Modules: M01 M24. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: None. **Individual completion check:** The brief matches this plan and makes no implementation or adoption claims.
 
-- [ ] **D01.2** Create the TypeScript workspace folders, root scripts, compatible package selections, runtime pin, lockfile and README skeleton.
+- [x] **D01.2** Create the TypeScript workspace folders, root scripts, compatible package selections, runtime pin, lockfile and README skeleton.
 
   Prerequisite: D01.1. **Individual completion check:** A clean dependency installation succeeds and the chosen versions are recorded.
 

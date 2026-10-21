@@ -12,7 +12,7 @@ Modules: M01 M24.
 
   Prerequisite: None. **Done when:** The brief matches this plan and makes no implementation or adoption claims.
 
-- [ ] **D01.2** Create the TypeScript workspace folders, root scripts, compatible package selections, runtime pin, lockfile and README skeleton.
+- [x] **D01.2** Create the TypeScript workspace folders, root scripts, compatible package selections, runtime pin, lockfile and README skeleton.
 
   Prerequisite: D01.1. **Done when:** A clean dependency installation succeeds and the chosen versions are recorded.
 

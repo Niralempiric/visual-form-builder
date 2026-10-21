@@ -1,0 +1,30 @@
+{
+  "name": "visual-form-builder",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@11.19.0",
+  "engines": {
+    "node": "24.21.0",
+    "npm": "11.19.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "preinstall": "node scripts/check-runtime.mjs",
+    "check:runtime": "node scripts/check-runtime.mjs",
+    "build:packages": "npm run build --workspace @visual-form-builder/form-schema --workspace @visual-form-builder/form-renderer --workspace @visual-form-builder/contracts --workspace @visual-form-builder/test-fixtures",
+    "typecheck": "npm run build:packages && npm run typecheck --workspaces",
+    "check": "npm run check:runtime && npm run typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

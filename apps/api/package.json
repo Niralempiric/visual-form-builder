@@ -1,0 +1,17 @@
+{
+  "name": "@visual-form-builder/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@visual-form-builder/contracts": "*",
+    "@visual-form-builder/form-schema": "*",
+    "express": "5.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6"
+  }
+}

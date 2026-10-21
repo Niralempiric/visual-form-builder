@@ -1,0 +1,25 @@
+{
+  "name": "@visual-form-builder/form-renderer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@visual-form-builder/form-schema": "*"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0"
+  },
+  "peerDependencies": {
+    "react": "^19.3.1"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  }
+}
