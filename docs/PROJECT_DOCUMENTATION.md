@@ -824,7 +824,7 @@ Plan each day group for 5 to 6 focused hours including verification and document
 
 Modules: M01 M24. Day-group estimate: 5 to 6 hours.
 
-- [ ] **D01.1** Write a short project brief naming the first user, first form journey, boundaries and four release outcomes.
+- [x] **D01.1** Write a short project brief naming the first user, first form journey, boundaries and four release outcomes.
 
   Prerequisite: None. **Individual completion check:** The brief matches this plan and makes no implementation or adoption claims.
 

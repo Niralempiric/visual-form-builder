@@ -8,7 +8,7 @@ Estimate 5 to 6 focused hours per day group. One execution selects one task, not
 
 Modules: M01 M24.
 
-- [ ] **D01.1** Write a short project brief naming the first user, first form journey, boundaries and four release outcomes.
+- [x] **D01.1** Write a short project brief naming the first user, first form journey, boundaries and four release outcomes.
 
   Prerequisite: None. **Done when:** The brief matches this plan and makes no implementation or adoption claims.
 
