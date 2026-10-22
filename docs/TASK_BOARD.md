@@ -24,7 +24,7 @@ Modules: M01 M24.
 
 Modules: M01 M23.
 
-- [ ] **D02.1** Add Compose Mongo replica-set initialization, application connection configuration and a bounded readiness check.
+- [x] **D02.1** Add Compose Mongo replica-set initialization, application connection configuration and a bounded readiness check.
 
   Prerequisite: D01.3. **Done when:** A clean local replica set starts and API readiness reflects its availability.
 

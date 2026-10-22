@@ -840,7 +840,7 @@ Modules: M01 M24. Day-group estimate: 5 to 6 hours.
 
 Modules: M01 M23. Day-group estimate: 5 to 6 hours.
 
-- [ ] **D02.1** Add Compose Mongo replica-set initialization, application connection configuration and a bounded readiness check.
+- [x] **D02.1** Add Compose Mongo replica-set initialization, application connection configuration and a bounded readiness check.
 
   Prerequisite: D01.3. **Individual completion check:** A clean local replica set starts and API readiness reflects its availability.
 

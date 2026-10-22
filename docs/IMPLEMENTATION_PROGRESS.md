@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1, D01.2 and D01.3 completed**; 117 implementation tasks remain pending.
-Next eligible task: **D02.1**. Database setup/readiness has not started.
+Current status: **D01.1–D01.3 and D02.1 completed**; 116 implementation tasks remain pending.
+Next eligible task: **D02.2**. Transaction persistence/rollback verification has not started.
 
 ## Per task record template
 
@@ -338,3 +338,143 @@ and applicability are recorded here; no whole phase is permanently marked comple
   The current smoke test covers the first page and process connection only.
 - Next eligible task: **D02.1**, Mongo replica-set initialization, application
   connection and database readiness. It was not started in this run.
+
+## D02.1 — Local replica set, connection and bounded readiness — 22 October 2026
+
+Status: **Completed**. Prerequisite D01.3 was verified from the implemented Next.js
+page, same-origin rewrite, Express liveness, development/build scripts, earlier
+publication `0fc367d`, and current runtime/type/build/smoke checks. D02.1 was the
+earliest unfinished task; no earlier unfinished work was present.
+
+### Repository inspection and scope
+
+- Implementation path: `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+- Verified public repository and both fetch/push target:
+  `https://github.com/Niralempiric/visual-form-builder`, owner **Niralempiric**.
+  Started on clean `main` tracking `origin/main` at `0fc367d`; fetch confirmed it current.
+- Preserved the existing remote URLs and Git identity:
+  `empwebdev <webdev@empiricinfotech.com>`. Repository ownership is not authorship.
+- Read the project plan, entire growth checklist, task board, progress history and
+  applicable instruction inventory. Only `apps/web/AGENTS.md` exists; no frontend
+  source was changed. The actual implementation repository, not a planning folder
+  or Webhook Inbox, is the target of this task.
+- Need: later publication/submission writes require a replica set; process liveness
+  alone cannot establish database availability or replica-set capability.
+- Individual check: **a clean local replica set starts and API readiness reflects
+  its availability**. D02.2's persistence/intentional rollback and D02.3's complete
+  fresh-shell setup/reset/example files remain pending.
+
+### Work and files affected
+
+| Files | Result |
+|---|---|
+| `infra/compose.yaml`, `infra/replica-set.js` | MongoDB 8.0.32 image pinned by digest; loopback-published single-node `vfb-rs`, persistent volumes, bounded/idempotent initializer and primary/session health check |
+| `scripts/database.mjs`, `package.json` | `db:up` waits for initialization/health; `db:down` preserves volumes; focused `test:readiness` command |
+| `apps/api/src/configuration.ts`, `apps/api/src/database.ts` | Server-only configuration, exact replica-set expectation, safe failures, bounded hello capability checks and managed Mongoose connection/pool |
+| `apps/api/src/app.ts`, `apps/api/src/index.ts` | Non-cacheable `/health/ready`, independent existing liveness, initial capability check before HTTP binding and bounded HTTP/Mongo shutdown |
+| `apps/api/package.json`, `package-lock.json` | Exact Mongoose 9.11.3 (Node >=20.19.0, MIT) and direct API Zod 4.6.7; existing runtime/library pins preserved |
+| `tests/readiness.test.mjs`, `scripts/smoke.mjs` | Real isolated Compose availability/failure checks and direct/proxied readiness smoke assertions |
+| `README.md`, `docs/DATABASE.md` | Current start/configuration/check instructions, limits, safe example URI and dependency evidence |
+| `docs/PROJECT_DOCUMENTATION.md`, `docs/TASK_BOARD.md`, this file | Only D02.1 newly completed; prior task descriptions and progress history retained |
+
+Health is a capability/availability check: configured replica-set name, writable
+primary, sessions and transaction-capable wire protocol. It does not perform a
+transaction, prove write permissions or satisfy D02.2. URI, credentials, driver
+errors/topology and application data are excluded from responses/log messages.
+The frontend button still checks liveness; no public schema, author/tenant data,
+immutable versions, responses or future transaction contracts were changed.
+
+### Acceptance and verification evidence
+
+- **Pass — clean replica set:** disposable, randomly named Compose projects with
+  empty named volumes start and elect a primary. Running `db:up` twice retains
+  set name, single member and configuration version 1. No normal development
+  volumes or other project containers are used.
+- **Pass — readiness:** real API returns 200/ready with Mongo available. Pausing
+  Mongo produces 503/not_ready within the test's 2500ms allowance for the 1000ms
+  driver operation budget; liveness remains 200. Unpausing and stop/restart recover
+  readiness without an API restart. Health responses remain no-store.
+- **Pass — negative paths:** missing/malformed configuration, unsupported URI
+  options, unavailable Mongo and standalone Mongo fail safely before HTTP startup;
+  synthetic secret markers/URI/database names are absent from failure output.
+  Occupied API port handling closes the newly opened database pool. SIGTERM closes
+  HTTP and Mongo and exits zero. No real form/response data was inserted.
+- **Pass — focused suite:** `npm run test:readiness`: 3 tests passed, zero failures
+  or skipped tests; final run completed in approximately 27 seconds on this host.
+- **Pass — frozen install/runtime/types:** pinned Node 24.21.0/npm 11.19.0,
+  `npm ci --no-fund` (170 packages added, 178 audited, zero reported vulnerabilities
+  at verification time), and `npm run check` (all seven workspace typechecks).
+- **Pass — build:** `CIRCLE_NODE_TOTAL=2 API_PORT=4107 npm run build` built shared
+  packages, Express and Next.js 16.4.2/Turbopack production output. The final startup
+  capability correction was then recompiled and verified by `test:readiness`.
+- **Pass — production boundary:** isolated Mongo plus compiled `npm run start` on
+  PORT=3107/API_PORT=4107; `npm run test:smoke` verified the page and direct/proxied
+  live/ready responses. With Mongo stopped, Next's `/health/ready` returned safe 503
+  while proxied liveness remained 200. Test processes/containers/volumes were removed.
+- **Browser applicability:** no UI source or behavior changed; the backend/proxy
+  boundary was exercised over real HTTP. D01.3's historical browser evidence is
+  preserved and is not claimed as a new browser run.
+- `docker compose -f infra/compose.yaml config --quiet` and `git diff --check` passed.
+  Final tracker/link/secret/generated-file/scope and staged-diff checks are recorded
+  in the task run before publication. Lockfile SHA-256:
+  `993b35f1abd3139a65d36b943be0f61011ab92c88a82e41f8f0cd554354b392e`.
+
+Two failures were fixed before accepting the task: mongosh throws NotYetInitialized
+code 94 rather than returning a normal configuration result; direct connections
+can reach standalone Mongo, so startup must run the same replica-set capability
+probe before binding. Failed checks were not treated as passing evidence.
+The temporary production runner/log and diagnostic fixtures stayed outside Git.
+
+### Growth checklist: evaluation and changed evidence
+
+Every checkpoint was evaluated against the existing baseline. These statuses apply
+to this run, not permanent completion of any lifetime phase. No issues, PRs,
+releases, posts, reviews, users, adoption or score gains were fabricated.
+
+- **Phase 0 — Completed for this run for items 1–4; item 5 Pending:** actual path,
+  Niral ownership/target, existing author identity and public/synthetic-data boundary
+  reverified; intended user/journey brief retained. A fresh score remains unavailable.
+- **Phase 1 — Pending overall:** items 1–3 gained functioning database readiness,
+  tested setup commands and exact dependency/configuration rules. Shell URI values
+  are local examples, not real credentials; complete sample files await D02.3.
+  Item 6 has frozen-install evidence for this increment, not a usable release.
+  License choice (item 4), synthetic form/answer demonstration (item 5) and a
+  complete form workflow remain pending. Dependency licenses retain their own terms.
+- **Phase 2 — Completed for this run:** items 1, 2, 4 and 5: one eligible ID with
+  verified prerequisite, concrete need/check, coherent scope, and recorded limits.
+  Item 3 **Not applicable**: no coordination issue was needed or created.
+- **Phase 3 — Completed for this run within task scope:** items 1–3 and 5–7:
+  architecture/failure boundaries preserved, meaningful isolated tests, updated
+  examples/docs, final diff review and honest self-review with unchanged authorship.
+  Item 4 **Not applicable**: no affected UI. Item 8 is the authorized commit/push
+  workflow below; no independent review or external acceptance is claimed.
+- **Phase 4 — Pending:** items 1–5 await real release gates, full form journey,
+  version/retry/accessibility/data-lifetime/deployment checks and release tasks.
+  Item 6 gained current limits/diagnostic instructions; this is not a usable release.
+- **Phase 5 — Not applicable:** all five discovery/outreach/use/contribution
+  checkpoints have no authorized or observed activity in this local foundation task.
+- **Phase 6 — Completed for this run for items 1–2:** observed initialization and
+  topology-check failures fixed; dependency compatibility, checks and instructions
+  maintained. Items 3–6 **Not applicable**: no fix release, verified upstream bug/fix
+  or reusable-package extraction is due. No ecosystem-impact claim is made.
+- **Phase 7 — Pending overall:** item 1 gained reproducible engineering evidence,
+  not release/user outcomes. Items 2–3 have no fresh compatible scans or scoring
+  comparison; no inference is made. Item 4 identifies D02.2; maintenance across
+  years remains pending.
+
+### Publication, limitations and handoff
+
+Branch: `main`. Fetch/push URLs were separately verified as the Niral repository;
+`git push --dry-run origin HEAD:refs/heads/main` succeeded. The task commit uses
+`D02.1` in its message and stages only the files above. Resolve its exact SHA with
+`git log -1 --format=%H -- apps/api/src/database.ts`; the final run reports actual
+push and read-back verification against `refs/heads/main`. No force push, history
+rewrite, remote, identity or visibility change is authorized or performed.
+
+Implementation blockers: **none**. This is a single-node, unauthenticated local
+database foundation, not production hosting or a high-availability setup. Actual
+transaction persistence/rollback, full local reset documentation, auth, form editing,
+immutable publish/submit behavior and usable release gates remain future work.
+
+**Next eligible ID: D02.2 — verify transactional persistence with a disposable
+integration fixture and intentional rollback.** Not started. Stop after D02.1.

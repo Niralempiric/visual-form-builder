@@ -25,7 +25,10 @@
     "start": "npm run check:runtime && concurrently --kill-others --names api,web \"npm:start:api\" \"npm:start:web\"",
     "start:api": "npm run start --workspace @visual-form-builder/api",
     "start:web": "npm run start --workspace @visual-form-builder/web",
-    "test:smoke": "node scripts/smoke.mjs"
+    "test:smoke": "node scripts/smoke.mjs",
+    "db:up": "node scripts/database.mjs up",
+    "db:down": "node scripts/database.mjs down",
+    "test:readiness": "npm run build --workspace @visual-form-builder/api && node --test tests/readiness.test.mjs"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

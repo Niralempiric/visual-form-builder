@@ -1,0 +1,27 @@
+name: visual-form-builder-local
+
+services:
+  mongo:
+    image: mongo:8.0.32@sha256:d0d926f94df099bff534b7ee5b5986458131a22489dfff8664509af0c1e2ca9c
+    command: ["mongod", "--replSet", "vfb-rs", "--bind_ip_all"]
+    ports:
+      - "127.0.0.1:${MONGO_PORT:-27019}:27017"
+    volumes:
+      - mongo-data:/data/db
+      - mongo-config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "mongodb://127.0.0.1:27017/admin?directConnection=true", "--eval", "const h=db.hello(); quit(h.setName === 'vfb-rs' && h.isWritablePrimary && h.logicalSessionTimeoutMinutes != null ? 0 : 1)"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+
+  mongo-init:
+    image: mongo:8.0.32@sha256:d0d926f94df099bff534b7ee5b5986458131a22489dfff8664509af0c1e2ca9c
+    entrypoint: ["mongosh", "--quiet", "--nodb", "/init/replica-set.js"]
+    volumes:
+      - ./replica-set.js:/init/replica-set.js:ro
+
+volumes:
+  mongo-data:
+  mongo-config:

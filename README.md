@@ -8,8 +8,9 @@ for intended users and the first workshop registration journey.
 
 D01.1 defines the product contract and D01.2 provides the pinned TypeScript
 workspace. D01.3 adds the first running Next.js page, a real API connection check
-and Express process liveness. Form editing, accounts, publishing, responses and
-database readiness are not implemented yet.
+and Express process liveness. D02.1 adds local Mongo replica-set initialization,
+application connectivity and bounded database readiness. Form editing, accounts,
+publishing and responses are not implemented yet.
 
 ## Repository and setup
 
@@ -34,11 +35,16 @@ For an existing checkout, start at `nvm install` from its repository root.
 The version commands must print `v24.21.0` and `11.19.0`. If your installation's
 npm differs, select npm 11.19.0 before `npm ci` (for example, `npm install --global npm@11.19.0`
 under the selected nvm runtime). Engine checks reject mismatched versions.
-No database, environment file or credentials are required for the current checks.
+Typechecking needs no database or credentials. Running the API now requires the
+local replica set and server-only MONGODB_URI configuration below.
 
 ## Run locally
 
+Start Docker, then run:
+
 ```bash
+npm run db:up
+export MONGODB_URI='mongodb://127.0.0.1:27019/visual_form_builder?replicaSet=vfb-rs&directConnection=true'
 npm run dev
 ```
 
@@ -50,7 +56,11 @@ Express process at `http://127.0.0.1:4000/health/live`. A successful response is
 { "status": "ok", "service": "visual-form-builder-api" }
 ```
 
-This means the API process is alive, not that MongoDB or form workflows are ready.
+This means the API process is alive. `/health/ready` separately returns 200 with
+`{ "status": "ready", "service": "visual-form-builder-api" }` only when Mongo
+responds as the configured writable replica-set primary with session support.
+It returns 503 with `status: "not_ready"` on dependency loss; liveness stays 200.
+Readiness does not establish that later publish/submit transactions work.
 The response uses `Cache-Control: no-store`. If the API is stopped, the page shows
 **API unavailable** and allows another attempt. The request times out after five seconds.
 
@@ -60,8 +70,9 @@ In another terminal, with both services running:
 npm run test:smoke
 ```
 
-This verifies the page, direct Express liveness and same-origin proxy over HTTP.
+This verifies the page, direct/proxied Express liveness and replica-set readiness over HTTP.
 Stop the development processes with **Ctrl+C**. Both listeners are local-only.
+`npm run db:down` stops this project's database and preserves its volumes.
 
 To run the compiled local applications:
 
@@ -82,21 +93,25 @@ PORT=3103 API_PORT=4103 npm run test:smoke
 `API_PORT` must be an integer from 1 to 65535. For compiled applications, use the
 same `API_PORT` during **both build and start**, because Next.js records rewrites
 in its build output. Defaults are 3000/4000. Use shell variables for shared overrides;
-no environment file is required, and standalone Express does not auto-load Next.js
-environment files. Production hosting/proxy configuration belongs to later tasks.
+the API uses the exported MONGODB_URI and does not auto-load Next.js environment
+files. MONGODB_REPLICA_SET defaults to `vfb-rs`. Database port overrides and exact
+readiness/failure behavior are documented in [Database foundation](docs/DATABASE.md).
+Production hosting/proxy configuration belongs to later tasks.
 
 ## Workspace and commands
 
 | Location | Responsibility |
 |---|---|
 | `apps/web` | Next.js App Router preview page and API connection control |
-| `apps/api` | Express process with `/health/live` and validated local startup |
+| `apps/api` | Express liveness/readiness, validated configuration and Mongo connection lifecycle |
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
 | `packages/form-schema` | Shared form definitions and validation scaffold |
 | `packages/form-renderer` | Shared preview/public React renderer scaffold |
 | `packages/contracts` | Shared API contracts scaffold |
 | `packages/test-fixtures` | Future synthetic schema/answer fixtures |
-| `tests/e2e`, `infra`, `.github` | Placeholders for browser suites, hosting setup and CI |
+| `infra` | Local single-node Mongo replica-set Compose and idempotent initialization |
+| `tests` | Focused readiness regression checks; full harnesses remain future work |
+| `tests/e2e`, `.github` | Placeholders for browser suites and CI |
 
 | Command | Current behaviour |
 |---|---|
@@ -109,11 +124,14 @@ environment files. Production hosting/proxy configuration belongs to later tasks
 | `npm run dev:web` / `npm run dev:api` | Run one development service separately |
 | `npm run build` | Compile shared packages, Express and the Next.js application |
 | `npm run start` | Start both previously built local applications |
-| `npm run test:smoke` | Verify the running page, direct liveness and proxy |
+| `npm run test:smoke` | Verify the running page and direct/proxied live/ready health |
+| `npm run db:up` / `npm run db:down` | Initialize/wait for local replica set; stop without deleting volumes |
+| `npm run test:readiness` | Build API and test isolated Docker replica-set readiness/failure/recovery |
 
 The shared packages still export no form behaviour. The smoke script checks only
-the initial page/process connection; full form journeys and database readiness
-remain future work. Lint and broader unit/API/browser suites are scheduled later.
+the initial page/process connection. The readiness suite verifies local replica-set
+availability, not transaction rollback or form journeys. Lint and broader
+unit/API/browser suites are scheduled later.
 
 Next.js generates `next-env.d.ts` and `.next` route types locally; they are ignored
 by Git and regenerated by `next typegen` before web typechecking. The generated
@@ -132,6 +150,8 @@ dependency was introduced.
 | Next.js | 16.4.2 |
 | React / React DOM | 19.3.1 / 19.3.1 |
 | Express / Express types | 5.3.0 / 5.0.6 |
+| Mongoose | 9.11.3 |
+| Local MongoDB | 8.0.32, image digest pinned in infra/compose.yaml |
 | concurrently | 10.0.6 |
 | Zod | 4.6.7 |
 | Tailwind CSS / Tailwind PostCSS | 4.3.3 / 4.3.3 |
@@ -142,8 +162,8 @@ Node 24 is an LTS baseline; the selected Next.js package requires Node >=20.9
 and accepts React 19. React DOM's peer requirement matches React 19.3.1.
 See [Node release status](https://nodejs.org/en/about/previous-releases),
 [Next.js installation](https://nextjs.org/docs/app/getting-started/installation)
-and the package manifests for requirements. Other planned tools such as Mongoose,
-Zustand, TanStack Query, React Hook Form, dnd-kit and test runners remain for the
+and the package manifests for requirements. Mongoose requires Node >=20.19.0
+and is MIT licensed. Other planned tools such as Zustand, TanStack Query, React Hook Form, dnd-kit and test runners remain for the
 tasks that introduce their behaviour and configuration.
 
 Private workspace packages are linked locally using `*`; these links are not
@@ -165,5 +185,5 @@ The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D01.3: **D02.1**, Mongo replica-set setup and database
-readiness. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D02.1: **D02.2**, disposable transactional persistence
+and intentional rollback verification. No application has been deployed and no usable form-builder release is claimed.

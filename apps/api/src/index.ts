@@ -1,25 +1,50 @@
 import { createServer } from 'node:http';
 import { createApp } from './app.js';
+import { readConfiguration, ConfigurationError } from './configuration.js';
+import { connectDatabase, DatabaseConnectionError } from './database.js';
 
-const rawPort = process.env.API_PORT ?? '4000';
-const port = Number(rawPort);
-if (!/^\d+$/.test(rawPort) || !Number.isInteger(port) || port < 1 || port > 65535) {
-  throw new Error('API_PORT must be an integer between 1 and 65535.');
-}
+let database: Awaited<ReturnType<typeof connectDatabase>> | undefined;
+try {
+  const configuration = readConfiguration();
+  const activeDatabase = await connectDatabase(configuration);
+  database = activeDatabase;
+  let stopping = false;
+  const server = createServer(createApp(() => stopping ? Promise.resolve(false) : activeDatabase.isReady()));
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(configuration.API_PORT, '127.0.0.1', () => {
+      server.removeListener('error', reject);
+      resolve();
+    });
+  });
+  console.log(`API listening at http://127.0.0.1:${configuration.API_PORT}`);
 
-const server = createServer(createApp());
-server.on('error', (error: NodeJS.ErrnoException) => {
-  console.error(`API startup failed (${error.code ?? 'unknown error'}).`);
+  function shutdown() {
+    if (stopping) return;
+    stopping = true;
+    const deadline = setTimeout(() => { server.closeAllConnections(); process.exit(1); }, 5000);
+    deadline.unref();
+    server.close(async (error) => {
+      try {
+        await activeDatabase.close();
+        if (error) throw error;
+      } catch {
+        console.error('API shutdown failed.');
+        process.exitCode = 1;
+      } finally { clearTimeout(deadline); }
+    });
+  }
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
+} catch (error) {
+  await database?.close().catch(() => {});
+  if (error instanceof ConfigurationError || error instanceof DatabaseConnectionError) {
+    console.error(error.message);
+  } else {
+    // Allowlist operational codes instead of serializing an arbitrary error or URI.
+    const code = error instanceof Error && 'code' in error && error.code === 'EADDRINUSE'
+      ? 'EADDRINUSE' : 'unknown error';
+    console.error(`API startup failed (${code}).`);
+  }
   process.exitCode = 1;
-});
-server.listen(port, '127.0.0.1', () => {
-  console.log(`API listening at http://127.0.0.1:${port}`);
-});
-
-function shutdown() {
-  server.close(() => process.exit(0));
-  // Bound shutdown even if an open connection does not finish.
-  setTimeout(() => process.exit(1), 5000).unref();
 }
-process.once('SIGINT', shutdown);
-process.once('SIGTERM', shutdown);
