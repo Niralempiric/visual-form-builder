@@ -832,7 +832,7 @@ Modules: M01 M24. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D01.1. **Individual completion check:** A clean dependency installation succeeds and the chosen versions are recorded.
 
-- [ ] **D01.3** Build the first Next.js App Router page and Express liveness route with development scripts.
+- [x] **D01.3** Build the first Next.js App Router page and Express liveness route with development scripts.
 
   Prerequisite: D01.2. **Individual completion check:** Both services start and the page plus /health/live are reachable.
 

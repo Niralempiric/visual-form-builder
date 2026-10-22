@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1 and D01.2 completed**; 118 implementation tasks remain pending.
-Next eligible task: **D01.3**. Application services have not been implemented.
+Current status: **D01.1, D01.2 and D01.3 completed**; 117 implementation tasks remain pending.
+Next eligible task: **D02.1**. Database setup/readiness has not started.
 
 ## Per task record template
 
@@ -232,3 +232,109 @@ future release/adoption requirements remain pending rather than being duplicated
   application build, lint/test runner, CI or deployment exists yet. Other planned
   dependencies will be selected when their implementation tasks introduce them.
 - Next eligible task: **D01.3**. It was not started during this run.
+
+## D01.3 — First running Next.js page and Express liveness — 22 October 2026
+
+Status: **Completed**. Prerequisite: D01.2, verified by inspecting the workspace,
+lockfile, runtime pins and passing `npm run check` before implementation.
+Modules: M01 and M24. No unfinished task was present.
+
+### Repository and work performed
+
+- Actual path: `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+  Verified fetch/push target: `https://github.com/Niralempiric/visual-form-builder`.
+  Started on clean `main` at `d43a03b`; no unrelated work was present.
+- Added the Next.js App Router layout/page, metadata, local CSS/Tailwind configuration
+  and a small Client Component for checking the actual API connection. Planned form
+  steps are labeled as future work; the preview contains no working form or real data.
+- Added Express application/startup files with `/health/live`, non-cacheable JSON,
+  validated API_PORT, startup-error reporting and bounded signal shutdown.
+  Liveness reports only this process; no database readiness check is claimed.
+- Added local Next.js rewrites for `/health/*` and future `/api/v1/*`. The browser
+  calls its own origin; the backend address stays in server configuration.
+- Added `dev`, separate service scripts, production `build`/`start` and `test:smoke`.
+  Pinned concurrently **10.0.6** (Node >=22) and updated the lockfile; existing runtime,
+  dependency pins, Git identity and remote URLs were preserved.
+- Followed the installed Next.js documentation after `next dev` generated
+  `apps/web/AGENTS.md`: retained that guide, untracked/ignored generated next-env.d.ts,
+  and added `next typegen` before web typechecking so clean checkouts regenerate types.
+- Updated README with start/stop, build, smoke-test, local-only ports and API response
+  instructions. Custom API_PORT must be the same at build and start for compiled rewrites.
+- Newly completed only D01.3 in the plan and task board; D01.1/D01.2 remain complete.
+
+### Individual completion check and evidence
+
+**Passed:** both services start, and the Next.js page plus Express `/health/live`
+are reachable. Verification stayed within the initial app/process connection;
+no database, tenant, submission or later milestone behaviour was assumed.
+
+- `npm run dev` started Next.js **16.4.2** and Express together on test ports 3103/4103.
+  Default ports 3000/4000 were already occupied; those unrelated processes were untouched.
+- `PORT=3103 API_PORT=4103 npm run test:smoke` passed against development services:
+  HTTP 200 HTML at `/`, direct and proxied `/health/live` JSON equal to
+  `{ "status": "ok", "service": "visual-form-builder-api" }`, and no-store headers.
+- Browser flow passed: page -> Check API connection -> same-origin rewrite -> Express
+  -> **API online**. With only the frontend running, it showed **API unavailable**
+  and a retry message; restarting Express and activating the button with Enter
+  restored **API online** without reloading the page.
+- Desktop and 390px mobile layout inspected; mobile document width did not exceed
+  viewport width. Semantic headings/landmarks, status announcements, focus styling
+  and keyboard activation were reviewed. This is not a full accessibility audit.
+- Normal browser checks captured no warnings/errors. Expected proxy connection-refused
+  logs occurred during the deliberate API outage and disappeared when it restarted.
+- Invalid API_PORT was rejected by both compiled API startup and Next.js configuration.
+- Fresh source copy excluded `.git`, dependencies, builds, Next-generated types and
+  TS caches. `npm ci --no-fund` succeeded: 152 packages added, 160 audited, zero
+  reported vulnerabilities at verification time. The lockfile stayed unchanged.
+- Fresh-copy `npm run check` passed all seven workspace typechecks, including
+  regenerated Next.js route types; `API_PORT=4103 npm run build` compiled shared
+  packages, Express and the Next.js production page successfully.
+- `PORT=3103 API_PORT=4103 npm run start` from that clean build started both services.
+  The HTTP smoke test passed again; a fresh browser tab confirmed **API online**
+  in production mode with no captured console warnings/errors.
+- Test services were stopped with Ctrl+C. Ports 3103/4103 were checked closed;
+  no test server was left running. The browser viewport override was reset.
+- Screenshot evidence saved outside the source repository at
+  `/home/empiric-60/Documents/ChatGPT/internal/visual-form-builder-verification/D01.3-preview.jpg`.
+  Source/commands above provide the reproducible checks; the screenshot is local evidence.
+- Final checks: tracker consistency, relative Markdown links, staged whitespace and
+  scope review, generated-file exclusion and credential-pattern scan. Self-review
+  only; no independent review, adoption, release or score improvement is claimed.
+
+### Growth checkpoints for this run
+
+All checkpoints were evaluated against the existing baseline. Only changed evidence
+and applicability are recorded here; no whole phase is permanently marked complete.
+
+- **Phase 0 — Completed for this run:** verified path, Niral target, unchanged identity
+  and data hygiene. The existing brief remains the user/journey evidence. A fresh
+  GHFind baseline is still pending and is not a requirement for this coding task.
+- **Phase 1 — Pending overall:** the initial UI-to-API connection now works, README
+  commands and non-secret port settings are documented, and clean installation/build
+  checks pass. A usable form workflow, license decision and synthetic form demo remain pending.
+- **Phase 2 — Completed for this run:** chose only D01.3 with a verified prerequisite,
+  stated its user-facing result and acceptance check, and kept one coherent change.
+  No coordination issue was needed; default-port conflicts were handled without touching other work.
+- **Phase 3 — Completed for this run within task scope:** implemented and self-reviewed
+  the page/API boundary, bounded error/retry behaviour, smoke script, typechecks,
+  builds and browser checks. Database/version/tenant tests do not apply yet. Commit/push
+  is authorized to the verified URL; the execution result records the actual remote verification.
+- **Phase 4 — Pending:** no complete form workflow or release is claimed. The README
+  and page distinguish process liveness from database readiness and planned product features.
+- **Phase 5 — Not applicable:** no pinning, outreach, tutorial, adoption or contributor activity.
+- **Phase 6 — Completed for this run for compatibility/setup checks only:** new process
+  runner resolved with existing pins, clean checks/builds passed, and runtime docs were updated.
+  Releases, upstream contribution and package extraction are not applicable to this task.
+- **Phase 7 — Pending:** engineering evidence and next task are recorded; no user/release
+  outcomes, fresh score comparison or long-term maintenance claims are available.
+
+### Publication, limitations and next task
+
+- Branch: `main`. Resolve the task commit with
+  `git log -1 --format=%H -- apps/api/src/app.ts`. Final publication verifies local
+  HEAD equals the authorized GitHub `refs/heads/main`; actual hash/push is reported in the execution result.
+- Limitations: no MongoDB, readiness endpoint, accounts, form editor, immutable
+  publishing, submissions, response inbox, full test/CI infrastructure or deployment.
+  The current smoke test covers the first page and process connection only.
+- Next eligible task: **D02.1**, Mongo replica-set initialization, application
+  connection and database readiness. It was not started in this run.

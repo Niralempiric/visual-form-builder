@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root { color-scheme: light; color: #233b35; background: #f7f8f2; font-family: Arial, Helvetica, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, a { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+button, .brand { text-decoration: none; }
+button:focus-visible, a:focus-visible { outline: 3px solid #557f35; outline-offset: 5px; }
+.shell { max-width: 1120px; padding: 0 48px; margin: auto; }
+.site-header { display: flex; justify-content: space-between; align-items: center; padding: 32px 0; border-bottom: 1px solid #d8dfd2; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 700; letter-spacing: -.4px; }
+.brand-mark { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; background: #233b35; color: #d9f1b0; font-size: 19px; }
+.preview-label { border: 1px solid #d0d9c7; border-radius: 24px; padding: 8px 12px; color: #4d6258; font-size: 12px; white-space: nowrap; }
+.hero { padding: 70px 0 52px; max-width: 760px; }
+.eyebrow { color: #536b5f; text-transform: uppercase; font-size: 11px; font-weight: 700; letter-spacing: 1.7px; margin: 0 0 18px; }
+h1 { font-size: clamp(44px, 6vw, 72px); line-height: 1.07; letter-spacing: -3px; font-weight: 600; margin: 0 0 26px; }
+h1 span { color: #557846; }
+.intro { font-size: 17px; line-height: 1.7; max-width: 620px; color: #52665c; margin: 0; }
+.section-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+.section-heading h2 { font-size: 17px; font-weight: 600; margin: 0; }
+.section-heading > span { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #52665c; }
+.journey { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); list-style: none; padding: 0; margin: 0; border: 1px solid #d6ddcf; border-radius: 16px; overflow: hidden; background: #fcfdf9; }
+.journey li { padding: 26px; }
+.journey li + li { border-left: 1px solid #d6ddcf; }
+.step-number { display: block; color: #60754c; font-size: 12px; margin-bottom: 24px; }
+.journey h3 { font-size: 17px; font-weight: 600; margin: 0 0 10px; }
+.journey p { color: #5a6d62; font-size: 14px; line-height: 1.6; margin: 0; }
+.connection { display: flex; justify-content: space-between; align-items: center; gap: 32px; background: #e9efdf; border: 1px solid #d3dec6; border-radius: 16px; padding: 30px; margin-top: 24px; }
+.connection .eyebrow { margin-bottom: 10px; }
+.connection h2 { font-size: 20px; font-weight: 600; margin: 0 0 10px; letter-spacing: -.4px; }
+.connection p:not(.eyebrow):not(.connection-status) { color: #4b6254; font-size: 13px; line-height: 1.6; margin: 0; max-width: 420px; }
+.connection-actions { min-width: 192px; text-align: center; }
+.connection-status { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 0 0 12px; font-size: 13px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #758370; }
+.online .status-dot { background: #26663a; }
+.offline .status-dot { background: #9b3c32; }
+button { cursor: pointer; min-height: 44px; border: 0; border-radius: 8px; padding: 12px 18px; background: #233b35; color: #fff; font-size: 13px; font-weight: 600; }
+button:hover { background: #355348; }
+button:disabled { opacity: .7; cursor: wait; }
+.connection .connection-help { margin-top: 10px !important; }
+footer { display: flex; justify-content: space-between; gap: 16px; color: #5b6d62; font-size: 11px; padding: 28px 0 36px; }
+.skip-link { position: absolute; left: 12px; top: -100px; background: #233b35; color: #fff; padding: 12px; z-index: 10; }
+.skip-link:focus { top: 12px; }
+@media (max-width: 680px) {
+  .shell { padding: 0 22px; }
+  .site-header { padding: 22px 0; }
+  .brand { font-size: 14px; gap: 8px; }
+  .hero { padding: 48px 0 36px; }
+  h1 { letter-spacing: -2px; }
+  .intro { font-size: 15px; }
+  .section-heading { align-items: flex-start; flex-direction: column; }
+  .journey { grid-template-columns: 1fr; }
+  .journey li { padding: 22px; }
+  .journey li + li { border-left: 0; border-top: 1px solid #d6ddcf; }
+  .step-number { margin-bottom: 12px; }
+  .connection { align-items: stretch; flex-direction: column; padding: 24px; gap: 22px; }
+  .connection-actions { text-align: left; }
+  .connection-status { justify-content: flex-start; }
+  footer { flex-direction: column; gap: 10px; }
+}

@@ -16,7 +16,7 @@ Modules: M01 M24.
 
   Prerequisite: D01.1. **Done when:** A clean dependency installation succeeds and the chosen versions are recorded.
 
-- [ ] **D01.3** Build the first Next.js App Router page and Express liveness route with development scripts.
+- [x] **D01.3** Build the first Next.js App Router page and Express liveness route with development scripts.
 
   Prerequisite: D01.2. **Done when:** Both services start and the page plus /health/live are reachable.
 
