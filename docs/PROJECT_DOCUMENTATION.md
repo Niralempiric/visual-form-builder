@@ -844,7 +844,7 @@ Modules: M01 M23. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D01.3. **Individual completion check:** A clean local replica set starts and API readiness reflects its availability.
 
-- [ ] **D02.2** Verify transactional persistence with a disposable integration fixture and intentional rollback.
+- [x] **D02.2** Verify transactional persistence with a disposable integration fixture and intentional rollback.
 
   Prerequisite: D02.1. **Individual completion check:** The rollback leaves no partial fixture records in Mongo.
 

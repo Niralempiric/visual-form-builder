@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3 and D02.1 completed**; 116 implementation tasks remain pending.
-Next eligible task: **D02.2**. Transaction persistence/rollback verification has not started.
+Current status: **D01.1–D01.3 and D02.1–D02.2 completed**; 115 implementation tasks remain pending.
+Next eligible task: **D02.3**. Complete local start/stop/reset documentation has not started.
 
 ## Per task record template
 
@@ -478,3 +478,131 @@ immutable publish/submit behavior and usable release gates remain future work.
 
 **Next eligible ID: D02.2 — verify transactional persistence with a disposable
 integration fixture and intentional rollback.** Not started. Stop after D02.1.
+
+## D02.2 — Disposable transactional persistence and intentional rollback — 23 October 2026
+
+Status: **Completed**. Selected the earliest pending task after inspecting actual
+D02.1 connection/Compose/readiness code and rerunning its real-database checks.
+Individual completion check: **the rollback leaves no partial fixture records in
+Mongo**. No unfinished earlier task was found; D02.3 was not started.
+
+### Repository and change
+
+- Actual implementation folder:
+  `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+- Verified public repository: `https://github.com/Niralempiric/visual-form-builder`.
+  Both configured fetch and push URLs resolve to that Niralempiric repository.
+  Started on clean `main`, tracking `origin/main`, at `b2cf4ee`; fetch confirmed it current.
+- Preserved the current identity **Niralempiric <niralempiric@gmail.com>**, existing
+  remote URLs and history. This identity was already configured when this run
+  began; previous records of the earlier identity are retained unchanged.
+- Reviewed applicable instructions, project plan, entire growth checklist, task
+  board and progress history. The only AGENTS.md is under `apps/web`; no frontend
+  source was changed. No issue or PR was needed for coordination or created.
+- Need: replica-set readiness alone did not prove real multi-collection writes
+  commit together or that an interrupted update leaves no orphan record/pointer.
+
+| Files | Work |
+|---|---|
+| `tests/transactions.test.mjs` | Focused disposable Compose fixture using the API's pinned Mongoose dependency and validated configuration; commit, isolation, intentional rollback and fresh-reader persistence assertions |
+| `package.json` | `test:transactions` builds the API and runs the focused Node test |
+| `README.md`, `docs/DATABASE.md` | Exact fixture command, observed behavior, cleanup boundaries and limits |
+| `docs/PROJECT_DOCUMENTATION.md`, `docs/TASK_BOARD.md`, this file | Only D02.2 newly completed, current summary and D02.3 handoff; all prior history preserved |
+
+No application route/model, shared product schema, dependency version, lockfile,
+runtime pin, deployment, auth or public form feature changed. The two synthetic
+collections are infrastructure fixtures, not an implementation of publish/submit.
+
+### Acceptance evidence and commands
+
+- **Pass — real commit:** one transaction inserts a value and its head in separate
+  collections. Session reads observe the writes while an independent Mongo client
+  sees neither before commit. After commit it reads both exact records.
+- **Pass — intentional rollback after insertion:** the callback first verifies an
+  acknowledged insert and its session-visible content, then throws a known error.
+  The exact error is asserted, the pending record is absent, and the original
+  committed record count/content and head pointer remain unchanged.
+- **Pass — rollback after pointer mutation:** another callback inserts a new value,
+  updates the existing head, verifies that mutation in-session, then intentionally
+  throws. The new value disappears and the original pointer/committed contents
+  remain intact. These assertions happen **before fixture cleanup**, which cannot
+  manufacture rollback success.
+- **Pass — subsequent durable commit:** a later transaction inserts another value
+  and advances the head. After closing the writer, a fresh connection reads the
+  new pointer, both committed values and zero intentionally aborted values.
+- Transactions use sequential operations, explicit session propagation, snapshot
+  reads, primary read preference, majority writes and bounded commit time. Docker,
+  connection and test deadlines prevent indefinite fixture execution.
+- The fixture always constructs a unique `vfb-d022-...` Compose project, fresh
+  database and free loopback port. It does not consume a developer's MONGODB_URI
+  or touch the normal development volumes. Connections and fixture containers/
+  volumes are cleaned on completion or failure; post-run inspection found none remaining.
+
+Verification on the pinned Node 24.21.0/npm 11.19.0 pair:
+
+```text
+npm run test:readiness       PASS: 3 tests; D02.1 prerequisite regression
+npm run test:transactions    PASS: 5 reported tests (4 behavior subtests plus parent), no skips/failures
+npm run check               PASS: runtime pins and all seven workspace typechecks
+CIRCLE_NODE_TOTAL=2 npm run build
+                            PASS: shared packages, Express and Next.js/Turbopack production build
+git diff --check            PASS
+```
+
+The transaction suite completed in approximately 7 seconds on this host. No new
+dependency install/audit was needed or claimed. Lockfile SHA-256 remains
+`993b35f1abd3139a65d36b943be0f61011ab92c88a82e41f8f0cd554354b392e`.
+No UI was affected, so browser verification is not applicable. Broader lint/test
+harnesses remain scheduled for D03.2. Final tracker, Markdown link/anchor, secret,
+generated-file, staged-scope and whitespace checks accompany publication.
+
+### Growth evaluation against the preserved baseline
+
+Every checkpoint was evaluated; the earlier baseline and D02.1 assessment remain
+intact. Only this run's evidence/applicability changes are recorded here.
+
+- **Phase 0 — Completed for this run for items 1–4:** reverified path/public Niral
+  target, current author identity, synthetic/private-data boundary and existing
+  intended-user/journey brief. Item 5 remains **Pending**: no fresh GHFind scan.
+- **Phase 1 — Pending overall:** items 1–3 gain reproducible real transaction
+  evidence and accurate command/configuration documentation; dependency/runtime
+  selections remain unchanged. License choice (4), a synthetic product form/demo
+  (5), release clean-install evidence (6), full sample configuration and a useful
+  form workflow remain pending. Infrastructure records are not a form demonstration.
+- **Phase 2 — Completed for this run:** items 1, 2, 4–5 have the verified prerequisite,
+  one ID, concrete problem/check, coherent scope and recorded limits. Item 3 is
+  **Not applicable**: no coordination issue or duplicate activity was created.
+- **Phase 3 — Completed for this run within scope:** items 1–3 and 5–7 gain actual
+  commit/abort/isolation checks, sequential session usage, documentation, reviewed
+  diff and honest self-verification. Item 4 is **Not applicable** (no affected UI).
+  Item 8 follows the authorized publication workflow below. No independent review,
+  tenant/product-transaction correctness or external acceptance is invented.
+- **Phase 4 — Pending:** items 1–5 still require actual release gates, full form
+  journeys and release-specific verification. Item 6 gains current fixture limits;
+  no usable-release, deployment or exactly-once HTTP claim is made.
+- **Phase 5 — Not applicable:** all five outreach, tutorial, tester, feedback and
+  contribution checkpoints have no scoped or observed activity in this run.
+- **Phase 6 — Completed for this run for item 2:** compatible existing dependencies,
+  runtime checks, build and fixture/setup documentation maintained. Items 1 and 3–6
+  are **Not applicable**: no user defect triage, release, upstream blocker/fix or
+  reusable-package extraction arose from this task.
+- **Phase 7 — Pending overall:** item 1 gains a reproducible engineering example,
+  not release/adoption outcomes. Items 2–3 remain pending without fresh compatible
+  score evidence; no scoring inference is made. Item 4 identifies D02.3; maintenance
+  across years is ongoing future work.
+
+### Publication, limits and next task
+
+Branch: `main`. The verified target is the Niralempiric URL above, not Webhook
+Inbox. `git push --dry-run origin HEAD:refs/heads/main` passed. Stage only the seven
+files listed above and commit with D02.2 in the message; the final run reports the
+exact commit/push and remote read-back result. Resolve the task commit using
+`git log -1 --format=%H -- tests/transactions.test.mjs`.
+
+Blockers: **none**. This is local single-node persistence/rollback verification.
+It does not implement domain models, publish/submit race control, idempotency,
+tenant authorization, high availability or HTTP delivery guarantees. D02.3's full
+fresh-shell start/stop/reset instructions and placeholder env files are not added.
+
+**Next eligible ID: D02.3 — document exact local start, stop and reset commands
+with safe placeholder environment values.** Not started. Stop after D02.2.

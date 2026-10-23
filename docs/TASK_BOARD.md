@@ -28,7 +28,7 @@ Modules: M01 M23.
 
   Prerequisite: D01.3. **Done when:** A clean local replica set starts and API readiness reflects its availability.
 
-- [ ] **D02.2** Verify transactional persistence with a disposable integration fixture and intentional rollback.
+- [x] **D02.2** Verify transactional persistence with a disposable integration fixture and intentional rollback.
 
   Prerequisite: D02.1. **Done when:** The rollback leaves no partial fixture records in Mongo.
 
