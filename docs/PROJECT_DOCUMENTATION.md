@@ -848,7 +848,7 @@ Modules: M01 M23. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D02.1. **Individual completion check:** The rollback leaves no partial fixture records in Mongo.
 
-- [ ] **D02.3** Document exact local start, stop and reset commands with safe placeholder environment values.
+- [x] **D02.3** Document exact local start, stop and reset commands with safe placeholder environment values.
 
   Prerequisite: D02.2. **Individual completion check:** A fresh shell follows the documented setup without missing configuration.
 

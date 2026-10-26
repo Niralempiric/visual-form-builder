@@ -10,7 +10,8 @@ D01.1 defines the product contract and D01.2 provides the pinned TypeScript
 workspace. D01.3 adds the first running Next.js page, a real API connection check
 and Express process liveness. D02.1 adds local Mongo replica-set initialization,
 application connectivity and bounded database readiness. D02.2 verifies committed
-and intentionally rolled-back synthetic writes across collections. Form editing,
+and intentionally rolled-back synthetic writes across collections. D02.3 documents
+fresh-shell setup, stop/reset and safe local configuration. Form editing,
 accounts, publishing and responses are not implemented yet.
 
 ## Repository and setup
@@ -24,6 +25,7 @@ Required toolchain: **Node.js 24.21.0 and npm 11.19.0**. With
 ```bash
 git clone https://github.com/Niralempiric/visual-form-builder.git
 cd visual-form-builder
+. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
 nvm install
 nvm use
 node --version
@@ -41,63 +43,46 @@ local replica set and server-only MONGODB_URI configuration below.
 
 ## Run locally
 
-Start Docker, then run:
+With Docker running and the pinned toolchain installed, create the local config
+once, preserving any existing file:
+
+```bash
+cp -n .env.example .env
+```
+
+Review/edit that private file locally. In **every new terminal** at the checkout
+root, load the runtime and configuration before running project commands:
+
+```bash
+. "${NVM_DIR:-$HOME/.nvm}/nvm.sh"
+nvm use
+set -a
+. ./.env
+set +a
+```
+
+Then start the local replica set and foreground application processes:
 
 ```bash
 npm run db:up
-export MONGODB_URI='mongodb://127.0.0.1:27019/visual_form_builder?replicaSet=vfb-rs&directConnection=true'
 npm run dev
 ```
 
-Open [the local app](http://127.0.0.1:3000) and select **Check API connection**.
-The browser requests `/health/live` on the same origin; Next.js proxies it to the
-Express process at `http://127.0.0.1:4000/health/live`. A successful response is:
+Open [the local app](http://127.0.0.1:3000) with the template ports and select
+**Check API connection**. The button checks Express liveness through Next.js.
+`/health/ready` separately returns 200/ready only when the expected writable Mongo
+replica-set primary is available; database loss returns 503/not_ready.
 
-```json
-{ "status": "ok", "service": "visual-form-builder-api" }
-```
+In a second terminal, repeat the runtime/configuration loader above, then run
+`npm run test:smoke`. Stop the applications with **Ctrl+C** and run `npm run db:down`
+to stop Mongo while keeping its data.
 
-This means the API process is alive. `/health/ready` separately returns 200 with
-`{ "status": "ready", "service": "visual-form-builder-api" }` only when Mongo
-responds as the configured writable replica-set primary with session support.
-It returns 503 with `status: "not_ready"` on dependency loss; liveness stays 200.
-Readiness does not establish that later publish/submit transactions work.
-The response uses `Cache-Control: no-store`. If the API is stopped, the page shows
-**API unavailable** and allows another attempt. The request times out after five seconds.
-
-In another terminal, with both services running:
-
-```bash
-npm run test:smoke
-```
-
-This verifies the page, direct/proxied Express liveness and replica-set readiness over HTTP.
-Stop the development processes with **Ctrl+C**. Both listeners are local-only.
-`npm run db:down` stops this project's database and preserves its volumes.
-
-To run the compiled local applications:
-
-```bash
-npm run build
-npm run start
-```
-
-If default ports are occupied, set `PORT` (Next.js) and `API_PORT` (Express and the
-proxy) in the launching shell. For example:
-
-```bash
-PORT=3103 API_PORT=4103 npm run dev
-# In the smoke-test terminal, use those same ports:
-PORT=3103 API_PORT=4103 npm run test:smoke
-```
-
-`API_PORT` must be an integer from 1 to 65535. For compiled applications, use the
-same `API_PORT` during **both build and start**, because Next.js records rewrites
-in its build output. Defaults are 3000/4000. Use shell variables for shared overrides;
-the API uses the exported MONGODB_URI and does not auto-load Next.js environment
-files. MONGODB_REPLICA_SET defaults to `vfb-rs`. Database port overrides and exact
-readiness/failure behavior are documented in [Database foundation](docs/DATABASE.md).
-Production hosting/proxy configuration belongs to later tasks.
+[Local development](docs/LOCAL_DEVELOPMENT.md) contains the exact fresh-shell
+install, start, stop, destructive local reset and compiled-mode commands, port
+overrides and troubleshooting. The template uses no credentials; actual `.env`
+files stay ignored. Express and the database scripts do not auto-load the root
+file. Keep Mongo configuration server-only. Use the same API_PORT during build
+and start because Next.js compiles rewrites into its output.
 
 ## Workspace and commands
 
@@ -184,11 +169,12 @@ dependencies, build output and local environment files are ignored.
 - [Task board](docs/TASK_BOARD.md)
 - [Growth checklist](docs/NIRAL_PROJECT_GROWTH_CHECKLIST.md)
 - [Implementation evidence](docs/IMPLEMENTATION_PROGRESS.md)
+- [Local development](docs/LOCAL_DEVELOPMENT.md)
 - [Reusable one-task prompt](docs/DAILY_TASK_PROMPT.md)
 
 The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D02.2: **D02.3**, exact local start/stop/reset commands
-and safe placeholder environment configuration. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D02.3: **D03.1**, shared API success/error envelopes, ID
+validation, pagination and correlation IDs. No application has been deployed and no usable form-builder release is claimed.

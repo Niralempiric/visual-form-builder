@@ -9,26 +9,12 @@ only on 127.0.0.1. Use synthetic data. Full production provisioning remains late
 
 ## Start and check
 
-From the repository root, with Docker Compose and the pinned Node/npm pair available:
-
-```bash
-npm ci
-npm run db:up
-export MONGODB_URI='mongodb://127.0.0.1:27019/visual_form_builder?replicaSet=vfb-rs&directConnection=true'
-npm run dev
-```
-
-In another terminal:
-
-```bash
-curl -i http://127.0.0.1:4000/health/live
-curl -i http://127.0.0.1:4000/health/ready
-curl -i http://127.0.0.1:3000/health/ready
-```
-
-Use the matching API_PORT/PORT if overridden. The existing Next.js rewrite forwards
-health requests; the existing page button still checks process liveness only.
-No frontend component receives the database URL.
+Follow [Local development](LOCAL_DEVELOPMENT.md) for dependency installation,
+`.env.example` configuration, the per-terminal loader, exact start/stop/reset and
+compiled-mode commands. Source the trusted root `.env` with exported assignments
+before `db:up` or API startup; those separate processes do not load it automatically.
+The existing page button checks process liveness only. The smoke test checks both
+liveness and readiness through direct and same-origin routes.
 
 `db:up` starts Mongo, runs the bounded initializer, and waits for health. Repeating
 it preserves the existing set configuration and data. The initializer refuses to
@@ -38,13 +24,13 @@ data/config volumes. `COMPOSE_PROJECT_NAME` may isolate another local instance.
 
 The replica advertises `mongo:27017` inside the Compose network. Host processes use
 the published loopback port with `directConnection=true` to avoid discovering an
-unresolvable container hostname. `MONGO_PORT` defaults to 27019. If occupied, use
-`MONGO_PORT=27029 npm run db:up`, and set the URI port to 27029 as well. Do not stop
-an unrelated process to free the default port.
+unresolvable container hostname. `MONGO_PORT` defaults to 27019. If occupied, edit
+both MONGO_PORT and the URI port in `.env`, then reload each terminal as described
+in the setup guide. Do not stop unrelated services to free a port.
 
 Stop the application with Ctrl+C. `npm run db:down` stops this Compose project
-without deleting its volumes. Full fresh-shell start/stop/reset documentation and
-placeholder environment files are D02.3; no reset command is provided in this task.
+without deleting its volumes. The [local reset procedure](LOCAL_DEVELOPMENT.md#reset-this-local-database)
+explicitly deletes only the selected local Compose project's volumes and reinitializes it.
 
 ## API configuration and failure behavior
 
@@ -128,7 +114,8 @@ pins, dependency versions, application routes and product models are unchanged.
 This demonstrates local persistence and rollback primitives. It does not establish
 publish/submit race handling, idempotency, authorization, domain-model validation,
 high availability or HTTP exactly-once delivery. Those require their own later tasks.
-Full fresh-shell start/stop/reset instructions and sample env files remain D02.3.
+Full fresh-shell start/stop/reset instructions and the sample configuration are
+now documented in [Local development](LOCAL_DEVELOPMENT.md).
 
 References: [Mongoose transactions](https://mongoosejs.com/docs/transactions.html)
 and [MongoDB Node driver transactions](https://www.mongodb.com/docs/drivers/node/current/crud/transactions/).

@@ -32,7 +32,7 @@ Modules: M01 M23.
 
   Prerequisite: D02.1. **Done when:** The rollback leaves no partial fixture records in Mongo.
 
-- [ ] **D02.3** Document exact local start, stop and reset commands with safe placeholder environment values.
+- [x] **D02.3** Document exact local start, stop and reset commands with safe placeholder environment values.
 
   Prerequisite: D02.2. **Done when:** A fresh shell follows the documented setup without missing configuration.
 

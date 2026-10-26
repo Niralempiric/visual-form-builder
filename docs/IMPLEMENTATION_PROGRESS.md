@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3 and D02.1–D02.2 completed**; 115 implementation tasks remain pending.
-Next eligible task: **D02.3**. Complete local start/stop/reset documentation has not started.
+Current status: **D01.1–D01.3 and D02.1–D02.3 completed**; 114 implementation tasks remain pending.
+Next eligible task: **D03.1**. Shared API contracts have not started.
 
 ## Per task record template
 
@@ -606,3 +606,146 @@ fresh-shell start/stop/reset instructions and placeholder env files are not adde
 
 **Next eligible ID: D02.3 — document exact local start, stop and reset commands
 with safe placeholder environment values.** Not started. Stop after D02.2.
+
+## D02.3 — Exact local setup, stop/reset and example configuration — 26 October 2026
+
+**Implementation status: completed.** Individual check passed: a fresh shell
+followed the documented setup without missing configuration. Selected only D02.3
+after inspecting D02.2's code and rerunning its transaction fixture (5 tests passed).
+No earlier implementation/publication handoff remained unfinished.
+
+### Inspection, attribution and scope
+
+- Actual implementation path:
+  `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+- Sanitized authorized fetch/push target:
+  `https://github.com/Niralempiric/visual-form-builder`. GitHub confirms public
+  ownership by Niralempiric. Started on clean `main` tracking `origin/main` at
+  `cca48b4`; fetch confirmed it current.
+- Effective author/committer settings are **Niralempiric <niralempiric@gmail.com>**.
+  GitHub also attributes both roles on published `cca48b4` to Niralempiric. These
+  are separate checks from repository ownership/authentication. Existing identity,
+  remote URLs and earlier authors' history were preserved; no co-author was added.
+- Embedded credentials exist in local `.git/config`, setting `remote.origin.url`
+  (used for fetch/push). Values were never printed or committed. Secure credential
+  manager storage is recommended; this run did not remove, rotate or change them.
+- Reviewed applicable instructions, plan, full growth checklist, task board,
+  progress history, README, database guide, scripts, tests, pins/lock and CI layout.
+  The only AGENTS.md is under `apps/web`; no frontend source changed. No contribution
+  guide or CI workflow exists. GitHub returned no commit status checks for `cca48b4`.
+
+### Work and affected files
+
+| Files | Result |
+|---|---|
+| `.env.example` | Non-secret, shell-compatible local defaults for project namespace, ports and replica-set URI; URI is quoted so `&` survives shell sourcing |
+| `docs/LOCAL_DEVELOPMENT.md` | Exact install, non-overwriting config copy, every-terminal loader, dev/check/stop/restart/reset and compiled-mode steps; overrides, data-deletion scope and troubleshooting |
+| `README.md`, `docs/DATABASE.md` | Consistent current setup, canonical guide links, configuration-loading behavior and reset instructions |
+| `docs/PROJECT_DOCUMENTATION.md`, `docs/TASK_BOARD.md`, this file | Only D02.3 newly complete; previous history retained and D03.1 identified |
+
+No runtime script, application/UI behavior, dependency, lockfile or future shared
+contract was changed. Express/database scripts still receive exported process
+configuration; no implicit dotenv loader was introduced. Reset is an explicit
+documented Compose command for the chosen local namespace, not an automatic action.
+
+### Acceptance and verification
+
+An isolated source copy excluded Git metadata, installed dependencies, build output
+and real env files. A clean Bash environment inherited no application configuration.
+The temporary verifier extracted the actual guide's command blocks and ran them,
+using only the guide's documented namespace/port overrides in that disposable
+copy's local configuration. The normal development database and actual checkout's
+private config were untouched; no `.env` was created in the actual checkout.
+
+- **Passed:** pinned Node 24.21.0/npm 11.19.0 activation, `npm ci` (170 packages
+  added, 178 audited), `npm run check` and all seven workspace typechecks from the
+  fresh copy. The lockfile stayed unchanged. Audit results are recorded separately below.
+- **Passed:** copy `.env.example` once; a second `cp -n` preserved the edited local
+  file byte-for-byte. Every separate shell exported all required settings using
+  the documented loader, without printing the file's values.
+- **Passed:** `npm run db:up` then `npm run dev`; a second clean terminal ran
+  `npm run test:smoke` and direct/proxied readiness curl checks successfully.
+- **Passed:** Ctrl+C closed both application listeners; `npm run db:down` retained
+  both fixture volumes. Restart preserved a synthetic database marker.
+- **Passed:** the explicit `docker compose -f infra/compose.yaml down --volumes`
+  reset plus documented restart removed that marker, re-created a ready replica
+  set and preserved the local config file. Only disposable project data was erased.
+- **Passed:** `npm run test:readiness` in the clean copy (3 tests), plus D02.2's
+  transaction prerequisite check in the implementation checkout (5 reported tests).
+- **Passed:** compiled workflow `npm run db:up`, `npm run build`, `npm run start`
+  with unchanged API_PORT; fresh-terminal smoke and both readiness checks passed
+  again. Build used `CIRCLE_NODE_TOTAL=2` only in the verification environment.
+- **Passed:** all temporary listeners, source copy, containers and volumes removed;
+  `.env` stays ignored and `.env.example` trackable. Markdown links/anchors, tracker
+  consistency, secret-pattern scan, generated-file/scope and whitespace checks run
+  before publication. Lockfile SHA-256 remains
+  `993b35f1abd3139a65d36b943be0f61011ab92c88a82e41f8f0cd554354b392e`.
+- **Failed, unrelated finding:** `npm audit --json` exits 1 with one high advisory
+  in the unchanged dependency graph; details below. No audit check was weakened.
+- **Not run:** browser checks (no UI changed), CI (no workflow/status checks),
+  broader lint/test harnesses (D03.2/D03.3), release journeys and GHFind scans.
+
+An auxiliary verification probe initially assumed API build output existed before
+the development build. It was corrected to check exported configuration; the real
+development API startup/validation and all documented acceptance commands then
+passed in a new clean run. The temporary verifier/logs are outside Git at
+`/tmp/vfb-d023-verify.py` and `/tmp/vfb-d023-c8ab3ec96406-logs`.
+
+### Unrelated finding requiring separate follow-up
+
+The existing chain `express@5.3.0 -> body-parser@2.3.0` is reported vulnerable by
+[GHSA-27r3-jxmh-p828](https://github.com/advisories/GHSA-27r3-jxmh-p828) (compressed-body
+denial of service; patched 2.x version 2.4.0). Advisory metadata was checked on
+26 October 2026. The current health-only app registers no parser middleware; that
+source observation is not a full exploitability assessment or resolution. Record
+dependency triage before request-parsing/hosted use; do not silently upgrade it or
+replace this task with maintenance. No dependency changed or audit success is claimed.
+
+### Growth evaluation against the preserved baseline
+
+Every checkpoint remains accounted for against the earlier baseline; no lifetime
+phase is permanently complete and no adoption, review or score outcome is invented.
+
+- **Phase 0 — Completed for this run for items 1–4:** path/target, actual settings
+  and GitHub attribution, synthetic/private-data boundary and existing brief
+  reverified. Item 5 **Pending**: no fresh score measurement.
+- **Phase 1 — Pending overall:** items 2–3 now have exact tested start/stop/reset,
+  every-terminal configuration and a safe sample. Item 6 gained clean source-copy
+  install/build evidence for this foundation. Working product journey (1), license
+  choice (4), synthetic form demo (5) and release-level validation remain pending.
+- **Phase 2 — Completed for this run:** items 1, 2, 4–5: one eligible task,
+  verified prerequisite, stated check, focused change and separate findings.
+  Item 3 **Not applicable**: no coordination issue was needed or created.
+- **Phase 3 — Completed for this run within scope:** items 1–3, 5–7: actual fresh
+  shell/retention/reset verification, regressions, accurate docs and honest self-review.
+  No new persistent test harness was needed for this documentation/configuration
+  task. Item 4 **Not applicable** (unchanged UI); item 8 is the authorized publication
+  workflow below. Product-version/tenant checks remain future implementation work.
+- **Phase 4 — Pending:** items 1–5 require real release gates and form journeys.
+  Item 6 gains exact setup, known limits and sanitized problem-reporting guidance.
+- **Phase 5 — Not applicable:** all five outreach/tutorial/user/contribution
+  checkpoints have no authorized or observed activity in this run.
+- **Phase 6 — Pending overall:** item 2 gained setup/compatibility evidence, with
+  the audit finding unresolved; item 1 has a concrete dependency-triage follow-up.
+  Items 3–6 **Not applicable**: no release, upstream fix or package extraction.
+- **Phase 7 — Pending overall:** item 1 gains reproducible setup evidence, not
+  actual user/release outcomes. Items 2–3 have no fresh compatible score data.
+  Item 4 identifies D03.1; continued maintenance across years remains future work.
+
+### Publication and next task
+
+**Publication status at record preparation: ready for authorized commit/push** on
+`main` to the verified Niral target above. Push access was checked with a successful
+dry run. The run's final publication receipt records the exact task commit, actual
+push result and remote read-back verification separately from implementation status.
+Resolve the task commit with `git log -1 --format=%H -- docs/LOCAL_DEVELOPMENT.md`.
+No PR is required by the established current-branch workflow; no independent review,
+protection bypass, deployment or default-branch merge is claimed.
+
+Implementation blockers: **none**. Limitations: local, single-node, unauthenticated
+infrastructure; no usable form workflow yet. The dependency advisory, credential
+storage recommendation, undecided license and absent CI are recorded separately.
+
+**Next eligible ID: D03.1 — shared API success/error envelopes, ID validation,
+pagination and correlation ID handling. Prerequisite: D02.3 (now verified complete).**
+Not started. Stop after D02.3.
