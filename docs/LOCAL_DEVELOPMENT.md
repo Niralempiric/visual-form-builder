@@ -103,6 +103,10 @@ readiness returns `status: "ready"` and service `visual-form-builder-api` with
 Cache-Control: no-store. Mongo loss returns 503/not_ready; liveness stays 200 while
 the API runs. These checks do not establish a working form journey.
 
+For schema and API-contract checks independent of Mongo or the running stack,
+run `npm run test:contracts`. See [API contracts](API_CONTRACTS.md) for current
+JSON errors, correlation headers, identifiers and bounded pagination helpers.
+
 ## Stop without deleting data
 
 Press **Ctrl+C** in the terminal running `npm run dev` (or `npm run start`) to stop

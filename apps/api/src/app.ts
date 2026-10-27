@@ -1,8 +1,13 @@
 import express from 'express';
+import { apiErrorHandler, correlation, notFound } from './http.js';
 
-export function createApp(isReady: () => Promise<boolean> = async () => false) {
+export function createApp(
+  isReady: () => Promise<boolean> = async () => false,
+  apiRouter: express.Router = express.Router(),
+) {
   const app = express();
   app.disable('x-powered-by');
+  app.use(correlation);
 
   // Liveness reports only this process, independently of dependency readiness.
   app.get('/health/live', (_request, response) => {
@@ -17,5 +22,8 @@ export function createApp(isReady: () => Promise<boolean> = async () => false) {
       .json({ status: ready ? 'ready' : 'not_ready', service: 'visual-form-builder-api' });
   });
 
+  app.use('/api/v1', apiRouter);
+  app.use(notFound);
+  app.use(apiErrorHandler);
   return app;
 }

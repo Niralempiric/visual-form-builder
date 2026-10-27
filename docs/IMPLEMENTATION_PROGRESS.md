@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3 and D02.1–D02.3 completed**; 114 implementation tasks remain pending.
-Next eligible task: **D03.1**. Shared API contracts have not started.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1 completed**; 113 implementation tasks remain pending.
+Next eligible task: **D03.2**. Broader lint/Vitest/Supertest fixture configuration has not started.
 
 ## Per task record template
 
@@ -749,3 +749,152 @@ storage recommendation, undecided license and absent CI are recorded separately.
 **Next eligible ID: D03.1 — shared API success/error envelopes, ID validation,
 pagination and correlation ID handling. Prerequisite: D02.3 (now verified complete).**
 Not started. Stop after D02.3.
+
+
+## D03.1 — Shared API envelopes, IDs, pagination and correlation — 27 October 2026
+
+**Implementation status: completed.** Individual completion check passed:
+“Malformed contracts fail with a stable safe error format.” D02.3's setup guide,
+sample configuration, scripts and recorded clean-shell evidence were inspected;
+its published commit was verified, so no unfinished publication handoff remained.
+Only D03.1 was selected and newly marked complete. D03.2 was not started.
+
+### Inspection and attribution
+
+- Actual implementation path:
+  `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+- Sanitized authorized GitHub fetch/push URL:
+  `https://github.com/Niralempiric/visual-form-builder`. Both destinations were
+  programmatically checked; GitHub confirms this is public and owned by Niralempiric.
+- Started with clean `main` tracking `origin/main` at
+  `daf253aab98ea9b75b7090fefeff22701e54170e`. `git fetch origin` passed and comparison
+  reported zero commits ahead/behind. GitHub confirms that D02.3 commit exists.
+- Effective author **and** committer remain Niralempiric
+  `<niralempiric@gmail.com>`; GitHub attributes both roles on `daf253a` to
+  Niralempiric. Ownership, CLI authentication and commit attribution were checked
+  separately. Earlier authors/history and all identity settings were preserved.
+- Embedded credentials remain in local `.git/config`, `remote.origin.url`, used
+  for fetch/push. No values were printed, copied or changed. Secure credential
+  manager storage is recommended. Existing remote URLs were preserved.
+- Read applicable instructions, project plan, entire growth checklist, task board,
+  progress baseline/history, brief, README and relevant development/database docs;
+  inspected source, tests, scripts, pins, lockfile, branch/history and CI layout.
+  No ancestor/root AGENTS.md applies; the frontend AGENTS.md has no changed source
+  under it. No contribution guide or CI workflow exists; GitHub returned no commit
+  statuses for `daf253a`. Current-branch publication is the established workflow.
+
+### Work and files
+
+| Files | Result |
+|---|---|
+| `packages/contracts/src/{index,identifiers,envelopes,pagination}.ts` | Strict Zod success/list/error envelopes, fixed safe message/status catalog, document/UUID validation, page bounds and versioned cursor shape |
+| `apps/api/src/http.ts`, `apps/api/src/app.ts` | Contract parsing, bounded cursor encode/decode, correlation header/body handling, JSON 404 and safe error terminal handler; existing health bodies retained |
+| `tests/contracts.test.mjs`, `package.json` | Seven focused schema/real HTTP tests via existing Node runner; database regression scripts now build shared dependencies before API compilation |
+| `docs/API_CONTRACTS.md`, `README.md`, `docs/LOCAL_DEVELOPMENT.md` | Current behavior, synthetic examples, checks, cursor trust boundaries and explicit remaining features |
+| `docs/PROJECT_DOCUMENTATION.md`, `docs/TASK_BOARD.md`, this file | Only D03.1 newly complete, current totals and next eligible task |
+
+No dependency, lockfile, UI, auth/domain route, schema renderer, transaction or
+worker behavior changed. Test-only routes are injected into an Express router by
+the fixture and do not ship in the default application. No global body parser was
+introduced. The health endpoints keep `{ status, service }` JSON and gain a
+correlation header; normal API envelopes carry that ID in both header and body.
+
+### Acceptance and verification
+
+- **Passed — `npm run test:contracts`: 7 tests.** Valid DTOs and final-page contracts;
+  rejection of unknown fields, unsafe error text, malformed/coerced document IDs,
+  UUIDs, invalid dates, duplicate/nested/operator queries, page limits, oversized
+  and malformed cursor tokens/payloads. Real HTTP malformed contracts return the
+  same 400 code/message/body shape with a fixed correlation ID. All 12 error codes
+  use their defined status/message; unexpected async errors and invalid internal
+  error details/codes return a safe 500 without their synthetic private text.
+- **Passed — correlation/health HTTP checks in that suite:** valid incoming UUID
+  preserved; invalid/missing IDs replaced; five concurrent malformed-header requests
+  receive distinct valid UUIDs. Error header/body match, JSON/no-store is enforced,
+  X-Powered-By is absent, default unknown routes use JSON and health bodies stay
+  compatible. Fixture listeners are closed after each test.
+- **Passed — `npm run check`:** runtime pins and all seven workspace typechecks
+  using Node 24.21.0/npm 11.19.0 after final source changes.
+- **Passed — `CIRCLE_NODE_TOTAL=2 npm run build`:** shared packages, Express and
+  Next.js production build. No frontend code changed.
+- **Passed — `npm run test:readiness`: 3 tests**, including a real disposable Mongo
+  replica set, outages/recovery, safe configuration errors and independent health.
+- **Passed — `npm run test:transactions`: 5 reported tests**, including committed
+  cross-collection writes, intentional rollback after either write, and independent
+  readers. Normal development data was untouched; fixtures clean their own resources.
+- **Passed — publication preflight:** `git push --dry-run origin HEAD:refs/heads/main`.
+  Actual publication/read-back follows the completed implementation below.
+- **Passed — final document/tracker/link, whitespace, staged scope/generated-file
+  and secret-pattern review before commit.** Shared packages remain browser-usable
+  without Node imports; Node-only cursor encoding stays inside Express. Self-review
+  only; no independent reviewer or fabricated feedback is claimed.
+- **Not run:** browser/smoke UI flow (unchanged frontend; health exercised over real
+  HTTP), CI/lint/Vitest/Supertest (not configured; D03.2/D03.3), release journeys,
+  fresh installation (no dependency change), a new audit or GHFind scan. The prior
+  audit failure is retained below, not reclassified as passing.
+
+Lockfile SHA-256 remains
+`993b35f1abd3139a65d36b943be0f61011ab92c88a82e41f8f0cd554354b392e`.
+No failed acceptance check or implementation blocker remains.
+
+### Growth evaluation against the preserved baseline
+
+All checkpoints were evaluated; item numbers retain the original checklist order.
+These are this run's outcomes, not permanent completion or score/adoption claims.
+
+- **Phase 0 — Completed for this run, items 1–4:** exact path/public target,
+  settings and GitHub attribution, synthetic-only changes and existing first-user
+  brief verified. Item 5 **Pending**: no fresh GHFind baseline was requested.
+- **Phase 1 — Pending overall:** items 1–3 gain working shared/API behavior and
+  accurate contract/setup/runtime documentation. Item 6 retains earlier clean
+  install evidence but release-level verification is **Pending**; no new install
+  was needed for this unchanged graph. License/asset policy (4), real synthetic
+  form demo (5), complete usable-product/release evidence (1, 6) remain **Pending**.
+- **Phase 2 — Completed for this run, items 1–2, 4–5:** one eligible task, verified
+  prerequisite, safe failures for clients, individual check, coherent scope and
+  separate findings. Item 3 **Not applicable**: no coordination issue was needed.
+- **Phase 3 — Completed for this run within scope, items 1–3, 5–7:** shared contracts,
+  bounded/allowlisted inputs and errors, real HTTP and database regressions, docs,
+  diff review and honest authorship/self-review. Future version/tenant operations
+  in item 2 are **Not applicable** to these helpers; no access guarantee is claimed.
+  Item 4 **Not applicable**: no UI changed. Item 8 follows authorized publication
+  and exact remote read-back below; no independent review is claimed.
+- **Phase 4 — Pending, items 1–5:** complete release journey, retry/history,
+  accessibility/lifetime/deployment and release/demo gates require later tasks.
+  Item 6 **Completed for this run** within scope: current limitations, error
+  formats, reproducible checks and sanitized setup/problem-reporting guidance.
+- **Phase 5 — Not applicable, all five items:** no authorized pinning/outreach,
+  tutorial, observed users/feedback or contributor activity. Nothing was invented.
+- **Phase 6 — Pending overall:** items 1–2 retain the dependency-triage finding and
+  gain compatible schema/API tests and setup guidance. The prior advisory remains
+  unresolved. Items 3–6 **Not applicable**: no fix release, actual upstream blocker,
+  upstream contribution or stable need to extract a separate reusable package.
+- **Phase 7 — Pending overall:** item 1 gains reproducible accepted local check
+  evidence, without user/release outcomes; items 2–3 have no fresh compatible score
+  data or attribution-gap claim. Item 4 selects D03.2; maintenance across years is
+  ongoing future work.
+
+### Limitations, publication and next task
+
+Cursors are unsigned, bounded bookmarks and never grant access. Actual list
+queries must later apply deterministic ordering, tenant/form and expiry/filter
+scope independently. Catalog codes do not implement auth/CSRF, permissions,
+request-body size limits, rate limits, immutable publishing or submissions.
+Those features retain their own pending tasks.
+
+**Unrelated finding retained:** D02.3's unchanged Express 5.3.0/body-parser 2.3.0
+high advisory (GHSA-27r3-jxmh-p828) still requires dependency triage before parsing
+requests/hosted use. No body parser or dependency upgrade was added; no fresh audit
+or full exploitability assessment is claimed. License choice and CI remain pending.
+
+**Publication status at record preparation: ready for authorized commit/push** to
+verified `main` on the Niral URL above, separate from completed implementation.
+The final run receipt records the actual commit, push outcome and exact remote
+read-back after this record is committed. Resolve this task commit with
+`git log -1 --format=%H -- docs/API_CONTRACTS.md`. One coherent D03.1 commit is
+intended; no PR is required by the established workflow, and no deployment or
+branch-protection bypass is authorized or claimed.
+
+**Next eligible ID: D03.2 — configure lint, type checks, Vitest, Supertest and
+disposable database fixtures. Prerequisite: D03.1 (verified complete).** Not started.
+Stop after D03.1 and its publication.

@@ -856,7 +856,7 @@ Modules: M01 M23. Day-group estimate: 5 to 6 hours.
 
 Modules: M01. Day-group estimate: 5 to 6 hours.
 
-- [ ] **D03.1** Define shared API success/error envelopes, ID validation, pagination and correlation ID handling.
+- [x] **D03.1** Define shared API success/error envelopes, ID validation, pagination and correlation ID handling.
 
   Prerequisite: D02.3. **Individual completion check:** Malformed contracts fail with a stable safe error format.
 

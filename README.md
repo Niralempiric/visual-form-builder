@@ -11,7 +11,8 @@ workspace. D01.3 adds the first running Next.js page, a real API connection chec
 and Express process liveness. D02.1 adds local Mongo replica-set initialization,
 application connectivity and bounded database readiness. D02.2 verifies committed
 and intentionally rolled-back synthetic writes across collections. D02.3 documents
-fresh-shell setup, stop/reset and safe local configuration. Form editing,
+fresh-shell setup, stop/reset and safe local configuration. D03.1 adds shared API
+envelopes, bounded ID/page validation, correlation IDs and safe JSON errors. Form editing,
 accounts, publishing and responses are not implemented yet.
 
 ## Repository and setup
@@ -93,10 +94,10 @@ and start because Next.js compiles rewrites into its output.
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
 | `packages/form-schema` | Shared form definitions and validation scaffold |
 | `packages/form-renderer` | Shared preview/public React renderer scaffold |
-| `packages/contracts` | Shared API contracts scaffold |
+| `packages/contracts` | Shared strict API envelopes, identifiers and pagination schemas |
 | `packages/test-fixtures` | Future synthetic schema/answer fixtures |
 | `infra` | Local single-node Mongo replica-set Compose and idempotent initialization |
-| `tests` | Focused readiness regression checks; full harnesses remain future work |
+| `tests` | Focused contracts, readiness and transaction checks; broader harnesses remain future work |
 | `tests/e2e`, `.github` | Placeholders for browser suites and CI |
 
 | Command | Current behaviour |
@@ -112,10 +113,13 @@ and start because Next.js compiles rewrites into its output.
 | `npm run start` | Start both previously built local applications |
 | `npm run test:smoke` | Verify the running page and direct/proxied live/ready health |
 | `npm run db:up` / `npm run db:down` | Initialize/wait for local replica set; stop without deleting volumes |
-| `npm run test:readiness` | Build API and test isolated Docker replica-set readiness/failure/recovery |
-| `npm run test:transactions` | Build API and verify isolated multi-collection commit, rollback and persistence |
+| `npm run test:contracts` | Build shared packages/API and verify contracts plus real HTTP success/failure |
+| `npm run test:readiness` | Build shared packages/API and test isolated Docker replica-set readiness/failure/recovery |
+| `npm run test:transactions` | Build shared packages/API and verify isolated multi-collection commit, rollback and persistence |
 
-The shared packages still export no form behaviour. The smoke script checks the
+The form-schema and renderer packages still export no form behaviour. Shared API
+contracts now validate envelopes, IDs and page inputs; see
+[API contracts](docs/API_CONTRACTS.md). The smoke script checks the
 initial page and direct/proxied health. The readiness suite verifies local replica-set
 availability. The transaction suite creates a separate disposable replica set,
 checks cross-collection commit/rollback with independent readers, and removes only
@@ -170,11 +174,12 @@ dependencies, build output and local environment files are ignored.
 - [Growth checklist](docs/NIRAL_PROJECT_GROWTH_CHECKLIST.md)
 - [Implementation evidence](docs/IMPLEMENTATION_PROGRESS.md)
 - [Local development](docs/LOCAL_DEVELOPMENT.md)
+- [Shared API contracts](docs/API_CONTRACTS.md)
 - [Reusable one-task prompt](docs/DAILY_TASK_PROMPT.md)
 
 The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D02.3: **D03.1**, shared API success/error envelopes, ID
-validation, pagination and correlation IDs. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D03.1: **D03.2**, lint, type checks, Vitest, Supertest and
+disposable database fixtures. No application has been deployed and no usable form-builder release is claimed.

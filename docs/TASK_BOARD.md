@@ -40,7 +40,7 @@ Modules: M01 M23.
 
 Modules: M01.
 
-- [ ] **D03.1** Define shared API success/error envelopes, ID validation, pagination and correlation ID handling.
+- [x] **D03.1** Define shared API success/error envelopes, ID validation, pagination and correlation ID handling.
 
   Prerequisite: D02.3. **Done when:** Malformed contracts fail with a stable safe error format.
 

@@ -28,8 +28,9 @@
     "test:smoke": "node scripts/smoke.mjs",
     "db:up": "node scripts/database.mjs up",
     "db:down": "node scripts/database.mjs down",
-    "test:readiness": "npm run build --workspace @visual-form-builder/api && node --test tests/readiness.test.mjs",
-    "test:transactions": "npm run build --workspace @visual-form-builder/api && node --test tests/transactions.test.mjs"
+    "test:contracts": "npm run build:packages && npm run build --workspace @visual-form-builder/api && node --test tests/contracts.test.mjs",
+    "test:readiness": "npm run build:packages && npm run build --workspace @visual-form-builder/api && node --test tests/readiness.test.mjs",
+    "test:transactions": "npm run build:packages && npm run build --workspace @visual-form-builder/api && node --test tests/transactions.test.mjs"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
