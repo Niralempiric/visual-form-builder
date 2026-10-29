@@ -122,3 +122,12 @@ and [MongoDB Node driver transactions](https://www.mongodb.com/docs/drivers/node
 
 References: [MongoDB development replica sets](https://www.mongodb.com/docs/manual/tutorial/deploy-replica-set-for-testing/)
 and [Mongoose connection options and errors](https://mongoosejs.com/docs/connections.html).
+
+
+## Reusable test fixture harness
+
+D03.2 adds a separate Vitest command, `npm run test:db`, using the reusable
+`withMongoFixture` helper with generated namespaces, explicit Compose env isolation
+and cleanup verification after ordinary failures. The detailed D02.2 rollback
+suite above remains available unchanged. See [Repository testing](TESTING.md) for
+fixture behavior, synthetic records, failure/correction checks and known limits.

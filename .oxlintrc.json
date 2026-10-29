@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "react-hooks", "jsx-a11y", "nextjs"],
+  "categories": {"correctness": "error"},
+  "rules": {
+    "no-debugger": "error",
+    "no-unused-vars": ["error", {"argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_"}]
+  },
+  "ignorePatterns": ["**/node_modules/**", "**/.next/**", "**/dist/**", "**/next-env.d.ts", "**/coverage/**", "**/test-results/**", "**/playwright-report/**"]
+}

@@ -1,24 +1,27 @@
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
-import { createRequire } from 'node:module';
-import test from 'node:test';
+import type { Server } from 'node:http';
+import express from 'express';
+import request from 'supertest';
+import type { Response } from 'supertest';
+import { test } from 'vitest';
+import type { TestContext } from 'vitest';
+import { z } from 'zod';
 import {
-  apiErrors, correlationIdSchema, cursorSchema, cursorPositionSchema, errorEnvelopeSchema,
+  apiErrors, apiErrorCodeSchema, correlationIdSchema, cursorSchema, cursorPositionSchema, errorEnvelopeSchema,
   fieldIdSchema, objectIdSchema, pageEnvelopeSchema, paginationQuerySchema, successEnvelopeSchema,
-} from '../packages/contracts/dist/index.js';
-import { createApp } from '../apps/api/dist/app.js';
-import { ApiError, encodeCursor, parseContract, parsePagination } from '../apps/api/dist/http.js';
+} from '@visual-form-builder/contracts';
+import type { ApiErrorCode } from '@visual-form-builder/contracts';
+import { createApp } from '../../apps/api/src/app.js';
+import { ApiError, encodeCursor, parseContract, parsePagination } from '../../apps/api/src/http.js';
 
-const require = createRequire(new URL('../apps/api/package.json', import.meta.url));
-const express = require('express');
-const { z } = require('zod');
 const id = '0123456789abcdef01234567';
 const fieldId = '123e4567-e89b-42d3-a456-426614174000';
 const correlationId = '123e4567-e89b-42d3-a456-426614174001';
-const position = { v: 1, at: '2026-10-27T01:02:03.000Z', id };
+const position = { v: 1, at: '2026-10-27T01:02:03.000Z', id } as const;
 const dto = z.strictObject({ id: objectIdSchema });
 
-function malformed(operation) {
+function malformed(operation: () => unknown) {
   assert.throws(operation, error => error instanceof ApiError && error.code === 'MALFORMED_REQUEST' &&
     error.message === apiErrors.MALFORMED_REQUEST.message);
 }
@@ -80,99 +83,109 @@ test('pagination bounds, defaults and malformed cursor payloads are enforced bef
   }
 });
 
-async function fixture(t) {
+async function listen(t: TestContext, app: express.Express) {
+  const server = app.listen(0, '127.0.0.1');
+  t.onTestFinished(() => new Promise<void>((resolve, reject) => {
+    server.closeAllConnections();
+    server.close(error => error ? reject(error) : resolve());
+  }));
+  await once(server, 'listening');
+  return server;
+}
+
+async function fixture(t: TestContext) {
   const router = express.Router();
-  router.get('/items/:id', (request, response) => {
-    const value = parseContract(objectIdSchema, request.params.id);
-    response.json(successEnvelopeSchema(dto).parse({ data: { id: value }, correlationId: response.locals.correlationId }));
+  router.get('/items/:id', (req, res) => {
+    const value = parseContract(objectIdSchema, req.params.id);
+    res.json(successEnvelopeSchema(dto).parse({ data: { id: value }, correlationId: res.locals.correlationId }));
   });
-  router.get('/items', (request, response) => {
-    const page = parsePagination(request.query);
-    response.json(pageEnvelopeSchema(dto).parse({ data: [{ id }],
-      nextCursor: page.after === null ? encodeCursor(position) : null, correlationId: response.locals.correlationId }));
+  router.get('/items', (req, res) => {
+    const page = parsePagination(req.query);
+    res.json(pageEnvelopeSchema(dto).parse({ data: [{ id }],
+      nextCursor: page.after === null ? encodeCursor(position) : null, correlationId: res.locals.correlationId }));
   });
-  router.get('/errors/:code', (request, _response, next) => {
-    next(new ApiError(request.params.code, request.params.code === 'ANSWER_INVALID' ?
+  router.get('/errors/:code', (req, _res, next) => {
+    const code = parseContract(apiErrorCodeSchema, req.params.code);
+    next(new ApiError(code, code === 'ANSWER_INVALID' ?
       [{ fieldId, message: 'This answer is required.' }] : undefined));
   });
   router.get('/bad-internal-code', () => {
     const error = new ApiError('CONFLICT');
-    error.code = 'synthetic-private';
+    Object.assign(error, { code: 'synthetic-private' });
     throw error;
   });
   router.get('/failure', async () => { throw new Error('synthetic-secret mongodb://private.invalid synthetic-answer'); });
-  router.get('/bad-internal-detail', () => { throw new ApiError('ANSWER_INVALID', [{ fieldId, message: 'synthetic-answer' }]); });
-  const server = createApp(async () => true, router).listen(0, '127.0.0.1');
-  t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
-  await once(server, 'listening');
-  return `http://127.0.0.1:${server.address().port}`;
+  router.get('/bad-internal-detail', () => {
+    // Exercise a malformed runtime caller even though TS rejects this message.
+    throw Reflect.construct(ApiError, ['ANSWER_INVALID', [{ fieldId, message: 'synthetic-answer' }]]);
+  });
+  return listen(t, createApp(async () => true, router));
 }
 
-async function errorBody(response, code) {
+function get(server: Server, path: string) {
+  return request(server).get(path).timeout({ response: 2000, deadline: 3000 });
+}
+
+function errorBody(response: Response, code: ApiErrorCode) {
   assert.equal(response.status, apiErrors[code].status);
-  assert.equal(response.headers.get('content-type').startsWith('application/json'), true);
-  assert.equal(response.headers.get('cache-control'), 'no-store');
-  assert.equal(response.headers.get('x-powered-by'), null);
-  const body = errorEnvelopeSchema.parse(await response.json());
+  assert.match(response.headers['content-type'] ?? '', /^application\/json/);
+  assert.equal(response.headers['cache-control'], 'no-store');
+  assert.equal(response.headers['x-powered-by'], undefined);
+  const body = errorEnvelopeSchema.parse(response.body);
   assert.equal(body.error.code, code);
-  assert.equal(body.correlationId, response.headers.get('x-correlation-id'));
+  assert.equal(body.correlationId, response.headers['x-correlation-id']);
   return body;
 }
 
 test('HTTP malformed contracts share one safe 400 envelope, independent of the invalid input', async t => {
-  const base = await fixture(t);
+  const server = await fixture(t);
   const paths = ['/items/bad', '/items/%7B%22%24ne%22%3Anull%7D', '/items/%E0%A4%A',
     '/items?limit=101', '/items?limit=1&limit=2', '/items?limit[$gt]=1',
     '/items?cursor=synthetic-secret', '/items?$where=synthetic-answer', '/items?limit=1.5'];
   for (const path of paths) {
-    const body = await errorBody(await fetch(base + '/api/v1' + path, { headers: { 'X-Correlation-ID': correlationId } }), 'MALFORMED_REQUEST');
+    const body = errorBody(await get(server, '/api/v1' + path).set('X-Correlation-ID', correlationId), 'MALFORMED_REQUEST');
     assert.deepEqual(body, { error: { code: 'MALFORMED_REQUEST', message: apiErrors.MALFORMED_REQUEST.message }, correlationId });
   }
 });
 
 test('HTTP success and final page use shared envelopes; correlation is bounded per request', async t => {
-  const base = await fixture(t);
-  const one = await fetch(base + '/api/v1/items/' + id.toUpperCase(), { headers: { 'X-Correlation-ID': correlationId } });
+  const server = await fixture(t);
+  const one = await get(server, '/api/v1/items/' + id.toUpperCase()).set('X-Correlation-ID', correlationId);
   assert.equal(one.status, 200);
-  assert.deepEqual(successEnvelopeSchema(dto).parse(await one.json()), { data: { id }, correlationId });
-  const first = await fetch(base + '/api/v1/items');
-  const page = pageEnvelopeSchema(dto).parse(await first.json());
+  assert.deepEqual(successEnvelopeSchema(dto).parse(one.body), { data: { id }, correlationId });
+  const first = await get(server, '/api/v1/items');
+  const page = pageEnvelopeSchema(dto).parse(first.body);
   assert.equal(first.status, 200);
-  assert.equal(first.headers.get('x-correlation-id'), page.correlationId);
-  const last = await fetch(base + '/api/v1/items?cursor=' + page.nextCursor);
-  assert.equal((await last.json()).nextCursor, null);
-  const responses = await Promise.all(Array.from({ length: 5 }, () => fetch(base + '/missing', {
-    headers: { 'X-Correlation-ID': 'synthetic-secret,not-a-uuid' },
-  })));
-  const ids = [];
-  for (const response of responses) ids.push((await errorBody(response, 'NOT_FOUND')).correlationId);
+  assert.equal(first.headers['x-correlation-id'], page.correlationId);
+  const last = await get(server, '/api/v1/items?cursor=' + page.nextCursor);
+  assert.equal(pageEnvelopeSchema(dto).parse(last.body).nextCursor, null);
+  const responses = await Promise.all(Array.from({ length: 5 }, () =>
+    get(server, '/missing').set('X-Correlation-ID', 'synthetic-secret,not-a-uuid')));
+  const ids = responses.map(response => errorBody(response, 'NOT_FOUND').correlationId);
   assert.equal(new Set(ids).size, ids.length);
   for (const value of ids) assert.equal(correlationIdSchema.safeParse(value).success, true);
 });
 
 test('all public error codes use their fixed status and safe catalog; unknown exceptions never escape', async t => {
-  const base = await fixture(t);
-  for (const code of Object.keys(apiErrors)) {
-    const body = await errorBody(await fetch(base + '/api/v1/errors/' + code), code);
+  const server = await fixture(t);
+  for (const code of apiErrorCodeSchema.options) {
+    const body = errorBody(await get(server, '/api/v1/errors/' + code), code);
     assert.deepEqual(body.error, { code, message: apiErrors[code].message,
       ...(code === 'ANSWER_INVALID' ? { fieldErrors: [{ fieldId, message: 'This answer is required.' }] } : {}) });
   }
   for (const path of ['/failure', '/bad-internal-detail', '/bad-internal-code']) {
-    const body = await errorBody(await fetch(base + '/api/v1' + path), 'INTERNAL_ERROR');
+    const body = errorBody(await get(server, '/api/v1' + path), 'INTERNAL_ERROR');
     assert.deepEqual(body.error, { code: 'INTERNAL_ERROR', message: apiErrors.INTERNAL_ERROR.message });
   }
 });
 
 test('production app fallback is JSON and operational health payloads remain compatible', async t => {
-  const server = createApp(async () => false).listen(0, '127.0.0.1');
-  t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
-  await once(server, 'listening');
-  const base = `http://127.0.0.1:${server.address().port}`;
-  await errorBody(await fetch(base + '/api/v1/does-not-exist?answer=synthetic-private'), 'NOT_FOUND');
-  for (const [path, status, value] of [['live', 200, 'ok'], ['ready', 503, 'not_ready']]) {
-    const response = await fetch(base + '/health/' + path);
+  const server = await listen(t, createApp(async () => false));
+  errorBody(await get(server, '/api/v1/does-not-exist?answer=synthetic-private'), 'NOT_FOUND');
+  for (const [path, status, value] of [['live', 200, 'ok'], ['ready', 503, 'not_ready']] as const) {
+    const response = await get(server, '/health/' + path);
     assert.equal(response.status, status);
-    assert.equal(correlationIdSchema.safeParse(response.headers.get('x-correlation-id')).success, true);
-    assert.deepEqual(await response.json(), { status: value, service: 'visual-form-builder-api' });
+    assert.equal(correlationIdSchema.safeParse(response.headers['x-correlation-id']).success, true);
+    assert.deepEqual(response.body, { status: value, service: 'visual-form-builder-api' });
   }
 });

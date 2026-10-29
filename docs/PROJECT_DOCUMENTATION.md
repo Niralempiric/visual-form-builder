@@ -860,7 +860,7 @@ Modules: M01. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D02.3. **Individual completion check:** Malformed contracts fail with a stable safe error format.
 
-- [ ] **D03.2** Configure lint, type checks, Vitest, Supertest and disposable database fixtures.
+- [x] **D03.2** Configure lint, type checks, Vitest, Supertest and disposable database fixtures.
 
   Prerequisite: D03.1. **Individual completion check:** A deliberate failing fixture is detected and passes after correction.
 

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ApiStatus } from '@/components/api-status';
 
 const journey = [
@@ -12,10 +13,10 @@ export default function HomePage() {
       <a className="skip-link" href="#main">Skip to content</a>
       <div className="shell">
         <header className="site-header">
-          <a className="brand" href="/" aria-label="Visual Form Builder home">
+          <Link className="brand" href="/" aria-label="Visual Form Builder home">
             <span className="brand-mark" aria-hidden="true">vf</span>
             <span>Visual Form Builder</span>
-          </a>
+          </Link>
           <span className="preview-label">Local preview</span>
         </header>
         <main id="main">

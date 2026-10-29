@@ -158,6 +158,8 @@ From a configured terminal, with dependencies installed:
 
 ```bash
 npm run check
+npm test
+npm run test:db
 npm run test:readiness
 npm run test:transactions
 ```
@@ -165,7 +167,9 @@ npm run test:transactions
 The database suites allocate their own ports, containers and synthetic data and
 remove only their own fixtures. They do not need the normal development database
 or running application. [Database details](DATABASE.md) describe their boundaries.
-Lint and general test harnesses are D03.2; CI is D03.3 and is not configured yet.
+[Repository testing](TESTING.md) describes lint, strict test types, Vitest/Supertest,
+fixture isolation and failure/correction evidence. CI is D03.3 and is not configured
+yet. Stop development watchers before running `npm ci` or changing dependencies.
 
 ## Troubleshooting
 

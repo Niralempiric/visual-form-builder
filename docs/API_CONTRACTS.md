@@ -122,14 +122,16 @@ expiry and filter scope; never merge a cursor object into a Mongo query.
 npm run test:contracts
 ```
 
-This builds shared packages and Express, then uses Node's existing test runner
-and disposable loopback HTTP listeners. Checks cover strict DTOs, malformed IDs,
+This builds shared packages, then runs the typed Vitest/Supertest contract suite
+against the Express source with disposable loopback HTTP listeners. Checks cover
+strict DTOs, malformed IDs,
 page bounds, cursor payloads, safe error codes/messages, correlation propagation
 and regeneration, real HTTP success/failure and health compatibility. Synthetic
 routes are installed only by the test; no debug route ships in the default app.
 
-D03.2 will configure the broader lint/Vitest/Supertest fixture workflow; D03.3
-adds CI. Body parsing/size enforcement, auth/CSRF, tenant queries, immutable
+D03.2 configures lint, strict test types and reusable database fixtures; see
+[Repository testing](TESTING.md). D03.3 adds CI. Body parsing/size enforcement,
+auth/CSRF, tenant queries, immutable
 publishing and submissions remain later tasks. No JSON body parser was introduced.
 The previously recorded Express/body-parser advisory remains unresolved; see the
 D02.3 progress entry for its precise scope and triage requirement before parsing

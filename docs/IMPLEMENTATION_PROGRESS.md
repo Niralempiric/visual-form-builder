@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1 completed**; 113 implementation tasks remain pending.
-Next eligible task: **D03.2**. Broader lint/Vitest/Supertest fixture configuration has not started.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.2 completed**; 112 implementation tasks remain pending.
+Next eligible task: **D03.3**. CI workflow implementation has not started.
 
 ## Per task record template
 
@@ -898,3 +898,178 @@ branch-protection bypass is authorized or claimed.
 **Next eligible ID: D03.2 — configure lint, type checks, Vitest, Supertest and
 disposable database fixtures. Prerequisite: D03.1 (verified complete).** Not started.
 Stop after D03.1 and its publication.
+
+
+## D03.2 — Lint, strict types, Vitest, Supertest and disposable fixtures — 29 October 2026
+
+**Implementation status: completed.** The individual check passed: “A deliberate
+failing fixture is detected and passes after correction.” D03.1's actual shared
+contracts/API implementation and seven checks were inspected and rerun before
+selection. Its published SHA was verified; no prior publication handoff remained.
+Only D03.2 is newly complete; D03.3 and every later task remain pending.
+
+### Inspection and attribution
+
+- Actual implementation path:
+  `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+- Sanitized authorized fetch/push URL:
+  `https://github.com/Niralempiric/visual-form-builder`. Both destinations match;
+  GitHub confirms public ownership by Niralempiric. This is not Webhook Inbox.
+- Started clean on `main` tracking `origin/main` at
+  `2584d444245627494b5846c92d3f284b3fa731ee`. Fetch passed; zero commits ahead/behind.
+  GitHub attributes both author and committer of that published D03.1 commit to
+  Niralempiric. Effective author/committer are unchanged:
+  **Niralempiric <niralempiric@gmail.com>**. Ownership, authentication and authorship
+  remain separate checks; no identity, remote URL or historical attribution changed.
+- Embedded credentials remain in `.git/config`, `remote.origin.url` (fetch/push).
+  No values were printed, copied or changed. Credential-manager storage is recommended.
+- Read applicable instructions, project plan, entire growth checklist, task board,
+  baseline/history, brief and relevant README/development/database/contract docs;
+  inspected code, tests, scripts, pins/lock and CI. No root/ancestor AGENTS applies.
+  Read the web AGENTS and installed Next ESLint/Link/testing guidance before the
+  small frontend corrections. No contribution guide/workflow exists; GitHub returns
+  no commit statuses. Existing direct-to-main publication remains the workflow.
+
+### Work and affected files
+
+| Files | Result |
+|---|---|
+| `eslint.config.mjs`, `.oxlintrc.json`, `package.json`, `package-lock.json` | Exact compatible development pins, failing lint gates and explicit fast/database commands; existing runtime/compiler and dependency versions preserved |
+| `vitest.config.ts`, `vitest.database.config.ts`, `tsconfig.tests.json` | Separate fast/integration discovery, no retries/only/empty-pass, bounded workers/timeouts and strict test/helper/config types |
+| `tests/contracts.test.mjs` -> `tests/fast/contracts.test.ts` | All seven existing checks migrated to typed Vitest/Supertest against source, with loopback listener teardown and request deadlines |
+| `tests/helpers/mongo.ts`, `tests/fixtures/synthetic-record.ts`, `tests/integration/database.test.ts` | Reusable generated replica-set fixture, independent clients, synthetic commit/read, failure cleanup and empty subsequent instance |
+| `apps/web/src/app/page.tsx`, `apps/web/src/components/api-status.tsx` | Lint-required Next Link and native output/status markup; no new product flow |
+| `docs/TESTING.md`, `README.md`, `docs/LOCAL_DEVELOPMENT.md`, `docs/DATABASE.md`, `docs/API_CONTRACTS.md` | Current commands, compatibility, isolation, limits, examples and reproducible acceptance procedure |
+| Project plan, task board, this file | Only D03.2 newly complete, evidence and next task |
+
+Compatibility was checked against primary npm metadata and tool documentation.
+The current typescript-eslint peer range excludes the existing TypeScript 7.0.2
+compiler. ESLint 10.13.0/@eslint/js 10.0.1/globals 17.13.0 cover JavaScript tooling;
+Oxlint 1.90.0 covers TypeScript/TSX correctness with React/hooks/Next/a11y plugins.
+Strict TypeScript 7 compiler checks remain separate; no type-aware ESLint coverage
+is claimed. Vitest 5.0.5/Vite 8.3.5 and Supertest 7.3.1/types 7.2.1 accept the pinned
+Node runtime. No force/legacy-peer override, compiler downgrade, existing-version
+upgrade or install-script permission expansion was used. The lock adds tooling
+entries; semantic comparison finds no existing package-version changes (only root
+devDependency metadata changes among existing entries).
+
+The fixture never accepts a developer URI/project name. It uses an explicit empty
+Compose env file, removes inherited Compose settings, generates its own port and
+database, and checks exact-project containers/volumes/network removal. Ordinary
+body/startup failures still execute cleanup. Test and cleanup errors are both
+retained if both occur. Abrupt host/process termination can still require manual
+inspection of the generated namespace; no broad prune/reset is used or recommended.
+No auth, form/schema, publication, submission, tenant query or CI workflow was added.
+
+### Acceptance and verification
+
+- **Passed — prerequisite:** original `npm run test:contracts`, 7 Node-runner tests,
+  before migration. Existing completed work was not repeated as a new task.
+- **Passed — individual check:** temporarily changed the synthetic fixture label;
+  `npm run test:db -- --testNamePattern='commits the expected synthetic record'
+  --reporter=verbose` exited **1** on the expected stored-record assertion.
+  Resource checks found no new fixture containers, volumes or networks after failure.
+  Restored the same record; the full `npm run test:db -- --reporter=verbose` exited
+  **0**, with **2 tests passing**. It also verified ordinary thrown-body cleanup,
+  independent committed reads and a new empty database.
+- **Passed — config isolation:** those failed/corrected runs inherited deliberately
+  unusable synthetic Mongo URI/replica, Compose-file/project and port settings.
+  Generated fixture settings won; the normal development database was untouched.
+- **Passed — negative lint/type controls:** a temporary debugger caused ESLint exit
+  **1** (`no-debugger`); a temporary string/number mismatch caused strict test types
+  to exit **1** (`TS2322`). Both probes and the incorrect fixture variant were
+  removed before final checks. These are expected acceptance failures, not ignored tests.
+- **Passed — `npm run check`:** runtime pins, both lint engines, all seven workspace
+  typechecks and test/helper/config types after corrections. Initial new lint and
+  migrated-test typing findings were corrected without rule suppressions or weaker
+  type/compiler checks.
+- **Passed — `npm test`: 7 fast Vitest/Supertest tests**, all migrated D03.1 success
+  and failure cases. `npm run test:contracts` compatibility alias also passed.
+- **Passed — `CIRCLE_NODE_TOTAL=2 npm run build`:** shared packages, Express and
+  Next.js production builds, including the markup corrections.
+- **Passed — `npm ci --no-fund`:** locked clean dependency reinstall (299 added,
+  307 audited), followed by passing `npm run check` and `npm test`. `npm ls
+  --depth=0` also exited 0. This is dependency-install evidence, not a whole product
+  clean-checkout/release validation claim.
+- **Passed — browser:** real Next rewrite to a disposable Express liveness listener;
+  keyboard home-link/control activation; status output changes from idle to online,
+  API outage to unavailable with retry guidance, then back online. At 390px viewport,
+  document width is 390px and the output retains its accessible status role. Final
+  preview has no build-error overlay. This flow does not access a database or prove
+  a create/publish/submit journey. React/verification skills used for self-review.
+- **Corrected verification interruption:** reinstalling node_modules while the
+  preview ran caused a transient Next module-resolution overlay. The preview was
+  stopped and restarted after installation; the clean browser flow passed and the
+  interrupted screenshot was replaced. No source workaround or package upgrade
+  was used to hide it.
+- **Failed, existing unrelated audit:** `npm audit --json` exits 1 with exactly one
+  high body-parser advisory, GHSA-27r3-jxmh-p828, as recorded previously. No new
+  advisory or existing package-version change is reported. It remains unresolved;
+  dependency triage is required before body parsing/hosted use. No parser was added.
+- **Not run:** CI (D03.3; no workflow/statuses), full release/browser journeys,
+  GHFind scans, and unchanged legacy Node readiness/rollback suites this run.
+  New fixtures exercise actual transactional persistence; the existing detailed
+  operational/rollback suites remain explicit documented commands.
+- **Passed before commit:** task/plan consistency, local Markdown links, whitespace,
+  staged scope/secrets/generated-file review, preserved AGENTS/identity/remotes and
+  stopped disposable listeners/resources. Self-review only, no independent review.
+
+Verifier/logs: `/tmp/vfb-d032-acceptance.py` and `/tmp/vfb-d032-acceptance/` (outside
+Git). Browser evidence:
+`/home/empiric-60/Documents/ChatGPT/internal/visual-form-builder-verification/D03.2-mobile.jpg`.
+The committed commands/tests reproduce the acceptance behavior; no real answers,
+credentials, generated build output or screenshots were added to the public repo.
+
+### Growth evaluation against the preserved baseline
+
+Every checkpoint was evaluated by its original item number; no lifetime phase,
+release, adoption, independent review or score increase is invented.
+
+- **Phase 0 — Completed for this run, items 1–4:** exact public target/path,
+  identity/attribution, synthetic data boundary and original first-user brief
+  reverified. Item 5 **Pending**: no requested fresh GHFind baseline.
+- **Phase 1 — Pending overall:** items 1–3 gain working verification commands,
+  accurate setup and compatible locked tool versions. Item 6 gains clean dependency
+  reinstall evidence; whole-release installation evidence remains **Pending**.
+  License/assets policy (4), synthetic product form/answer demo (5) and complete
+  usable product evidence (1, 6) remain **Pending**.
+- **Phase 2 — Completed for this run, items 1–2, 4–5:** one eligible task,
+  verified prerequisite, stated failing/corrected-fixture check, coherent scope and
+  separate audit finding. Item 3 **Not applicable**: no coordination issue needed.
+- **Phase 3 — Completed for this run within scope, items 1–8:** working lint/types,
+  preserved contracts and data boundaries, meaningful migrated/API/database tests,
+  browser verification, current docs, diff/self-review and unchanged attribution;
+  authorized publication/read-back follows below. Domain version/tenant operations
+  in item 2 remain **Not applicable** to this tooling task, not newly completed.
+- **Phase 4 — Pending, items 1–5:** actual release gates, full form workflows,
+  history/retry, accessibility/lifetime/deployment and release/demo evidence await
+  later features. Item 6 **Completed for this run** within scope: reproducible
+  checks, fixture failure recovery guidance and explicit current limits.
+- **Phase 5 — Not applicable, all five items:** no pinning, outreach/tutorial,
+  observed feedback/adoption or contributor work authorized/observed in this run.
+- **Phase 6 — Pending overall:** items 1–2 gain compatibility, checks and verified
+  setup evidence; existing advisory triage remains **Pending**. Items 3–6 **Not
+  applicable**: no fix release, blocking upstream bug, upstream contribution or
+  stable need for package extraction.
+- **Phase 7 — Pending overall:** item 1 gains reproducible engineering evidence,
+  without release/user outcomes; items 2–3 have no fresh compatible scan data or
+  score/attribution-gap claim. Item 4 selects D03.3; maintenance across years remains
+  future work.
+
+### Publication, limits and next task
+
+**Publication status at record preparation: ready for authorized commit/push** on
+`main` to the exact verified Niral URL above, separate from completed implementation.
+The final execution receipt reports the actual commit, push and exact remote SHA
+read-back after this record is committed. Resolve this task commit with
+`git log -1 --format=%H -- docs/TESTING.md`. One coherent D03.2 commit is intended;
+no PR is required by the established workflow, and no deployment/protection bypass
+or independent review is claimed. Identity and existing remote URLs are preserved.
+
+Implementation blockers: **none**. The existing dependency advisory, credential
+storage recommendation, license choice, CI and product/release requirements retain
+separate pending scope; checks are not a claim of production readiness.
+
+**Next eligible ID: D03.3 — add CI for dependency installation, lint, types, fast
+tests and Next.js/backend builds. Prerequisite: D03.2 (verified complete).** Not
+started. Stop after D03.2 and its publication.

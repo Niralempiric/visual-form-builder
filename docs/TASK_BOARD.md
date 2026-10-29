@@ -44,7 +44,7 @@ Modules: M01.
 
   Prerequisite: D02.3. **Done when:** Malformed contracts fail with a stable safe error format.
 
-- [ ] **D03.2** Configure lint, type checks, Vitest, Supertest and disposable database fixtures.
+- [x] **D03.2** Configure lint, type checks, Vitest, Supertest and disposable database fixtures.
 
   Prerequisite: D03.1. **Done when:** A deliberate failing fixture is detected and passes after correction.
 

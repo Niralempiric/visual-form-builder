@@ -34,9 +34,9 @@ export function ApiStatus() {
         <p>This checks the API process through the app. Database readiness is not checked.</p>
       </div>
       <div className="connection-actions">
-        <p role="status" aria-live="polite" className={`connection-status ${status}`}>
+        <output aria-live="polite" className={`connection-status ${status}`}>
           <span className="status-dot" aria-hidden="true" />{labels[status]}
-        </p>
+        </output>
         <button type="button" onClick={checkConnection} disabled={status === 'checking'}>
           {status === 'checking' ? 'Checking…' : 'Check API connection'}
         </button>

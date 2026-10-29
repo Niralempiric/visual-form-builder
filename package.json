@@ -16,8 +16,8 @@
     "preinstall": "node scripts/check-runtime.mjs",
     "check:runtime": "node scripts/check-runtime.mjs",
     "build:packages": "npm run build --workspace @visual-form-builder/form-schema --workspace @visual-form-builder/form-renderer --workspace @visual-form-builder/contracts --workspace @visual-form-builder/test-fixtures",
-    "typecheck": "npm run build:packages && npm run typecheck --workspaces",
-    "check": "npm run check:runtime && npm run typecheck",
+    "typecheck": "npm run build:packages && npm run typecheck --workspaces && npm run typecheck:tests",
+    "check": "npm run check:runtime && npm run lint && npm run typecheck",
     "dev": "npm run check:runtime && concurrently --kill-others --names api,web \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "npm run dev --workspace @visual-form-builder/api",
     "dev:web": "npm run dev --workspace @visual-form-builder/web",
@@ -28,15 +28,28 @@
     "test:smoke": "node scripts/smoke.mjs",
     "db:up": "node scripts/database.mjs up",
     "db:down": "node scripts/database.mjs down",
-    "test:contracts": "npm run build:packages && npm run build --workspace @visual-form-builder/api && node --test tests/contracts.test.mjs",
+    "test:contracts": "npm run test -- tests/fast/contracts.test.ts",
     "test:readiness": "npm run build:packages && npm run build --workspace @visual-form-builder/api && node --test tests/readiness.test.mjs",
-    "test:transactions": "npm run build:packages && npm run build --workspace @visual-form-builder/api && node --test tests/transactions.test.mjs"
+    "test:transactions": "npm run build:packages && npm run build --workspace @visual-form-builder/api && node --test tests/transactions.test.mjs",
+    "lint": "eslint . --max-warnings=0 && oxlint --deny-warnings apps packages tests vitest.config.ts vitest.database.config.ts",
+    "typecheck:tests": "tsc -p tsconfig.tests.json",
+    "test": "npm run build:packages && vitest run",
+    "test:watch": "npm run build:packages && vitest",
+    "test:db": "npm run build:packages && vitest run --config vitest.database.config.ts"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@types/node": "24.19.2",
+    "@types/supertest": "7.2.1",
+    "concurrently": "10.0.6",
+    "eslint": "10.13.0",
+    "globals": "17.13.0",
+    "oxlint": "1.90.0",
+    "supertest": "7.3.1",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
-    "concurrently": "10.0.6"
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
   },
   "allowScripts": {
     "esbuild@0.28.2": true
