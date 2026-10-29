@@ -11,9 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.2 completed**; 112 implementation tasks remain pending.
-Current task: **D03.3 in progress**. Local workflow verification passed; hosted CI
-acceptance is pending. Resume D03.3 before selecting D04.1.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 completed**; 111 implementation tasks remain pending.
+Next eligible task: **D04.1**. Authentication implementation has not started.
 
 ## Per task record template
 
@@ -1078,10 +1077,10 @@ started. Stop after D03.2 and its publication.
 
 ## D03.3 — CI for installation, checks, fast tests and builds — 29 October 2026
 
-**Implementation status: in progress.** Workflow implementation/local validation
-passed; the individual check requires observing the same commands in hosted CI.
-Do not mark D03.3 complete or start D04.1 until that evidence exists. The plan and
-task board retain D03.3 pending at this initial publication.
+**Implementation status: completed.** Individual check passed: “The same verification
+commands run locally and in CI.” The first publication kept the task in progress
+and both trackers pending until hosted execution was observed. The actual hosted
+receipt and final completion update follow below; no D04.1 work was started.
 
 ### Inspection, identity and scope
 
@@ -1143,11 +1142,12 @@ lockfile, runtime pin, test or data-handling contract is changed.
   parsing/hosted application use; no audit success, new scan or resolution is claimed.
 - **Not run:** browser (no UI change), database/operational suites (unchanged;
   this task specifies fast CI), release journeys and GHFind scans.
-- **Pending:** actual hosted CI execution and read-back, final tracker completion,
+- **Pending at initial publication (resolved below):** actual hosted CI execution
+  and read-back, final tracker completion,
   staged scope/secrets/generated-file review and authorized publication receipts.
   Self-review only; no independent reviewer or public adoption is invented.
 
-### Growth evaluation against the preserved baseline
+### Growth evaluation at initial publication against the preserved baseline
 
 Every original checkpoint is accounted for below, preserving the earlier baseline.
 These statuses concern this run and do not permanently complete a phase.
@@ -1192,3 +1192,57 @@ no history rewrite, PR, release, deployment or branch-protection bypass is impli
 
 **Next eligible ID: D03.3 (resume hosted acceptance).** D04.1 remains dependent on
 verified D03.3 and has not started. Final hosted receipt/completion follows below.
+
+
+### Hosted acceptance receipt and completion update
+
+**Passed — actual GitHub-hosted CI**, not a simulated or inferred run:
+
+- Workflow commit: `e56a2e212aee19b17f5c3d7ca1c7f5453f4779fb`, published directly
+  to verified `main`; `git ls-remote` read-back matched that exact SHA.
+- [CI run 40833070245](https://github.com/Niralempiric/visual-form-builder/actions/runs/40833070245),
+  push event, exact head SHA above: **completed / success**.
+- Job `123311468954`, “Install, lint, types, fast tests and builds”: **success**.
+  Official checkout, pinned Node/npm setup, `npm ci`, `npm run check`, `npm test`,
+  `npm run build`, both action post-steps and job completion all report success;
+  none of these steps was skipped. The same four repository commands passed in
+  the clean local source-copy run. No hosted deployment or product journey is claimed.
+- Push-run lookup used GitHub's API because the connected run-list wrapper filters
+  to PR events. The GitHub connector independently returned the passing job/step
+  metadata. Sanitized local receipt is `/tmp/vfb-d033-ci-e56a2e2.json`.
+
+Only D03.3 is now newly marked complete in PROJECT_DOCUMENTATION.md and TASK_BOARD.md;
+all task descriptions/order and previous completion history are preserved. Final
+completion files are README, TESTING, the two trackers and this record. Workflow,
+application code, dependency graph and lockfile are unchanged by this completion
+update. No repeat local application tests are needed for this documentation-only
+update; its automatic hosted run will be checked after publication.
+
+Changed growth evidence after hosted acceptance:
+
+- **Phase 1, items 2–3 and 6:** exact setup/runtime and clean installation/check/build
+  evidence now has a passing hosted counterpart. Phase remains **Pending** for the
+  full product journey, license, demonstration and release-level checks.
+- **Phase 3 — Completed for this run within scope, items 1–3 and 5–8:** actual
+  local/CI parity, safe workflow boundaries, all required step results, accurate
+  docs, final diff/secret/generated-file review, preserved attribution and verified
+  workflow publication. Item 4 remains **Not applicable** (no UI change). This is
+  self-review, not independent approval or completion of future domain contracts.
+- **Phase 7, item 4:** next eligible task is D04.1; long-term maintenance remains
+  **Pending**. All other checkpoint outcomes above retain their recorded status.
+
+**Publication status:** workflow implementation **published and hosted-verified**.
+The required acceptance evidence now permits the final task-completion docs commit;
+its authorized push and exact remote SHA/CI receipt are reported in the final run
+result. Two coherent commits were needed to observe hosted acceptance before
+marking completion; no amend, force push, fabricated activity or history rewrite.
+No PR is required by the established main-branch workflow.
+
+Implementation blockers: **none**. The existing dependency advisory and credential
+storage recommendation remain separate findings; license/product release evidence
+remain pending. Browser, database and release suites were not run for this workflow
+change; there is no new UI/database behavior or deployment.
+
+**Next eligible ID: D04.1 — implement user records, operator bootstrap, password
+hashing and throttled credential checks. Prerequisite: D03.3 (verified complete).**
+Not started. Stop after this task's final publication verification.

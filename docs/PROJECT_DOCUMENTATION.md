@@ -864,7 +864,7 @@ Modules: M01. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D03.1. **Individual completion check:** A deliberate failing fixture is detected and passes after correction.
 
-- [ ] **D03.3** Add CI for dependency installation, lint, types, fast tests and Next.js/backend builds.
+- [x] **D03.3** Add CI for dependency installation, lint, types, fast tests and Next.js/backend builds.
 
   Prerequisite: D03.2. **Individual completion check:** The same verification commands run locally and in CI.
 

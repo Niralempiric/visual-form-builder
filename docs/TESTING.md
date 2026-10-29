@@ -173,6 +173,8 @@ the single source for verification behavior; CI does not duplicate lint/type log
 
 The source workflow passed actionlint 1.7.12. A clean local source copy ran the
 four commands extracted from that actual workflow successfully without private
-application configuration or changing the lockfile. Hosted acceptance remains
-pending until its first published run is observed; see implementation progress.
-CI is verification evidence, not deployment or a complete form-release gate.
+application configuration or changing the lockfile. Hosted acceptance passed on
+[workflow commit e56a2e2](https://github.com/Niralempiric/visual-form-builder/actions/runs/40833070245):
+all install/check/test/build steps succeeded. See implementation progress for the
+exact commit and execution receipt. CI is verification evidence, not deployment
+or a complete form-release gate.

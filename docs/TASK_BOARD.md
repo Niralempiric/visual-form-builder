@@ -48,7 +48,7 @@ Modules: M01.
 
   Prerequisite: D03.1. **Done when:** A deliberate failing fixture is detected and passes after correction.
 
-- [ ] **D03.3** Add CI for dependency installation, lint, types, fast tests and Next.js/backend builds.
+- [x] **D03.3** Add CI for dependency installation, lint, types, fast tests and Next.js/backend builds.
 
   Prerequisite: D03.2. **Done when:** The same verification commands run locally and in CI.
 
