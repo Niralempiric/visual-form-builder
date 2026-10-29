@@ -12,7 +12,8 @@ Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-buil
 Owner: Niralempiric.
 
 Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.2 completed**; 112 implementation tasks remain pending.
-Next eligible task: **D03.3**. CI workflow implementation has not started.
+Current task: **D03.3 in progress**. Local workflow verification passed; hosted CI
+acceptance is pending. Resume D03.3 before selecting D04.1.
 
 ## Per task record template
 
@@ -1073,3 +1074,121 @@ separate pending scope; checks are not a claim of production readiness.
 **Next eligible ID: D03.3 — add CI for dependency installation, lint, types, fast
 tests and Next.js/backend builds. Prerequisite: D03.2 (verified complete).** Not
 started. Stop after D03.2 and its publication.
+
+
+## D03.3 — CI for installation, checks, fast tests and builds — 29 October 2026
+
+**Implementation status: in progress.** Workflow implementation/local validation
+passed; the individual check requires observing the same commands in hosted CI.
+Do not mark D03.3 complete or start D04.1 until that evidence exists. The plan and
+task board retain D03.3 pending at this initial publication.
+
+### Inspection, identity and scope
+
+- Actual implementation path:
+  `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+- Sanitized authorized fetch/push URL:
+  `https://github.com/Niralempiric/visual-form-builder`; both destinations match.
+  GitHub confirms public ownership by Niralempiric. Started clean on `main`, tracking
+  `origin/main` at `4ac5a3886559213311b2881bfce0a867b3ce87fd`; fetch found no divergence.
+- D03.2's lint/type configs, seven migrated tests, separate database fixtures and
+  failure/correction evidence were inspected. The current fast tests and strict
+  types pass from a clean copy. GitHub confirms D03.2 is published and attributes
+  both author and committer to Niralempiric; no unfinished handoff remained.
+- Effective author/committer remain **Niralempiric <niralempiric@gmail.com>**.
+  Safe API metadata also confirms terminal authentication as Niralempiric with
+  workflow scope. Ownership, authentication and authorship are separate checks.
+  No identity settings, remote URLs, history or co-author attribution changed.
+- Embedded credentials remain in local `.git/config`, `remote.origin.url`, used
+  for fetch/push. Values were not printed or copied. Credential-manager storage is
+  recommended; no rotation/removal was performed.
+- Read applicable instructions, plan, entire growth checklist, task board,
+  implementation history, README and relevant development/testing/architecture
+  guidance. Inspected current scripts, pins/lock, source/tests, branch/history and
+  CI layout. No root/ancestor AGENTS applies; no frontend source is changed. No
+  contribution guide or prior workflow exists; GitHub returned no statuses for
+  D03.2. Current-branch publication is the established workflow.
+
+### Work and local verification
+
+Files at initial publication: `.github/workflows/ci.yml`, `README.md`,
+`docs/TESTING.md`, `docs/LOCAL_DEVELOPMENT.md`, and this file. Tracker completion
+will follow only after hosted acceptance. No application code, dependency/version,
+lockfile, runtime pin, test or data-handling contract is changed.
+
+- Push and pull_request events run one Ubuntu 24.04 job, selecting pinned Node
+  24.21.0 from `.nvmrc` and npm 11.19.0 via the runner's bootstrap install.
+- Official checkout v7.0.1 and setup-node v7.1.0 are pinned to full commit SHAs;
+  primary GitHub release/tag metadata and their exact Node 24 action manifests
+  were verified. Job token is contents-read only, checkout credential persistence
+  and dependency caching are disabled, and no custom secret/application env is used.
+- Job has a 15-minute budget and per-ref cancellation. It runs `npm ci`, `npm run
+  check`, `npm test`, `npm run build` directly. No skip/continue-on-error, privileged
+  PR target event, deployment, write-back or artifact step is introduced.
+- **Passed:** actionlint **1.7.12**, downloaded from the official release and
+  checked against archive SHA-256
+  `8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8`.
+- **Passed locally:** all four commands extracted from the actual workflow ran in
+  an isolated source copy excluding Git metadata, dependencies, generated output
+  and private ignored files. Pinned Node/npm, job CI/telemetry settings and no
+  application configuration were used. Install added 299 packages (307 audited),
+  all lint/workspace/test/config types passed, all **7 fast tests** passed, and
+  Express/Next.js production builds passed (4 workers). Lockfile remained unchanged.
+  No global npm install was performed on the user's machine; its existing pinned
+  tool was selected. The bootstrap install applies only to disposable CI runners.
+- Local verifier/logs are outside Git: `/tmp/vfb-d033-local.py` and
+  `/tmp/vfb-d033-local/`. The temporary clean source copy was removed.
+- Installation still reports the previously recorded single high dependency
+  advisory. The unchanged body-parser finding remains pending triage before body
+  parsing/hosted application use; no audit success, new scan or resolution is claimed.
+- **Not run:** browser (no UI change), database/operational suites (unchanged;
+  this task specifies fast CI), release journeys and GHFind scans.
+- **Pending:** actual hosted CI execution and read-back, final tracker completion,
+  staged scope/secrets/generated-file review and authorized publication receipts.
+  Self-review only; no independent reviewer or public adoption is invented.
+
+### Growth evaluation against the preserved baseline
+
+Every original checkpoint is accounted for below, preserving the earlier baseline.
+These statuses concern this run and do not permanently complete a phase.
+
+- **Phase 0 — Completed for this run, items 1–4:** exact path/target, identity,
+  ownership and authentication, private-data exclusion and original first-user
+  brief verified. Item 5 **Pending**: no requested fresh GHFind measurement.
+- **Phase 1 — Pending overall:** items 1–3 gain functional workflow code and exact
+  documented commands/pins; item 6 gains clean-source installation/check/build
+  evidence for this foundation. Full product/release usability (1, 6), license/
+  asset policy (4) and synthetic form/answer demonstration (5) remain **Pending**.
+- **Phase 2 — Completed for this run, items 1–2, 4–5:** one eligible task, inspected
+  prerequisite, explicit local/hosted command-parity check, coherent scope and
+  existing advisory recorded separately. Item 3 **Not applicable**: no coordination
+  issue was needed or created.
+- **Phase 3 — Pending overall:** items 1–3 and 5–7 have unchanged architecture/data
+  boundaries, local command/test evidence, docs and honest self-review/attribution.
+  Item 4 **Not applicable** (unchanged UI). Hosted acceptance and publication (8)
+  remain **Pending**. Domain version/tenant operations (part of 2) are not applicable
+  to this workflow, not newly completed.
+- **Phase 4 — Pending, items 1–5:** release gates, real form journeys, retry/history,
+  accessibility/lifetime/deployment and release/demo evidence await later tasks.
+  Item 6 gains precise CI scope, commands and limits within this run.
+- **Phase 5 — Not applicable, all five items:** no pinning, outreach, tutorial,
+  observed user feedback/adoption or contributor activity was requested or invented.
+- **Phase 6 — Pending overall:** items 1–2 gain compatible action pins and clean
+  verification/setup evidence; the existing dependency advisory remains unresolved.
+  Items 3–6 **Not applicable**: no fix release, actual upstream blocker, upstream
+  contribution or stable need for package extraction.
+- **Phase 7 — Pending overall:** item 1 gains reproducible local evidence without
+  release/user outcomes; items 2–3 have no fresh comparable score data or attribution
+  inference. Item 4 resumes D03.3 until hosted acceptance; maintenance across years
+  remains future work.
+
+### Publication and next task at initial preparation
+
+**Publication status: ready for the authorized workflow commit/push** to verified
+`main`. This task needs two publication stages: publish workflow/current in-progress
+record to obtain actual hosted acceptance, then record the observed result and
+mark only D03.3 complete. This is necessary verification, not artificial activity;
+no history rewrite, PR, release, deployment or branch-protection bypass is implied.
+
+**Next eligible ID: D03.3 (resume hosted acceptance).** D04.1 remains dependent on
+verified D03.3 and has not started. Final hosted receipt/completion follows below.

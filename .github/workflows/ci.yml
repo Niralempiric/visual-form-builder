@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Install, lint, types, fast tests and builds
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Select pinned Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+      - name: Select pinned npm
+        run: npm install --global npm@11.19.0
+      - name: Install locked dependencies
+        id: verify-install
+        run: npm ci
+      - name: Runtime, lint and type checks
+        id: verify-check
+        run: npm run check
+      - name: Fast logic and API tests
+        id: verify-test
+        run: npm test
+      - name: Next.js and Express builds
+        id: verify-build
+        run: npm run build

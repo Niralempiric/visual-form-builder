@@ -1,6 +1,6 @@
 # Repository checks and test fixtures
 
-D03.2 | 29 October 2026
+D03.2–D03.3 | 29 October 2026
 
 Use Node **24.21.0** and npm **11.19.0**, installed from the repository pins. Run
 `npm ci` before starting a preview; replacing node_modules under a running Next.js
@@ -73,8 +73,8 @@ See [API contracts](API_CONTRACTS.md) for public shapes and current limitations.
 
 [Vitest configuration](https://vitest.dev/config/) and
 [Supertest usage](https://github.com/forwardemail/supertest) are the primary tool
-references. This task does not add browser automation dependencies or CI workflows;
-CI is D03.3, and full browser suites require later product features.
+references. D03.2 added no browser automation dependencies. The D03.3 CI workflow is described
+below; full browser suites require later product features.
 
 ## Disposable Mongo fixtures
 
@@ -133,3 +133,46 @@ the committed suites and commands above reproduce the behavior. No external
 review, release workflow or production deployment is claimed. The unchanged
 body-parser advisory remains recorded in implementation progress; these GET-only
 API checks introduce no body parser and do not resolve that advisory.
+
+
+## GitHub Actions verification (D03.3)
+
+[The CI workflow](../.github/workflows/ci.yml) runs on pushes and pull requests,
+with one Ubuntu 24.04 job. It selects Node from `.nvmrc`, installs the pinned npm
+11.19.0 on the disposable runner, then runs these exact repository commands:
+
+```bash
+npm ci
+npm run check
+npm test
+npm run build
+```
+
+Use the same commands locally after selecting Node 24.21.0/npm 11.19.0. `check`
+already includes runtime, ESLint/Oxlint and workspace/test/config type checks;
+`test` is the fast Vitest/Supertest suite; `build` compiles shared packages,
+Express and Next.js. No application services or database are started. The separate
+Docker/operational suites remain explicit local commands, not a passing CI claim.
+
+`CI=true` and `NEXT_TELEMETRY_DISABLED=1` are non-secret job settings. No private env
+file, application secret or deployment credential is needed. The job has a 15-minute
+budget and cancels superseded runs for the same ref. Steps fail normally; no
+continue-on-error, test skip, deployment, artifact upload or write-back step exists.
+
+Official actions are pinned to reviewed immutable commits: checkout v7.0.1 at
+`3d3c42e5aac5ba805825da76410c181273ba90b1`, setup-node v7.1.0 at
+`949feb2413d6458794dcd2491c4babbbce0c15c1`. Their pinned action manifests use Node 24.
+The job token has only `contents: read`; checkout does not persist credentials.
+No dependency cache is used, so each run performs an actual locked install.
+These choices follow [GitHub's workflow security guidance](https://docs.github.com/en/actions/reference/security/secure-use).
+
+When updating runtime pins, keep `.nvmrc`, `.node-version`, the manifest and the
+workflow's npm bootstrap version aligned. Review official action releases and
+resolve their tags to exact SHAs before updating pins. Repository scripts remain
+the single source for verification behavior; CI does not duplicate lint/type logic.
+
+The source workflow passed actionlint 1.7.12. A clean local source copy ran the
+four commands extracted from that actual workflow successfully without private
+application configuration or changing the lockfile. Hosted acceptance remains
+pending until its first published run is observed; see implementation progress.
+CI is verification evidence, not deployment or a complete form-release gate.
