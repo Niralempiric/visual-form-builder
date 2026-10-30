@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 completed**; 111 implementation tasks remain pending.
-Next eligible task: **D04.1**. Authentication implementation has not started.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1 completed**; 110 implementation tasks remain pending.
+Next eligible task: **D04.2**. Operator bootstrap/password checks are implemented; browser sessions and login UI remain pending.
 
 ## Per task record template
 
@@ -1246,3 +1246,175 @@ change; there is no new UI/database behavior or deployment.
 **Next eligible ID: D04.1 — implement user records, operator bootstrap, password
 hashing and throttled credential checks. Prerequisite: D03.3 (verified complete).**
 Not started. Stop after this task's final publication verification.
+
+
+## D04.1 — User records, operator bootstrap, password hashing and throttled credential checks — 30 October 2026
+
+**Implementation status: Completed.** Module M02. Exactly this individual task
+was selected; no unfinished implementation/publication handoff remained. D04.2
+and D04.3 are pending. Only D04.1 is newly checked in the plan and task board.
+
+### Repository, prerequisite and attribution
+
+- Actual implementation path: `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+- Verified public authorized fetch/push target: https://github.com/Niralempiric/visual-form-builder.
+  Inspected both destinations programmatically without exposing credentials.
+- Started on clean `main`, tracking `origin/main`, at
+  `d3fb526cba033e152ef9e2661f6a64b9ae4e034f`; safe fetch matched remote main.
+  Inspected implementation, prior commits, runtime/dependency pins and actual CI.
+- D03.3 prerequisite independently verified: connector read-back of job
+  `123314435716` on [run 40834004254](https://github.com/Niralempiric/visual-form-builder/actions/runs/40834004254)
+  reports all install/check/test/build/setup/post steps successful. Existing
+  workflow still runs the exact local verification commands on pushes/PRs.
+- GitHub API confirms public owner/default branch Niralempiric/main, terminal
+  authenticated account Niralempiric with push access, main unprotected. Effective
+  author and committer are `Niralempiric <niralempiric@gmail.com>`; GitHub attributes
+  the starting commit's author and committer to Niralempiric. Ownership, terminal
+  authentication and commit attribution were checked separately. Existing identity,
+  remotes and historical authorship were preserved. Self-review only.
+- Embedded credentials remain at `.git/config`, `remote.origin.url`. Secure
+  credential-manager storage is recommended; no credential value is recorded,
+  rotated or removed. No Webhook Inbox files, unrelated work or real accounts/data
+  were edited. Actual private env files were neither read nor changed.
+
+### Implementation and files
+
+- `apps/api/src/modules/auth/{store,passwords,throttle,service,router}.ts` implements
+  normalized unique-email user records, hidden password/recovery fields, active/
+  disabled status, Argon2id hashing and generic throttled credential checks.
+- Explicit additive collection/index initialization runs through the server's
+  internal connection before HTTP binds (`database.ts`, `index.ts`). No index
+  synchronization/drop or automatic account creation. User plus permanent unique
+  bootstrap marker commit in a snapshot/majority transaction; repeat/race attempts
+  cannot insert another author, even after process restart or user deletion.
+- Optional server-only `AUTH_BOOTSTRAP_TOKEN` is validated in `configuration.ts`;
+  unset/blank disables bootstrap. Operator header checks and socket/global rate
+  limits precede route-local JSON parsing. Browser Origins are rejected for this
+  operator-only route. Parsing is bounded to 8 KiB with decompression disabled.
+- `packages/contracts/src/auth.ts` and its export define strict bootstrap/
+  credential input and allowlisted `{ id, email, status }` output. Passwords retain
+  spaces/Unicode, require 15 code points at bootstrap and cap at 128 UTF-16 units.
+  Unknown/malformed input, operators and unsafe errors never echo secret material.
+- Pinned maintained `argon2@0.45.1` (MIT) uses random salts, Argon2id 19 MiB/two
+  iterations/one lane, dummy missing-account verification and at most four concurrent
+  hash jobs. No unbounded work queue. Native install permission is limited to this
+  exact library in addition to the existing esbuild pin.
+- Required parser triage: root override/lock now resolves only `body-parser` from
+  2.3.0 to patched 2.4.0 before enabling parsing. The existing high advisory
+  GHSA-27r3-jxmh-p828 was verified against the primary advisory and resolved; no
+  broad audit fix or unrelated existing package upgrades were applied. Manifests
+  and root lockfile record the auth library's six new dependency nodes as well.
+- `tests/fast/auth.test.ts`, `tests/integration/auth.test.ts` and the new loopback
+  helper cover actual hashes, gates, safe HTTP errors, rate/worker bounds and real
+  Mongo persistence/failures. Existing tests were preserved.
+- `.env.example` has only an empty optional token placeholder. README, API_CONTRACTS,
+  DATABASE, LOCAL_DEVELOPMENT, TESTING and new AUTHENTICATION document exact private
+  operator setup, shipped behavior, errors, tests and limitations. No hosted auth
+  vendor, session endpoint, cookie, UI, recovery feature or deployment was added.
+
+### Individual acceptance and verification
+
+**Passed:** “Bootstrap cannot be repeated unrestrictedly and hashes never appear
+in responses.” Two API instances on independent Mongo clients raced different
+first-author requests: exactly one 201, one safe 409, one durable user and one
+marker. Independent reads confirm Argon2id storage, unique email, excluded normal
+hash projections and sanitized model JSON. Fresh service/client bootstrap attempts
+and deletion of user records do not bypass the permanent marker. A pre-existing
+user prevents initialization. A fixture-only database validator forces failure
+**after** marker insertion: HTTP 503 is safe and both writes roll back; correcting
+that disposable database permits bootstrap. Closed-pool credentials fail safely.
+
+Final checks ran sequentially with Node 24.21.0/npm 11.19.0, no private application
+configuration, and disposable isolated replicas only. All exited 0:
+
+| Command | Observed result |
+|---|---|
+| `npm ci` | Fresh locked install: 305 packages added, 313 audited; no pending script approval warning |
+| `npm run check` | Runtime, ESLint/Oxlint, all workspace and strict test/config types passed |
+| `npm test` | 13/13 fast tests, including six auth checks, passed |
+| `npm run build` | Shared packages, Express and Next.js production builds passed |
+| `npm run test:db -- --reporter=verbose` | 5/5 real Docker/Mongo tests passed; exact fixture resources cleaned and absence verified |
+| `npm run test:readiness` | 3/3 operational/config/startup/outage/shutdown tests passed with the new startup wiring |
+| `npm run test:transactions` | 5 reported tests including four commit/rollback subtests passed |
+| `npm audit --audit-level=low` | Zero reported vulnerabilities at this run's audit snapshot |
+
+Earlier verification failures were corrected, not suppressed: a source-edit
+mismatch, Mongoose/Argon2 strict type errors, and an overly specific test assumption
+about encoded Argon2 parameter ordering. Tests now verify the same exact costs in
+either valid serialization order. Initial install retained the old parser lock
+entry; targeted `npm update body-parser` applied the override, followed by the
+fresh install and all passing checks above. No test/check was weakened or skipped.
+Temporary verifier/logs remain outside Git in `/tmp/vfb-d041-verification/`.
+Final diff and staged `git diff --check` passed; all 26 staged files belong to
+D04.1, with no generated clutter, real respondent data or credential values.
+One-off checks verified all 120 tracker descriptions/statuses match (only D04.1
+newly complete; 10 complete/110 pending), local Markdown links and the operator
+client syntax. Existing dependency versions changed only for the parser patch.
+
+**Not run:** browser/keyboard/narrow-screen checks (no UI changed), complete form
+journeys, release/deployment checks, external review and GHFind scans (future or
+unrequested scope). Local integration evidence is not attributed to hosted CI;
+the existing hosted workflow runs only install/check/fast tests/build.
+
+### Growth evaluation against the preserved baseline
+
+Read the entire growth checklist. Every checkpoint is accounted for by item order
+below; unchanged baseline/history is preserved. Phase statuses apply to this run,
+not permanent completion or a claim of adoption/score gain.
+
+- **Phase 0 — Completed for this run, 1–4:** exact path/target, identity/attribution,
+  original first-user scope and private-data hygiene verified. **Pending, 5:** no
+  requested fresh GHFind baseline. Credential storage recommendation above remains.
+- **Phase 1 — Pending overall:** 1–3 gain functioning account bootstrap, documented
+  setup/contracts and compatible pins; 6 gains fresh install/check/build evidence
+  for this foundation. Full product/release usability (1, 6), project license (4)
+  and synthetic form/answer demonstration (5) remain **Pending**. Library license
+  attribution is documented; synthetic accounts are not a form-journey demo.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible task, independently
+  checked prerequisite, individual acceptance, coherent implementation and separate
+  limitations. **Not applicable, 3:** no coordination issue required or created.
+- **Phase 3 — Completed for this run, 1–3, 5–7:** shared Express/Mongo/DTO contracts,
+  race/rollback/privacy tests, correct docs, self-review and truthful attribution.
+  Version/response/tenant operations within 2 remain future scope. **Not applicable,
+  4:** no UI change. **Pending at commit preparation, 8:** authorized task publication
+  and exact remote/hosted read-back follow this record; final receipt is in the run report.
+- **Phase 4 — Pending, 1–5:** release gates, full form journeys, historical retry/
+  closure, accessibility/data-lifetime/deployment, release/demo tasks await their
+  prerequisites. **Completed for this run within scope, 6:** operator boundaries,
+  throttle limits and reproducible-report guidance documented, no release claim.
+- **Phase 5 — Not applicable, all 1–5:** no profile pin, public tutorial/outreach,
+  real feedback/adoption or contributor event requested or invented.
+- **Phase 6 — Completed for this run within scope, 1–2:** actual parser advisory
+  triaged/patched and fresh compatibility, tests/setup/audit verified. **Not
+  applicable, 3–6:** no authorized release, unresolved upstream blocker needing an
+  issue/contribution, or stable reason to extract a package. Future maintenance
+  and dependency audit freshness remain **Pending**.
+- **Phase 7 — Pending overall:** 1 gains reproducible engineering evidence but no
+  release/user outcomes; 2 awaits fresh comparable scores. No stale-scan/rule/score
+  attribution inference is made (3 **Not applicable** here); actual GitHub attribution
+  is verified separately. 4 selects D04.2 after verified D04.1; maintenance across
+  years remains **Pending**. No blocked task-level growth checkpoint remains.
+
+### Limitations, publication and next task
+
+Credential admission limits are **single-process**: 120 global/30 per socket/five
+per normalized email per 15 minutes, successful attempts included, counters reset
+on restart. Buckets retain bounded ephemeral HMAC keys, not raw addresses/emails.
+Forwarding headers are ignored; shared/proxy-wide limits, TLS, database security,
+proxy/NAT/IPv6 policy and full auth hardening are required before public hosting.
+Sessions/login UI/CSRF are intentionally absent until D04.2; recovery until D04.3.
+Do not treat bootstrap or a successful internal check as an authenticated session.
+No real operator credentials or account were generated by this run. License and
+release-level evidence remain pending, not blockers for this individual task.
+
+**Publication status at commit preparation: ready for authorized commit/push.**
+Branch: `main`, using the established direct-main workflow verified unprotected.
+The coherent commit containing this record is the D04.1 task commit; resolve its
+hash with `git log -1 --format=%H -- apps/api/src/modules/auth/service.ts`.
+Exact commit, push result, remote containment, GitHub attribution and new hosted
+CI receipt will be reported after publication. No empty commit, PR, history rewrite,
+visibility change or automatic deployment is needed. Implementation blockers: none.
+
+**Next eligible ID: D04.2 — opaque sessions, cookie flags, login/logout UI,
+origin validation and CSRF handling. Prerequisite D04.1 verified complete.**
+Not started. Stop after D04.1 publication verification.

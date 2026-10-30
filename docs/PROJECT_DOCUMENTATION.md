@@ -872,7 +872,7 @@ Modules: M01. Day-group estimate: 5 to 6 hours.
 
 Modules: M02. Day-group estimate: 5 to 6 hours.
 
-- [ ] **D04.1** Implement user records, operator bootstrap, password hashing and throttled credential checks.
+- [x] **D04.1** Implement user records, operator bootstrap, password hashing and throttled credential checks.
 
   Prerequisite: D03.3. **Individual completion check:** Bootstrap cannot be repeated unrestrictedly and hashes never appear in responses.
 

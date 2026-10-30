@@ -4,8 +4,9 @@ D03.1 | 27 October 2026
 
 `packages/contracts` exports runtime Zod schemas and inferred types shared by the
 frontend and Express. `apps/api/src/http.ts` supplies validation, cursor encoding,
-correlation and safe error handling. No account, form or response endpoints exist
-yet. The success/list examples below are synthetic contract examples exercised
+correlation and safe error handling. D04.1 adds the operator-only account bootstrap
+endpoint described in [Authentication](AUTHENTICATION.md); form and response endpoints
+remain pending. The success/list examples below are synthetic contract examples exercised
 through a test-only router, not shipped data endpoints.
 
 ## Envelopes and errors
@@ -130,9 +131,9 @@ and regeneration, real HTTP success/failure and health compatibility. Synthetic
 routes are installed only by the test; no debug route ships in the default app.
 
 D03.2 configures lint, strict test types and reusable database fixtures; see
-[Repository testing](TESTING.md). D03.3 adds CI. Body parsing/size enforcement,
-auth/CSRF, tenant queries, immutable
-publishing and submissions remain later tasks. No JSON body parser was introduced.
-The previously recorded Express/body-parser advisory remains unresolved; see the
-D02.3 progress entry for its precise scope and triage requirement before parsing
-requests or hosted use. This contract task does not claim a complete form release.
+[Repository testing](TESTING.md). D03.3 adds CI. D04.1 introduces route-local, token-gated JSON parsing for bootstrap only (8 KiB,
+no decompression), strict credential inputs and an allowlisted user DTO. Other
+routes have no new parser. The body-parser dependency is overridden and locked to
+patched 2.4.0 before enabling parsing. Browser sessions/CSRF, tenant queries,
+immutable publishing and submissions remain later tasks. No complete form release
+is claimed.

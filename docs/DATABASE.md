@@ -131,3 +131,14 @@ D03.2 adds a separate Vitest command, `npm run test:db`, using the reusable
 and cleanup verification after ordinary failures. The detailed D02.2 rollback
 suite above remains available unchanged. See [Repository testing](TESTING.md) for
 fixture behavior, synthetic records, failure/correction checks and known limits.
+
+
+## Author-account persistence (D04.1)
+
+Startup explicitly creates `users`, its unique normalized-email index, and the
+`authBootstrap` marker collection before binding HTTP. Automatic collection/index
+creation remains disabled; existing indexes/data are never synchronized or dropped.
+Bootstrap writes its permanent marker and first user in one snapshot/majority
+transaction. Disposable D04.1 integration tests verify concurrency, persistence
+and rollback after the marker insert; readiness alone is not used as evidence.
+See [authentication](AUTHENTICATION.md) for private-field and operator contracts.

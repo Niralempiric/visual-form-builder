@@ -56,7 +56,7 @@ Modules: M01.
 
 Modules: M02.
 
-- [ ] **D04.1** Implement user records, operator bootstrap, password hashing and throttled credential checks.
+- [x] **D04.1** Implement user records, operator bootstrap, password hashing and throttled credential checks.
 
   Prerequisite: D03.3. **Done when:** Bootstrap cannot be repeated unrestrictedly and hashes never appear in responses.
 

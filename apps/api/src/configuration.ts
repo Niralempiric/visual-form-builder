@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 const configurationSchema = z.object({
+  AUTH_BOOTSTRAP_TOKEN: z.preprocess(value => value === '' ? undefined : value,
+    z.string().min(32).max(256).optional()),
   API_PORT: z.string().regex(/^\d+$/).default('4000').transform(Number)
     .pipe(z.number().int().min(1).max(65535)),
   MONGODB_URI: z.string().max(4096).regex(/^mongodb(?:\+srv)?:\/\/[^\s]+$/),
@@ -16,6 +18,7 @@ export class ConfigurationError extends Error {
 
 export function readConfiguration(source = process.env) {
   const result = configurationSchema.safeParse({
+    AUTH_BOOTSTRAP_TOKEN: source.AUTH_BOOTSTRAP_TOKEN,
     API_PORT: source.API_PORT,
     MONGODB_URI: source.MONGODB_URI,
     MONGODB_REPLICA_SET: source.MONGODB_REPLICA_SET,

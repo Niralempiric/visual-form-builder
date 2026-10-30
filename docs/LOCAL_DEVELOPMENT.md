@@ -3,8 +3,8 @@
 D02.3 | 26 October 2026
 
 These instructions run the current Next.js shell, separate Express API and local
-Mongo replica set. Form editing, accounts, publishing and responses are future
-work. Use Bash on Linux, Docker Engine with Docker Compose v2 or later, curl and
+Mongo replica set, with optional first-account bootstrap. Browser sessions, form
+editing, publishing and responses are future work. Use Bash on Linux, Docker Engine with Docker Compose v2 or later, curl and
 the pinned Node/npm pair. Start Docker first. Commands below run from the checkout
 root; use the [README](../README.md#repository-and-setup) to obtain the source.
 
@@ -39,13 +39,15 @@ cp -n .env.example .env
 Review/edit `.env` locally before loading it. Its assignments are shell-compatible;
 keep the Mongo URI quoted because it contains `&`. Only source trusted local
 configuration. `.env` is ignored by Git; `.env.example` is the shareable template.
-No account password or signing secret is needed for this foundation.
+Bootstrap is disabled by default; normal startup needs no account password or
+bootstrap token. Optional first-account setup is in [Authentication](AUTHENTICATION.md).
 
 | Variable | Meaning / template default |
 |---|---|
 | COMPOSE_PROJECT_NAME | Local containers/volumes namespace: `visual-form-builder-local` |
 | PORT | Next.js loopback port: 3000 |
 | API_PORT | Express loopback port and Next rewrite destination: 4000 |
+| AUTH_BOOTSTRAP_TOKEN | Optional private operator token, 32–256 characters; blank/unset disables bootstrap |
 | MONGO_PORT | Host loopback Mongo port: 27019 |
 | MONGODB_REPLICA_SET | Keep `vfb-rs` for the supplied Compose definition |
 | MONGODB_URI | Server-only local URI from the template; its port must match MONGO_PORT |

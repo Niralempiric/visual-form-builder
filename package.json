@@ -52,6 +52,10 @@
     "vitest": "5.0.5"
   },
   "allowScripts": {
-    "esbuild@0.28.2": true
+    "esbuild@0.28.2": true,
+    "argon2@0.45.1": true
+  },
+  "overrides": {
+    "body-parser": "2.4.0"
   }
 }

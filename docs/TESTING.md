@@ -45,7 +45,8 @@ commands and are not accidentally collected by Vitest.
 Exact new development pins: ESLint 10.13.0, @eslint/js 10.0.1, globals 17.13.0,
 Oxlint 1.90.0, Vitest 5.0.5, Vite 8.3.5, Supertest 7.3.1 and its types 7.2.1.
 The existing runtime/compiler pins and existing dependency versions are preserved.
-No forced peer resolution or install-script permission expansion is used.
+No forced peer resolution is used. D04.1 additionally approves only the pinned
+`argon2@0.45.1` native install check; other new scripts are not authorized.
 
 The current [typescript-eslint support range](https://typescript-eslint.io/users/dependency-versions/)
 excludes TypeScript 7, so this setup keeps ESLint for JavaScript and uses
@@ -90,7 +91,8 @@ name and free loopback port, using the API's installed Mongoose driver. It accep
 no caller-supplied URI/project, ignores inherited Compose settings, and passes an
 empty Compose env file. Development `.env`, MONGODB_URI, replica name and port
 settings cannot redirect it to the normal database. Tests only write explicitly
-synthetic infrastructure records, not product forms or respondent data.
+synthetic infrastructure records and fabricated account credentials, never real
+accounts, product forms or respondent data.
 
 `fixture.connect()` creates independent clients with buffering and automatic
 indexes/collections disabled and bounded connection/socket waits. Tests create
@@ -130,9 +132,9 @@ respective gates to fail, and were removed before the final passing checks.
 
 Local verifier/log evidence is outside Git under `/tmp/vfb-d032-acceptance*`;
 the committed suites and commands above reproduce the behavior. No external
-review, release workflow or production deployment is claimed. The unchanged
-body-parser advisory remains recorded in implementation progress; these GET-only
-API checks introduce no body parser and do not resolve that advisory.
+review, release workflow or production deployment is claimed. These original GET-only
+checks introduced no parser. D04.1 now resolves the recorded advisory with a
+2.4.0 override before enabling route-local bootstrap JSON parsing.
 
 
 ## GitHub Actions verification (D03.3)
@@ -178,3 +180,17 @@ application configuration or changing the lockfile. Hosted acceptance passed on
 all install/check/test/build steps succeeded. See implementation progress for the
 exact commit and execution receipt. CI is verification evidence, not deployment
 or a complete form-release gate.
+
+
+## D04.1 authentication checks
+
+`tests/fast/auth.test.ts` adds real Argon2id salts/cost/verification, strict input
+and safe configuration errors, generic credential failures, admission/concurrency
+ceilings, expiry, token gates and bounded uncompressed JSON tests. It verifies
+login/signup/recovery remain absent instead of treating credential success as a
+session. `tests/integration/auth.test.ts` uses separate disposable replicas and
+independent clients to check concurrent first-account creation, persistent
+bootstrap lockout, unique email, private hash projections/DTOs and intentional
+transaction rollback. Closed-pool failure returns safe errors. All accounts and
+passwords in these suites are explicitly synthetic. No normal development account
+is created. See [authentication](AUTHENTICATION.md) for scope and operator setup.

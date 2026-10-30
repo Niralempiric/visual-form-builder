@@ -28,6 +28,8 @@ export async function connectDatabase(configuration: Configuration) {
 
   let closing = false;
   const database = {
+    // Server-internal connection, never an HTTP DTO. Modules own their models.
+    connection,
     async isReady(): Promise<boolean> {
       if (closing || connection.readyState !== 1 || !connection.db) return false;
       try {

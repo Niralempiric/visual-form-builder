@@ -15,7 +15,11 @@ fresh-shell setup, stop/reset and safe local configuration. D03.1 adds shared AP
 envelopes, bounded ID/page validation, correlation IDs and safe JSON errors.
 D03.2 configures lint, strict test types, Vitest/Supertest and disposable database
 fixtures. D03.3 runs installation, checks, fast tests and builds in GitHub Actions;
-the first hosted run passed. Form editing, accounts, publishing and responses are not implemented yet.
+the first hosted run passed. D04.1 adds operator-controlled first-account creation,
+Argon2id password storage and an internal throttled credential checker.
+[Authentication setup](docs/AUTHENTICATION.md) describes the disabled-by-default
+bootstrap. Browser sessions/login UI, form editing, publishing and responses
+remain pending.
 
 ## Repository and setup
 
@@ -92,7 +96,7 @@ and start because Next.js compiles rewrites into its output.
 | Location | Responsibility |
 |---|---|
 | `apps/web` | Next.js App Router preview page and API connection control |
-| `apps/api` | Express liveness/readiness, validated configuration and Mongo connection lifecycle |
+| `apps/api` | Express health, configuration, Mongo lifecycle and author-account foundation |
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
 | `packages/form-schema` | Shared form definitions and validation scaffold |
 | `packages/form-renderer` | Shared preview/public React renderer scaffold |
@@ -154,6 +158,7 @@ dependency was introduced.
 | React / React DOM | 19.3.1 / 19.3.1 |
 | Express / Express types | 5.3.0 / 5.0.6 |
 | Mongoose | 9.11.3 |
+| Argon2 / body-parser override | 0.45.1 / 2.4.0 |
 | Local MongoDB | 8.0.32, image digest pinned in infra/compose.yaml |
 | concurrently | 10.0.6 |
 | Zod | 4.6.7 |
@@ -175,7 +180,7 @@ tasks that introduce their behaviour and configuration.
 
 Private workspace packages are linked locally using `*`; these links are not
 unbounded external dependencies. External direct packages use exact versions. The npm install-script approval is
-limited to the locked `esbuild@0.28.2` used by tsx.
+limited to locked `esbuild@0.28.2` and `argon2@0.45.1` (native password hashing).
 Keep real environment files, credentials and respondent data out of Git; generated
 dependencies, build output and local environment files are ignored.
 
@@ -188,6 +193,7 @@ dependencies, build output and local environment files are ignored.
 - [Implementation evidence](docs/IMPLEMENTATION_PROGRESS.md)
 - [Local development](docs/LOCAL_DEVELOPMENT.md)
 - [Shared API contracts](docs/API_CONTRACTS.md)
+- [Operator bootstrap and authentication foundation](docs/AUTHENTICATION.md)
 - [Repository checks and fixtures](docs/TESTING.md)
 - [Reusable one-task prompt](docs/DAILY_TASK_PROMPT.md)
 
@@ -195,5 +201,5 @@ The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D03.3: **D04.1**, user records, operator-controlled
-bootstrap, password hashing and throttled credential checks. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D04.1: **D04.2**, opaque sessions, cookie flags, login/logout
+UI, origin validation and CSRF handling. No application has been deployed and no usable form-builder release is claimed.
