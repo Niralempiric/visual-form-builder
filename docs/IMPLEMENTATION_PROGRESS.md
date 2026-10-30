@@ -1418,3 +1418,30 @@ visibility change or automatic deployment is needed. Implementation blockers: no
 **Next eligible ID: D04.2 — opaque sessions, cookie flags, login/logout UI,
 origin validation and CSRF handling. Prerequisite D04.1 verified complete.**
 Not started. Stop after D04.1 publication verification.
+
+
+### D04.1 publication receipt — 30 October 2026
+
+**Publication status: implementation published and hosted-verified.**
+Implementation commit `829a46998c005bff881f2e9a775f6a72db406d64` was pushed to
+verified `https://github.com/Niralempiric/visual-form-builder`, `main`;
+`git ls-remote origin refs/heads/main` matched that SHA. GitHub read-back attributes
+both its author and committer to Niralempiric. The working tree was clean.
+
+[CI run 41003797483](https://github.com/Niralempiric/visual-form-builder/actions/runs/41003797483),
+push event at that exact commit, completed **successfully**. Job `123893987166`
+and every setup/install/check/fast-test/build/post step succeeded; no step was
+skipped. GitHub REST supplied the push-run receipt because the connected run-list
+wrapper filters to PR events; the connector independently confirmed job steps.
+Database/operational tests passed locally as recorded above and are not CI jobs.
+
+Phase 3 item 8 is now **Completed for this run**: exact authorized publication,
+remote containment, attribution and applicable hosted checks are verified. All
+other phase outcomes retain the recorded statuses. The prior preparation-time
+publication pending state is resolved. Source acceptance and trackers are unchanged.
+This small documentation receipt follows the observed push/CI outcome in a separate
+D04.1 commit, preserving published history; its final remote verification is reported
+in the run result. No application change or repeated local test run is needed for
+this receipt. No PR, release, deployment or independent review is claimed.
+
+Next eligible task remains **D04.2**. It has not started.
