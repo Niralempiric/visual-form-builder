@@ -51,6 +51,12 @@ export async function createUserStore(connection: Connection) {
         throw new ApiError('DEPENDENCY_UNAVAILABLE');
       }
     },
+    async active(id: string) {
+      try {
+        const user = await users.findOne({ _id: id, status: 'active' }).lean().maxTimeMS(1000);
+        return user ? userDtoSchema.parse({ id: String(user._id), email: user.normalizedEmail, status: user.status }) : null;
+      } catch { throw new ApiError('DEPENDENCY_UNAVAILABLE'); }
+    },
     async credential(email: string) {
       try {
         const user = await users.findOne({ normalizedEmail: email }).select('+passwordHash').lean().maxTimeMS(1000);

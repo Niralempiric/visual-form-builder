@@ -3,8 +3,8 @@
 D02.3 | 26 October 2026
 
 These instructions run the current Next.js shell, separate Express API and local
-Mongo replica set, with optional first-account bootstrap. Browser sessions, form
-editing, publishing and responses are future work. Use Bash on Linux, Docker Engine with Docker Compose v2 or later, curl and
+Mongo replica set, optional first-account bootstrap and browser sign-in/sign-out.
+Recovery, form editing, publishing and responses are future work. Use Bash on Linux, Docker Engine with Docker Compose v2 or later, curl and
 the pinned Node/npm pair. Start Docker first. Commands below run from the checkout
 root; use the [README](../README.md#repository-and-setup) to obtain the source.
 
@@ -47,13 +47,17 @@ bootstrap token. Optional first-account setup is in [Authentication](AUTHENTICAT
 | COMPOSE_PROJECT_NAME | Local containers/volumes namespace: `visual-form-builder-local` |
 | PORT | Next.js loopback port: 3000 |
 | API_PORT | Express loopback port and Next rewrite destination: 4000 |
+| APP_ORIGIN | Exact browser origin: `http://127.0.0.1:3000`, no trailing slash; server-only |
 | AUTH_BOOTSTRAP_TOKEN | Optional private operator token, 32–256 characters; blank/unset disables bootstrap |
 | MONGO_PORT | Host loopback Mongo port: 27019 |
 | MONGODB_REPLICA_SET | Keep `vfb-rs` for the supplied Compose definition |
 | MONGODB_URI | Server-only local URI from the template; its port must match MONGO_PORT |
 
 For a second checkout/instance, choose a distinct COMPOSE_PROJECT_NAME and unused
-ports in its `.env`. If MONGO_PORT changes, change the URI's port too. Do not stop
+ports in its `.env`. Set APP_ORIGIN to the exact browser scheme/host/PORT, then
+restart Express; `localhost` and `127.0.0.1` are different origins. For simultaneous
+instances, use separate browser profiles or hostnames: cookies are host-scoped,
+not port-scoped. If MONGO_PORT changes, change the URI's port too. Do not stop
 unrelated services to free a port. API_PORT must be 1–65535. Mongo advertises its
 container hostname internally; the host URI needs `directConnection=true`.
 
@@ -88,7 +92,9 @@ npm run dev
 keeps the frontend/API in the foreground. Open http://127.0.0.1:3000 with template
 ports (use your PORT override otherwise), then select **Check API connection**.
 The button checks process liveness. Readiness separately checks Mongo capability.
-No worker is started yet.
+No worker is started yet. To use an author account, follow
+[operator bootstrap](AUTHENTICATION.md), then open `/login`. See [sessions](SESSIONS.md)
+for Origin/cookie behavior and the current account-only `/app` screen.
 
 ## Check a running stack
 

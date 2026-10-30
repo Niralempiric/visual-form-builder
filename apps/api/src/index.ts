@@ -6,15 +6,22 @@ import { connectDatabase, DatabaseConnectionError } from './database.js';
 import { createUserStore } from './modules/auth/store.js';
 import { createAuthService } from './modules/auth/service.js';
 import { createAuthRouter } from './modules/auth/router.js';
+import { createSessionStore } from './modules/auth/session-store.js';
+import { createSessionManager } from './modules/auth/sessions.js';
+import { createSessionRouter } from './modules/auth/session-router.js';
 
 let database: Awaited<ReturnType<typeof connectDatabase>> | undefined;
 try {
   const configuration = readConfiguration();
   const activeDatabase = await connectDatabase(configuration);
   database = activeDatabase;
-  const auth = await createAuthService(await createUserStore(activeDatabase.connection), configuration.AUTH_BOOTSTRAP_TOKEN);
+  const users = await createUserStore(activeDatabase.connection);
+  const auth = await createAuthService(users, configuration.AUTH_BOOTSTRAP_TOKEN);
+  const sessions = createSessionManager(await createSessionStore(activeDatabase.connection), users, configuration.APP_ORIGIN);
+  const router = createAuthRouter(auth);
+  router.use(createSessionRouter(auth, sessions));
   let stopping = false;
-  const server = createServer(createApp(() => stopping ? Promise.resolve(false) : activeDatabase.isReady(), createAuthRouter(auth)));
+  const server = createServer(createApp(() => stopping ? Promise.resolve(false) : activeDatabase.isReady(), router));
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
     server.listen(configuration.API_PORT, '127.0.0.1', () => {

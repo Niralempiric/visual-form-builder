@@ -60,7 +60,7 @@ Modules: M02.
 
   Prerequisite: D03.3. **Done when:** Bootstrap cannot be repeated unrestrictedly and hashes never appear in responses.
 
-- [ ] **D04.2** Add opaque sessions, cookie flags, login/logout UI, origin validation and CSRF handling.
+- [x] **D04.2** Add opaque sessions, cookie flags, login/logout UI, origin validation and CSRF handling.
 
   Prerequisite: D04.1. **Done when:** Login survives refresh, logout revokes access and missing CSRF fails a mutation.
 

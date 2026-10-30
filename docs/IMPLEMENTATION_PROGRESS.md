@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1 completed**; 110 implementation tasks remain pending.
-Next eligible task: **D04.2**. Operator bootstrap/password checks are implemented; browser sessions and login UI remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.2 completed**; 109 implementation tasks remain pending.
+Next eligible task: **D04.3**. Bootstrap, password checks and browser sessions work; recovery codes remain pending.
 
 ## Per task record template
 
@@ -1445,3 +1445,195 @@ in the run result. No application change or repeated local test run is needed fo
 this receipt. No PR, release, deployment or independent review is claimed.
 
 Next eligible task remains **D04.2**. It has not started.
+
+
+## D04.2 — Opaque sessions, cookie flags, login/logout UI, origin validation and CSRF handling — 30 October 2026
+
+**Implementation status: Completed.** Module M02; prerequisite D04.1 verified
+against its code, published commits and passing hosted job `123894389611` on
+[CI run 41003925429](https://github.com/Niralempiric/visual-form-builder/actions/runs/41003925429).
+No unfinished publication remained. Only D04.2 is newly complete in both trackers;
+D04.3 recovery and all workspace/form tasks remain pending.
+
+### Repository and scope
+
+- Actual implementation: `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+  Verified authorized public URL: https://github.com/Niralempiric/visual-form-builder.
+- Began on clean `main`, tracking `origin/main`, at
+  `6b6462eaa080b05a83908a2ebd2cbb1f1db58867`. Inspected applicable instructions,
+  project plan/board/history, entire growth checklist, source, tests, pinned
+  Node/npm/lockfile and existing CI. Safe fetch confirmed no branch divergence.
+- Fetch/push destinations match that exact repository. GitHub independently
+  confirms Niralempiric ownership, public visibility, authenticated terminal
+  account Niralempiric with push access, and the established unprotected main
+  workflow. Effective author and committer remain
+  `Niralempiric <niralempiric@gmail.com>`; GitHub attributes the starting commit's
+  author/committer to Niralempiric. No identity, remote, historical author, visibility
+  or unrelated work changed. Self-review only; no independent review is claimed.
+- Embedded credentials remain at `.git/config`, `remote.origin.url`; credential-
+  manager storage is recommended. No secret value or actual env-file contents
+  were printed, edited or committed. No Webhook Inbox files or real account/
+  respondent records were touched.
+
+### Changes and acceptance
+
+- Added `session-store.ts`, `sessions.ts`, `session-router.ts` under the API auth
+  module. A 32-byte opaque cookie token is stored only as SHA-256; Mongo records
+  contain user binding, random CSRF secret, expiry and revocation. Unique hash and
+  expiresAt TTL indexes are created additively. Private fields are excluded from
+  normal model projections/JSON; outgoing DTOs remain explicitly allowlisted.
+- Anonymous login pre-sessions last ten minutes. Successful login transactionally
+  revokes the old context and creates a new token/secret with absolute 24-hour
+  author expiry. All identity reads enforce expiry/revocation and active user
+  status before TTL cleanup. Logout uses a guarded majority-write revocation and
+  clears the cookie only after acknowledgement. Future API modules can reuse the
+  exported author/mutation guards; UI guards do not grant permissions.
+- Added exact canonical `APP_ORIGIN` validation. Mutations require that Origin,
+  a valid cookie and matching synchronizer token; login is protected before author
+  authentication through its pre-session. Cross-site Fetch Metadata and spoofed/
+  missing/null/suffixed/different-host Origins fail. Host/forwarded headers do not
+  grant trust. HTTPS uses __Host-vfb_session with Secure/HttpOnly/SameSite=Strict,
+  Path=/ and no Domain. HTTP is allowed only for explicit loopback development,
+  using vfb_session without Secure. No permissive hosted-cookie toggle.
+- `json.ts` shares the existing bounded 8 KiB/no-decompression parser among
+  bootstrap/login/logout; Origin/CSRF gates run before parsing. API startup wires
+  the real session module. User lookup now supports current active-user validation.
+  Shared contracts add strict CSRF/logout shapes and opaque-token bounds.
+- Added `/login`, the account-only `/app` view, client auth API helper/panel,
+  homepage sign-in link and focused responsive styles. Private identity is fetched
+  uncached in Client Components, never SSR props or shared page caches. Passwords
+  are not React state or browser storage; busy controls block duplicate actions.
+  UI covers checking, generic credential errors, connection retry, signed-out and
+  account-placeholder states; native labels/controls support keyboard use.
+- Added fast session-policy and four real Mongo integration scenarios, updating
+  the older bootstrap-only test to keep signup/recovery closed. The Mongo helper
+  exposes only its generated fixture configuration to launch the actual compiled
+  API for browser verification; it still accepts no caller URI/project.
+- Updated `.env.example` (non-secret Origin only), README, AUTHENTICATION,
+  API_CONTRACTS, DATABASE, LOCAL_DEVELOPMENT and TESTING; added SESSIONS. No new
+  dependency, manifest/lockfile, runtime pin or CI workflow change was necessary.
+
+**Individual completion check passed:** “Login survives refresh, logout revokes
+access and missing CSRF fails a mutation.” Actual browser login survived reload
+and API restart. Logout returned to the login view and direct account navigation
+showed signed-out state. Real Mongo/API tests verified missing/wrong-session CSRF
+returns 403 without revocation, valid logout revokes, and replayed cookies return
+401 on a second API instance. They also verify fixed expiry, disabled/deleted user
+rejection, generic credential failures, competing login consumption, and forced
+session-insert failure rolling back the preceding pre-session revocation.
+
+### Verification evidence
+
+All commands used Node 24.21.0/npm 11.19.0 with no private application configuration.
+
+| Command/check | Observed result |
+|---|---|
+| `npm ci` | Passed fresh locked install: 305 packages added, 313 audited; lockfile unchanged |
+| `npm run check` | Passed runtime, ESLint/Oxlint, all workspace and strict test/config types |
+| `npm test` | Passed 16/16 fast tests across contracts/password/session policy |
+| `npm run test:db -- --reporter=verbose` | Passed 9/9 disposable Mongo tests, including four new session scenarios; private log `/tmp/vfb-d042-db.log` |
+| `npm run build` | Shared packages, compiled Express and Next.js production builds passed |
+| `npm run test:readiness` | Passed 3/3 config/startup/outage/shutdown checks with actual new startup wiring |
+| `npm run test:transactions` | Passed five reported tests including four commit/rollback subtests |
+| `npm run typecheck` | Passed again after a final type-only correction to accurately exclude tokenHash from the session lookup projection |
+| `npm audit --audit-level=low` | Zero reported vulnerabilities at this run's snapshot |
+
+The real integration run passed before the final clean-install command sequence;
+no runtime code changed afterward. The final projection correction is type-only,
+so DB/browser checks were not unnecessarily repeated. Command logs are outside
+Git under `/tmp/vfb-d042-verification/`. The final one-off review verified 120 matching task descriptions/statuses with
+only D04.2 newly complete (11 complete/109 pending), unchanged dependency versions,
+resolving local links and valid operator-client syntax. A credential-shaped URL
+in an intentionally invalid synthetic fixture triggered the secret scanner; the
+test now assembles that same invalid input without storing an authenticated URL
+literal. The strict scan passed unchanged and the targeted three session tests
+passed again. No actual credential was present. Final task diff contains only
+31 intended files, no real data, generated clutter or secret values.
+
+No failures were suppressed or checks
+weakened: initial lint caught two status elements (corrected to native output),
+and strict types caught a generic response-validator inference issue (corrected
+with concrete DTO validators). All final commands exited 0.
+
+**Browser/API/data flow passed:** actual Next.js plus compiled Express used a
+new isolated Mongo replica set and a clearly synthetic account. Observed checking
+state, generic wrong-password feedback with cleared password, keyboard Tab/Enter
+submission, signed-in identity, refresh persistence, actual API outage/error,
+restart/retry recovery, logout and denied anonymous account access. At 390×844,
+standard viewport screenshot and DOM measurements confirm readable controls and
+no horizontal overflow. Screenshot `/tmp/vfb-d042-account.jpg` contains only the
+synthetic signed-in view, no credential/token. React review covered boundaries,
+effect cancellation, state/async actions, private-data caching and accessibility.
+Browser console logs were not retained; expected negative-request/proxy failures
+were exercised rather than claimed absent. Full production TLS/browser coverage
+is not claimed; HTTPS cookie flags were tested on response headers.
+
+An interrupted first preview lost its process before refresh verification; its
+exact disposable namespace `vfb-d032-69423dcd3fab` was inspected and removed.
+The restarted preview `vfb-d032-06573a9d5023` completed all remaining checks and
+normal cleanup. Both exact project labels were verified to have no containers,
+volumes or networks left. Temporary viewport/services/tabs were removed. Normal
+development data was never reset or used. Abrupt-process cleanup remains the
+existing fixture limitation, not silently claimed guaranteed.
+
+**Not run:** full form/release journeys, hosted TLS/deployment, recovery-code
+behavior, external review or GHFind scans (future/unrequested scope). Existing CI
+will run its actual install/check/fast-test/build job after publication; local DB
+and browser tests are not misrepresented as hosted jobs.
+
+### Growth evaluation against the preserved baseline
+
+Every checkpoint in the entire checklist was evaluated by its original item order;
+these are this-run outcomes, not permanent phase completion or score/adoption claims.
+
+- **Phase 0 — Completed for this run, 1–4:** actual path/target, separate ownership/
+  authentication/attribution, original first-user scope and private-data hygiene.
+  **Pending, 5:** no requested fresh GHFind baseline.
+- **Phase 1 — Pending overall:** 1–3 gain usable sign-in/out functionality, exact
+  setup and unchanged compatible pins; 6 gains clean-install/build evidence for
+  this foundation. Complete product/release usability (1, 6), project license (4)
+  and synthetic form/answer demonstration (5) remain **Pending**. A synthetic account
+  is not claimed as a complete form demo.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible task, verified
+  prerequisite, exact acceptance, coherent scope and separate limitations.
+  **Not applicable, 3:** no coordination issue was needed or created.
+- **Phase 3 — Completed for this run, 1–7 within scope:** shared contracts, guarded
+  identity/failure behavior, meaningful DB/API tests, actual browser checks, docs,
+  reviewed diff and truthful self-review/attribution. Future tenant/version/form
+  operations within 2 are not newly complete. **Pending at commit preparation, 8:**
+  authorized publication and exact remote/hosted read-back follow this entry.
+- **Phase 4 — Pending, 1–5 overall:** full release gates, form journey, retry/
+  history, data-lifetime/deployment and release/demo evidence require later tasks.
+  Local keyboard/narrow auth checks contribute to 4 without completing that release
+  gate. **Completed for this run within scope, 6:** accurate limitations, setup and
+  reproducible-report guidance; no release is claimed.
+- **Phase 5 — Not applicable, 1–5:** no pinning, outreach/tutorial, actual user
+  feedback/adoption or contributor event requested or invented.
+- **Phase 6 — Completed for this run within scope, 1–2:** observed lint/type/preview
+  problems resolved, dependency compatibility/setup/tests checked. **Not applicable,
+  3–6:** no release, unresolved upstream blocker needing contribution, or stable
+  package extraction need. Future maintenance remains **Pending**.
+- **Phase 7 — Pending overall:** 1 gains reproducible engineering evidence, not
+  release/user outcomes; 2 awaits compatible fresh scores. No rule/stale-score or
+  score-attribution inference is made (3 **Not applicable** here); actual GitHub
+  attribution is checked separately. 4 selects D04.3; maintenance across years
+  remains **Pending**. No task-level growth blocker remains.
+
+### Limitations, publication and next step
+
+Admission limits remain process-local and must be shared at deployment scale.
+Hosted TLS, database access controls, deliberate proxy/NAT/IPv6 policy and broader
+release hardening remain future work. Local cookie names are host-, not port-scoped.
+Logout invalidates subsequent lookups but cannot cancel already-authorized in-flight
+requests. Public signup stays closed. Recovery, workspaces and form workflows are
+not implemented or marked complete. No unrelated outreach or deployment occurred.
+
+**Publication status at preparation: ready for authorized D04.2 commit/push** to
+verified `main` using the established direct-main workflow. The source task commit
+is resolvable with `git log -1 --format=%H -- apps/api/src/modules/auth/sessions.ts`;
+its exact push/remote/attribution/hosted receipt follows actual publication. No
+force-push, amend, identity change, empty commit or PR is required. Blockers: none.
+
+**Next eligible ID: D04.3 — one-time recovery codes and session revocation with
+generic failure messages. Prerequisite D04.2 verified complete.** Not started.
+Stop after this task's necessary publication verification.

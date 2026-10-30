@@ -194,3 +194,29 @@ bootstrap lockout, unique email, private hash projections/DTOs and intentional
 transaction rollback. Closed-pool failure returns safe errors. All accounts and
 passwords in these suites are explicitly synthetic. No normal development account
 is created. See [authentication](AUTHENTICATION.md) for scope and operator setup.
+
+
+## D04.2 session and browser checks
+
+`tests/fast/sessions.test.ts` verifies exact/canonical origin configuration, opaque
+cookie parsing and HTTPS cookie attributes. `tests/integration/sessions.test.ts`
+adds four isolated Mongo scenarios: identity persistence across API instances,
+revocation/replay and CSRF/Origin denial, expiry/disabled/deleted users, failed
+rotation rollback plus competing logins, anonymous-session throttling and safe
+closed-pool failure. All credentials and account records are synthetic. Existing
+bootstrap-only tests now check signup/recovery absence; the composed application
+ships the separate login/session router.
+
+`withMongoFixture` exposes its internally generated configuration to allow actual
+compiled API processes in isolated verification; it still accepts no caller URI
+or project. It preserves normal development data and verifies cleanup of only its
+own namespace. An abrupt preview interruption can leave its Docker resources;
+inspect the exact generated project before cleanup, never prune/reset broadly.
+
+Manual browser evidence for D04.2 covers keyboard login, password/error states,
+refresh, actual API restart and retry, logout, signed-out access, and a 390×844
+viewport. The preview uses actual Next.js and compiled Express with a disposable
+synthetic account. Viewport override and temporary preview services are removed
+after verification. No Playwright dependency, fake external review or hosted TLS
+claim is introduced. See [session contracts](SESSIONS.md) and implementation
+progress for this run's commands/results and evidence limits.

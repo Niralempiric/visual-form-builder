@@ -92,7 +92,7 @@ test('bootstrap is disabled by default; token gate rejects missing/wrong/long to
   expect(() => service.authorizeBootstrap(token, 'a', undefined)).not.toThrow();
 });
 
-test('HTTP bootstrap safely rejects malformed/large/compressed input and never exposes a credential-only login', async t => {
+test('HTTP bootstrap safely rejects malformed/large/compressed input and keeps public signup/recovery closed', async t => {
   const service = await createAuthService(unusedStore, token);
   const server = await listen(t, createApp(async () => true, createAuthRouter(service)));
   const post = () => request(server).post('/api/v1/auth/bootstrap').set('X-Bootstrap-Token', token)
@@ -117,7 +117,7 @@ test('HTTP bootstrap safely rejects malformed/large/compressed input and never e
   expect((await post().set('Origin', 'https://example.test').send({ email: dto.email, password })).status).toBe(403);
   const denied = await post().unset('X-Bootstrap-Token').send({ email: dto.email, password });
   expect(denied.status).toBe(403);
-  for (const path of ['/auth/login', '/auth/signup', '/auth/recover']) {
+  for (const path of ['/auth/signup', '/auth/recover']) {
     expect((await request(server).post('/api/v1' + path).send({ email: dto.email, password })).status).toBe(404);
   }
   // Spoofing a new proxy address cannot reset socket-based admission limits.

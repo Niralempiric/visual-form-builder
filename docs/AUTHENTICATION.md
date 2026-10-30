@@ -1,13 +1,13 @@
 # Author-account foundation
 
-D04.1 | 30 October 2026
+D04.1–D04.2 | 30 October 2026
 
-The separate Express API owns users and password checks in MongoDB. Initial public
-signup is closed. Only `POST /api/v1/auth/bootstrap` ships in this task. Credential
-verification is an internal service tested directly; `/auth/login`, sessions,
-cookies, browser UI and CSRF handling are D04.2. Recovery codes are D04.3. No user
-account is created automatically, and no login/session or management capability
-is returned by bootstrap.
+The separate Express API owns users, password checks and revocable sessions in
+MongoDB. Initial public signup is closed. Operator bootstrap creates the first
+account without issuing a session. D04.2 adds `/auth/csrf`, `/auth/login`,
+`/auth/logout`, `/auth/me` and the `/login` and `/app` views. See [sessions](SESSIONS.md)
+for their exact cookie, Origin, CSRF and expiry contracts. Recovery codes remain
+D04.3. No user account is created automatically.
 
 ## Optional operator bootstrap
 
@@ -96,7 +96,8 @@ removing only a user never re-enables bootstrap. This is not a recovery procedur
 
 ## Credential throttle and deployment limits
 
-Both bootstrap admission and the internal checker share per-process ceilings of
+Bootstrap admission, login credential checks and newly issued anonymous sessions
+share per-process ceilings of
 120 attempts globally and 30 per socket address per 15 minutes. Credential checks
 also allow five attempts per normalized email in that window across addresses;
 **successful attempts count too**. Attempts already rejected by the network ceiling
@@ -116,7 +117,8 @@ limits can temporarily block legitimate users; they do not prove human identity.
 Run `npm run check`, `npm test`, `npm run test:db`, `npm run test:readiness`,
 `npm run test:transactions` and `npm run build` with the pinned toolchain.
 Fast checks cover input/configuration, real hashes/salts, generic failures,
-ceilings/expiry, token gates, parser limits and absence of premature login/signup.
+ceilings/expiry, token gates, parser limits and closed public signup/recovery.
+D04.2 adds session policy and real-database/browser verification described in [sessions](SESSIONS.md).
 Disposable replica sets verify a two-instance bootstrap race, independent-reader
 persistence, secret projections/DTOs, email uniqueness, restart/deletion lockout,
 pre-existing accounts, intentional insert rollback and safe database failure.

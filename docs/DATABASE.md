@@ -142,3 +142,15 @@ Bootstrap writes its permanent marker and first user in one snapshot/majority
 transaction. Disposable D04.1 integration tests verify concurrency, persistence
 and rollback after the marker insert; readiness alone is not used as evidence.
 See [authentication](AUTHENTICATION.md) for private-field and operator contracts.
+
+
+## Session persistence (D04.2)
+
+Startup also creates the sessions collection, a unique token-hash index and an
+expiresAt TTL index additively. Author sessions have fixed 24-hour expiry; anonymous
+login pre-sessions last ten minutes. Lookups enforce expiry/revocation and active
+user state without waiting for TTL cleanup. Transactional login rotation guards
+and revokes the old record before inserting the replacement; logout revokes with
+one guarded majority update. Disposable tests verify rotation rollback and race
+outcomes as well as independent-instance persistence. [Session documentation](SESSIONS.md)
+describes the opaque cookie and CSRF/Origin boundaries; no raw cookie token is stored.

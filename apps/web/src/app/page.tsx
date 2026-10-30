@@ -17,7 +17,7 @@ export default function HomePage() {
             <span className="brand-mark" aria-hidden="true">vf</span>
             <span>Visual Form Builder</span>
           </Link>
-          <span className="preview-label">Local preview</span>
+          <Link className="account-link" href="/login">Sign in</Link>
         </header>
         <main id="main">
           <section className="hero" aria-labelledby="page-title">

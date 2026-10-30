@@ -876,7 +876,7 @@ Modules: M02. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D03.3. **Individual completion check:** Bootstrap cannot be repeated unrestrictedly and hashes never appear in responses.
 
-- [ ] **D04.2** Add opaque sessions, cookie flags, login/logout UI, origin validation and CSRF handling.
+- [x] **D04.2** Add opaque sessions, cookie flags, login/logout UI, origin validation and CSRF handling.
 
   Prerequisite: D04.1. **Individual completion check:** Login survives refresh, logout revokes access and missing CSRF fails a mutation.
 

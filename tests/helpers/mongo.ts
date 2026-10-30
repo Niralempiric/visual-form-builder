@@ -5,6 +5,7 @@ import { createServer } from 'node:net';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import type { Connection } from 'mongoose';
+import type { Configuration } from '../../apps/api/src/configuration.js';
 import { readConfiguration } from '../../apps/api/src/configuration.js';
 
 // Resolve the API's exact installed driver, without introducing a second driver.
@@ -28,6 +29,7 @@ async function availablePort() {
 export interface MongoFixture {
   readonly project: string;
   readonly databaseName: string;
+  readonly configuration: Configuration;
   connect(): Promise<Connection>;
 }
 
@@ -56,7 +58,7 @@ export async function withMongoFixture<T>(run: (fixture: MongoFixture) => Promis
     }
   }
   const fixture: MongoFixture = {
-    project, databaseName,
+    project, databaseName, configuration,
     async connect() {
       const connection = mongoose.createConnection();
       connections.push(connection);

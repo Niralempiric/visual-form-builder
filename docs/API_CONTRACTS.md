@@ -4,9 +4,9 @@ D03.1 | 27 October 2026
 
 `packages/contracts` exports runtime Zod schemas and inferred types shared by the
 frontend and Express. `apps/api/src/http.ts` supplies validation, cursor encoding,
-correlation and safe error handling. D04.1 adds the operator-only account bootstrap
-endpoint described in [Authentication](AUTHENTICATION.md); form and response endpoints
-remain pending. The success/list examples below are synthetic contract examples exercised
+correlation and safe error handling. Operator-only account bootstrap is described
+in [Authentication](AUTHENTICATION.md); D04.2 [sessions](SESSIONS.md) adds current-user,
+CSRF and login/logout endpoints. Form and response endpoints remain pending. The success/list examples below are synthetic contract examples exercised
 through a test-only router, not shipped data endpoints.
 
 ## Envelopes and errors
@@ -133,7 +133,8 @@ routes are installed only by the test; no debug route ships in the default app.
 D03.2 configures lint, strict test types and reusable database fixtures; see
 [Repository testing](TESTING.md). D03.3 adds CI. D04.1 introduces route-local, token-gated JSON parsing for bootstrap only (8 KiB,
 no decompression), strict credential inputs and an allowlisted user DTO. Other
-routes have no new parser. The body-parser dependency is overridden and locked to
-patched 2.4.0 before enabling parsing. Browser sessions/CSRF, tenant queries,
-immutable publishing and submissions remain later tasks. No complete form release
-is claimed.
+routes have no global parser. D04.2 reuses the same bounded parser for protected
+login/logout, with Origin/CSRF checks before parsing. The body-parser dependency is
+overridden and locked to patched 2.4.0. Browser sessions/CSRF now work as documented
+in [sessions](SESSIONS.md); tenant queries, immutable publishing and submissions
+remain later tasks. No complete form release is claimed.

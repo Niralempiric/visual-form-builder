@@ -17,3 +17,8 @@ export const userDtoSchema = z.strictObject({
   status: z.enum(['active', 'disabled']),
 });
 export type UserDto = z.infer<typeof userDtoSchema>;
+
+export const opaqueTokenSchema = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
+export const csrfDtoSchema = z.strictObject({ csrfToken: opaqueTokenSchema });
+export const logoutInputSchema = z.strictObject({});
+export const logoutDtoSchema = z.strictObject({ signedOut: z.literal(true) });

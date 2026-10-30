@@ -5,12 +5,13 @@ import { createPasswords } from './passwords.js';
 import { createAuthThrottle } from './throttle.js';
 import type { UserStore } from './store.js';
 
-export async function createAuthService(store: UserStore, bootstrapToken?: string,
+export async function createAuthService(store: Pick<UserStore, 'bootstrap' | 'credential'>, bootstrapToken?: string,
   throttle = createAuthThrottle()) {
   const passwords = await createPasswords();
   const digest = (value: string) => createHash('sha256').update(value).digest();
   const expected = bootstrapToken === undefined ? undefined : digest(bootstrapToken);
   return {
+    admitAnonymous(network: string) { throttle.network(network); },
     authorizeBootstrap(token: string | undefined, network: string, origin: string | undefined) {
       throttle.network(network);
       // Operator-only request, disabled by default. No browser/CORS signup surface.
@@ -21,8 +22,8 @@ export async function createAuthService(store: UserStore, bootstrapToken?: strin
       const value = parseContract(bootstrapInputSchema, input);
       return store.bootstrap(value.email, await passwords.hash(value.password));
     },
-    // Internal credential check only. D04.2 must create the opaque session before
-    // exposing login; this foundation returns no access token or authorization.
+    // A credential result alone grants no management access; the HTTP login
+    // route must rotate its CSRF-protected pre-session into a stored session.
     async checkCredentials(input: unknown, network: string) {
       throttle.network(network);
       const value = parseContract(credentialInputSchema, input);

@@ -18,8 +18,9 @@ fixtures. D03.3 runs installation, checks, fast tests and builds in GitHub Actio
 the first hosted run passed. D04.1 adds operator-controlled first-account creation,
 Argon2id password storage and an internal throttled credential checker.
 [Authentication setup](docs/AUTHENTICATION.md) describes the disabled-by-default
-bootstrap. Browser sessions/login UI, form editing, publishing and responses
-remain pending.
+bootstrap. D04.2 adds persistent opaque sessions, CSRF/Origin checks and working
+[sign-in/sign-out views](docs/SESSIONS.md). Recovery, form editing, publishing and
+responses remain pending.
 
 ## Repository and setup
 
@@ -96,7 +97,7 @@ and start because Next.js compiles rewrites into its output.
 | Location | Responsibility |
 |---|---|
 | `apps/web` | Next.js App Router preview page and API connection control |
-| `apps/api` | Express health, configuration, Mongo lifecycle and author-account foundation |
+| `apps/api` | Express health, configuration, Mongo lifecycle, author accounts and revocable sessions |
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
 | `packages/form-schema` | Shared form definitions and validation scaffold |
 | `packages/form-renderer` | Shared preview/public React renderer scaffold |
@@ -201,5 +202,5 @@ The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D04.1: **D04.2**, opaque sessions, cookie flags, login/logout
-UI, origin validation and CSRF handling. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D04.2: **D04.3**, one-time recovery codes and session
+revocation with generic failure messages. No application has been deployed and no usable form-builder release is claimed.
