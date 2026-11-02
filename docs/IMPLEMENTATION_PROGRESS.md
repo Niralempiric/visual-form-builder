@@ -1865,3 +1865,32 @@ commit, PR, deployment or release is required. Implementation blockers: none.
 **Next eligible ID: D05.1 — workspaces, owner memberships and scoped form records
 with an empty initial draft. Prerequisite D04.3 verified complete.** Not started.
 Stop after D04.3 publication and its necessary verification.
+
+
+### D04.3 publication receipt — 2 November 2026
+
+**Publication status: implementation published and hosted-verified.** Source
+commit `79995712a10d45fecf71cb0015cf33d495b71a52` was pushed to verified `main` at
+https://github.com/Niralempiric/visual-form-builder. Exact remote refs/heads/main
+read-back matched. GitHub attributes both author and committer to Niralempiric;
+the working tree was clean after that commit/push. No protection or PR workflow
+was bypassed.
+
+[CI run 41393445253](https://github.com/Niralempiric/visual-form-builder/actions/runs/41393445253)
+at that exact SHA completed **successfully**. Job `125109581959` passed every
+setup/install/check/test/build and post step; none skipped. GitHub REST supplied
+the push-run receipt because the connected list wrapper filters to PR runs; the
+connector independently confirmed the successful job steps. Local database/
+browser/operational evidence above remains separately attributed.
+
+Growth Phase 3 item 8 is **Completed for this run**, resolving the preparation-
+time publication status. All other phase outcomes, development-only audit finding
+and browser coverage limit remain unchanged. This necessary documentation receipt
+records an outcome observable only after pushing the coherent implementation;
+no published history is rewritten. It introduces no code or dependency change,
+so application checks are not repeated locally. Its exact final remote and hosted
+verification are reported in the run result. No independent review, deployment,
+release or adoption claim is made.
+
+Next eligible task remains **D05.1**, not started. Stop after this receipt's
+publication verification.
