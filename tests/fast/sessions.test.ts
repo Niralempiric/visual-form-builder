@@ -45,6 +45,7 @@ test('HTTPS pre-session cookie is host-only Secure/HttpOnly/SameSite=Strict and 
     async revoke() { throw new Error('Unexpected revocation.'); },
   };
   const auth: AuthService = {
+    async loginCredential() { throw new Error('Unexpected credential check.'); },
     admitAnonymous() {}, authorizeBootstrap() {},
     async bootstrap() { return dto; }, async checkCredentials() { return dto; },
   };

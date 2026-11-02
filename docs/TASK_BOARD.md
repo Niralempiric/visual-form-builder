@@ -64,7 +64,7 @@ Modules: M02.
 
   Prerequisite: D04.1. **Done when:** Login survives refresh, logout revokes access and missing CSRF fails a mutation.
 
-- [ ] **D04.3** Implement one-time recovery codes and session revocation with generic failure messages.
+- [x] **D04.3** Implement one-time recovery codes and session revocation with generic failure messages.
 
   Prerequisite: D04.2. **Done when:** A recovery code works once and prior sessions fail after recovery.
 

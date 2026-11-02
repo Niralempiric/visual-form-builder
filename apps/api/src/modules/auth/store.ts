@@ -1,5 +1,5 @@
-import { Schema } from 'mongoose';
-import type { Connection, Model, Types } from 'mongoose';
+import { Schema, Types } from 'mongoose';
+import type { Connection, Model } from 'mongoose';
 import { userDtoSchema } from '@visual-form-builder/contracts';
 import { ApiError } from '../../http.js';
 
@@ -9,6 +9,7 @@ interface UserRecord {
   passwordHash: string;
   recoveryHashes: string[];
   status: 'active' | 'disabled';
+  sessionSequence: number;
 }
 
 export async function createUserStore(connection: Connection) {
@@ -16,6 +17,8 @@ export async function createUserStore(connection: Connection) {
     normalizedEmail: { type: String, required: true, immutable: true },
     passwordHash: { type: String, required: true, select: false },
     recoveryHashes: { type: [String], default: [], select: false },
+    // A real user-document write serializes login with password recovery.
+    sessionSequence: { type: Number, default: 0, select: false },
     status: { type: String, enum: ['active', 'disabled'], required: true, default: 'active' },
   }, { collection: 'users', strict: 'throw', timestamps: true, bufferCommands: false });
   schema.index({ normalizedEmail: 1 }, { unique: true });
@@ -23,6 +26,7 @@ export async function createUserStore(connection: Connection) {
   schema.set('toJSON', { transform(_doc, value) {
     Reflect.deleteProperty(value, 'passwordHash');
     Reflect.deleteProperty(value, 'recoveryHashes');
+    Reflect.deleteProperty(value, 'sessionSequence');
     return value;
   } });
   const users: Model<UserRecord> = (connection.models.User as Model<UserRecord> | undefined) ?? connection.model<UserRecord>('User', schema);
@@ -48,6 +52,43 @@ export async function createUserStore(connection: Connection) {
       } catch (error) {
         if (error instanceof ApiError) throw error;
         if (error instanceof Error && 'code' in error && error.code === 11000) throw new ApiError('CONFLICT');
+        throw new ApiError('DEPENDENCY_UNAVAILABLE');
+      }
+    },
+    async replaceRecoveryCodes(id: string, passwordHash: string, hashes: string[], sessionHash: string, now: Date) {
+      try {
+        await connection.transaction(async session => {
+          const changed = await users.updateOne({ _id: id, status: 'active', passwordHash },
+            { $set: { recoveryHashes: hashes }, $inc: { sessionSequence: 1 } }, { session, maxTimeMS: 1000 });
+          if (changed.matchedCount !== 1) throw new ApiError('UNAUTHENTICATED');
+          const current = await connection.collection('sessions').findOne({ tokenHash: sessionHash,
+            userId: new Types.ObjectId(id), revokedAt: null, expiresAt: { $gt: now } },
+          { session, maxTimeMS: 1000, projection: { _id: 1 } });
+          if (!current) throw new ApiError('UNAUTHENTICATED');
+        }, { readConcern: { level: 'snapshot' }, writeConcern: { w: 'majority' }, maxCommitTimeMS: 5000 });
+      } catch (error) {
+        if (error instanceof ApiError) throw error;
+        throw new ApiError('DEPENDENCY_UNAVAILABLE');
+      }
+    },
+    async recover(email: string, codeHash: string, passwordHash: string, sessionHash: string, now: Date) {
+      try {
+        await connection.transaction(async session => {
+          // The guarded write consumes the secret once, including concurrent retries.
+          // Login writes this same user first, checking the password hash it verified.
+          const user = await users.findOneAndUpdate({ normalizedEmail: email, status: 'active', recoveryHashes: codeHash },
+            { $pull: { recoveryHashes: codeHash }, $set: { passwordHash }, $inc: { sessionSequence: 1 } },
+            { session, returnDocument: 'after', maxTimeMS: 1000 }).lean();
+          if (!user) throw new ApiError('UNAUTHENTICATED');
+          const sessions = connection.collection('sessions');
+          const current = await sessions.updateOne({ tokenHash: sessionHash, revokedAt: null, expiresAt: { $gt: now } },
+            { $set: { revokedAt: now } }, { session, maxTimeMS: 1000 });
+          if (current.matchedCount !== 1) throw new ApiError('FORBIDDEN');
+          await sessions.updateMany({ userId: user._id, revokedAt: null }, { $set: { revokedAt: now } },
+            { session, maxTimeMS: 1000 });
+        }, { readConcern: { level: 'snapshot' }, writeConcern: { w: 'majority' }, maxCommitTimeMS: 5000 });
+      } catch (error) {
+        if (error instanceof ApiError) throw error;
         throw new ApiError('DEPENDENCY_UNAVAILABLE');
       }
     },

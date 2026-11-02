@@ -670,7 +670,8 @@ An expired render context returns 409 with code CONTEXT_EXPIRED and offers to re
 | POST /auth/bootstrap | Operator-controlled first account creation |
 | POST /auth/login and /auth/logout | Create or revoke browser session |
 | GET /auth/me and /auth/csrf | Current identity and CSRF token |
-| POST /auth/recover | Consume a one-time code and revoke prior sessions |
+| POST /auth/recovery-codes | Password-confirmed author recovery-code generation |
+| POST /auth/recover | Consume a one-time code, reset password and revoke prior sessions |
 | GET POST /workspaces | List memberships or create workspace |
 | GET PATCH /workspaces/:id | Read allowed settings; owner changes name/policy |
 | GET POST /workspaces/:id/forms | Cursor form list or new draft |
@@ -880,7 +881,7 @@ Modules: M02. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D04.1. **Individual completion check:** Login survives refresh, logout revokes access and missing CSRF fails a mutation.
 
-- [ ] **D04.3** Implement one-time recovery codes and session revocation with generic failure messages.
+- [x] **D04.3** Implement one-time recovery codes and session revocation with generic failure messages.
 
   Prerequisite: D04.2. **Individual completion check:** A recovery code works once and prior sessions fail after recovery.
 

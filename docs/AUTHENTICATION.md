@@ -1,13 +1,14 @@
 # Author-account foundation
 
-D04.1–D04.2 | 30 October 2026
+D04.1–D04.3 | 2 November 2026
 
 The separate Express API owns users, password checks and revocable sessions in
 MongoDB. Initial public signup is closed. Operator bootstrap creates the first
 account without issuing a session. D04.2 adds `/auth/csrf`, `/auth/login`,
 `/auth/logout`, `/auth/me` and the `/login` and `/app` views. See [sessions](SESSIONS.md)
-for their exact cookie, Origin, CSRF and expiry contracts. Recovery codes remain
-D04.3. No user account is created automatically.
+for their exact cookie, Origin, CSRF and expiry contracts. D04.3 adds saved
+[recovery codes](RECOVERY.md) and atomic password reset/session revocation.
+No user account is created automatically.
 
 ## Optional operator bootstrap
 
@@ -51,8 +52,9 @@ PYCLIENT
 4. After successful creation, remove/blank `AUTH_BOOTSTRAP_TOKEN` in the private
    file, unset it in API launch shells, reload configuration and restart Express.
    The permanent marker still prevents another bootstrap if the token is later
-   re-enabled. Keep the author password in secure storage. There is no recovery
-   operation yet; do not create a real production account for this foundation.
+   re-enabled. Keep the author password in secure storage. Sign in and save
+   [recovery codes](RECOVERY.md) before losing access. Hosting controls remain
+   required; this foundation is not a production authentication release.
 
 Do not send secrets on a command line, in a URL, screenshot, bug report or shell
 history. The client does not create or modify any configuration. Do not run it
@@ -79,8 +81,8 @@ removing only a user never re-enables bootstrap. This is not a recovery procedur
   a startup-generated dummy hash; wrong-password, missing and disabled accounts
   return the same `UNAUTHENTICATED` code/message. This reduces timing differences;
   it is not a claim of constant-time whole-request behavior.
-- `users` stores normalizedEmail, passwordHash, empty recoveryHashes, active/disabled
-  status and timestamps. Secret fields are excluded from normal model queries and
+- `users` stores normalizedEmail, passwordHash, initially empty recoveryHashes,
+  private sessionSequence, active/disabled status and timestamps. Secret fields are excluded from normal model queries and
   JSON serialization. Internal credential lookup explicitly selects the hash;
   API output constructs and validates only `{ id, email, status }` in the shared
   `{ data, correlationId }` envelope, with `Cache-Control: no-store`.
@@ -117,8 +119,10 @@ limits can temporarily block legitimate users; they do not prove human identity.
 Run `npm run check`, `npm test`, `npm run test:db`, `npm run test:readiness`,
 `npm run test:transactions` and `npm run build` with the pinned toolchain.
 Fast checks cover input/configuration, real hashes/salts, generic failures,
-ceilings/expiry, token gates, parser limits and closed public signup/recovery.
+ceilings/expiry, token gates, parser limits and closed public signup. The bootstrap-
+only router intentionally has no login/recovery routes; composed startup adds them.
 D04.2 adds session policy and real-database/browser verification described in [sessions](SESSIONS.md).
+D04.3 recovery checks and separate redemption limits are described in [recovery](RECOVERY.md).
 Disposable replica sets verify a two-instance bootstrap race, independent-reader
 persistence, secret projections/DTOs, email uniqueness, restart/deletion lockout,
 pre-existing accounts, intentional insert rollback and safe database failure.

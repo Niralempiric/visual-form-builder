@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.2 completed**; 109 implementation tasks remain pending.
-Next eligible task: **D04.3**. Bootstrap, password checks and browser sessions work; recovery codes remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 completed**; 108 implementation tasks remain pending.
+Next eligible task: **D05.1**. Bootstrap, password checks, browser sessions and one-time recovery work; workspaces and forms remain pending.
 
 ## Per task record template
 
@@ -1665,3 +1665,203 @@ No PR, deployment, release, independent review or adoption is claimed.
 
 Next eligible task remains **D04.3**, not started. Stop after this receipt's
 publication verification.
+
+
+## D04.3 — One-time recovery codes and session revocation with generic failure messages — 2 November 2026
+
+**Implementation status: Completed.** Module M02; prerequisite D04.2 verified in
+source, its acceptance tests, published commits `cc7b5d8`/`d70c151` and hosted job
+`124070535195` on [CI run 41058072728](https://github.com/Niralempiric/visual-form-builder/actions/runs/41058072728).
+The connector independently returned success for every install/check/test/build
+and post step. No unfinished publication remained. Only D04.3 is newly complete
+in the plan/board: **12 complete, 108 pending**. D05.1 has not been started.
+
+### Repository, scope and identity
+
+- Actual implementation path: `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+  Verified authorized public URL: https://github.com/Niralempiric/visual-form-builder.
+- Began on clean `main`, tracking `origin/main`, at
+  `d70c1519dd4f88c3d78f6c41de9b6c7ab3a5af82`. Read applicable ancestor/web AGENTS,
+  project plan/board/history, the entire growth checklist, relevant auth/security/
+  API/architecture/development docs, source/tests, local Next.js guide, runtime pins,
+  lockfile and CI. Safe fetch confirmed zero ahead/behind divergence.
+- Both fetch/push destinations match the exact authorized repository. GitHub
+  confirms public Niralempiric ownership, terminal account Niralempiric with push
+  access, unprotected main and the established direct-main workflow. The connector
+  itself has read access; terminal Git is used for authorized publication.
+- Effective author **and** committer remain `Niralempiric <niralempiric@gmail.com>`.
+  GitHub attributes both roles on the starting commit to Niralempiric. Ownership,
+  authentication and authorship were checked separately. No identity, remote,
+  visibility, historical attribution or unrelated work changed. Self-review only.
+- Embedded credential location: `.git/config`, `remote.origin.url`. A credential
+  manager is recommended; no credential/env-file values were displayed, changed
+  or committed. No Webhook Inbox files, real accounts or respondent data touched.
+
+### Work and individual acceptance
+
+- Added shared recovery schemas and reused the bootstrap password policy.
+  New API `recovery.ts`/`recovery-router.ts` implement password-confirmed issuance
+  and the documented `/auth/recover` route. Startup wires them into real Express.
+- Authenticated issuance requires Origin/CSRF and the current password; it replaces
+  the active user's previous set with five independent 256-bit codes. Only this
+  one-time response intentionally returns codes. Mongo stores domain-separated
+  SHA-256 digests in the existing private recoveryHashes field. No retrieval API,
+  logging, URL credentials or browser persistence is introduced.
+- Redemption requires a valid CSRF-protected pre-session or author session, strict
+  email/code/new-password input and process-local account/network/global admission.
+  All well-formed attempts hash the new password before guarded lookup. Missing/
+  disabled accounts and wrong/replaced/used codes receive the same safe 401 error.
+- A snapshot/majority transaction consumes the code, changes the password and
+  revokes the current context plus all prior recovered-user sessions. A late
+  revocation failure rolls back every change. Success clears the browser cookie,
+  returns only recovered:true and requires normal sign-in; no automatic login.
+  Other users' sessions and remaining unused codes are preserved.
+- User-store recovery transactions and session-store login now serialize through
+  a real private sessionSequence write. Login checks the exact password hash it
+  verified, so stale proofs cannot create a post-recovery session. The session
+  `(userId, revokedAt)` index is added without replacing indexes or resetting data.
+- Added `/recover`, `recovery-form.tsx`, `recovery-codes.tsx`, account settings,
+  login link, strict API helper calls and focused CSS. Client-only uncached requests
+  keep credentials out of SSR props/shared caches and browser storage. Controls
+  handle duplicate submits, cleared submitted credentials, safe errors, focus,
+  new-password confirmation and one-time code hiding. No workspace/form work.
+- Updated README, AUTHENTICATION, SESSIONS, DATABASE, TESTING and endpoint inventory;
+  added RECOVERY.md with exact setup/usage, contracts, concurrency/replay behavior,
+  lost-response guidance and limitations. The two trackers and this history agree.
+
+**Individual completion check: Passed — “A recovery code works once and prior
+sessions fail after recovery.”** Actual disposable-Mongo/API evidence:
+
+1. Five distinct codes persist only as digests; normal user projections/DTOs do
+   not disclose them. Two signed-in sessions become 401 across independent API
+   instances after recovery; an unrelated account stays 200. Old password fails,
+   new password signs in, and replay of the consumed code returns generic 401.
+2. Regeneration invalidates the old set. Missing identity/password/Origin/CSRF
+   fails issuance. Unknown email, replaced/random/disabled-code attempts have
+   identical errors and leave stored credentials/codes unchanged. Invalid keys
+   or new passwords fail without mutation.
+3. A fixture-only validator allows the anonymous-context revocation and then
+   rejects author-session revocation. Recovery returns safe 503; password, code,
+   anonymous context and author access are restored by rollback. After correction,
+   two API instances competing for the same code produce exactly one 200 and one
+   401. Only one digest is removed.
+4. A credential proof captured before recovery cannot rotate a session afterward;
+   the transaction returns 401 and inserts no author record. Closed-database
+   failure returns a safe 503. Existing bootstrap/session behavior still passes.
+
+### Verification commands and observed results
+
+Pinned Node **24.21.0**, npm **11.19.0**; private config excluded. Completed in this
+run, not inferred from historical entries:
+
+| Command/check | Result |
+|---|---|
+| `npm ci` | Passed: 305 packages installed, 313 audited; manifest/lockfile unchanged |
+| `npm run check` | Passed: runtime, ESLint/Oxlint, workspaces, strict test/config types |
+| `npm test` | Passed: 20 tests across 5 files, including recovery contracts/admission and actual web API client boundary |
+| `npm run test:db` | Passed: 13 tests across 4 files on disposable real replica sets, including 4 new recovery scenarios |
+| `npm run build` | Passed: shared packages, Express and Next.js, including `/recover` |
+| `npm run test:readiness` | Passed: 3 operational checks |
+| `npm run test:transactions` | Passed: 5 reported checks including 4 transaction subtests |
+| `npm audit --json` | **Failed (exit 1): 5 moderate development dependency findings**, detailed below |
+| `npm audit --omit=dev --json` | Passed: 0 production findings |
+| Browser | Passed for the precisely scoped checks below; credential-changing success flow not run in browser |
+| Diff/status/contracts | Passed: only D04.3 newly complete, 120 identical task descriptions/statuses, links resolve, pins/CI unchanged, whitespace and secret-pattern scan clean |
+
+Initial checks caught an accessibility role/tag mismatch and strict Supertest/
+nullable-ID typing issues; corrected without suppressions. The first focused DB
+run exposed Mongoose's deprecated `new` option; replaced it with returnDocument:
+'after'. Full verification then passed without those warnings. No check was weakened.
+
+Browser checks used actual Next.js and compiled Express with a generated disposable
+synthetic account/database. Observed initial session loading, keyboard sign-in,
+new settings/recovery views, failed password confirmation, cleared submitted
+password, focusable announced error, safe outage handling, native required-field
+focus, keyboard email-to-code order, masked credential inputs and **390×844** layout
+without horizontal overflow. Sampled error/warning console log list was empty;
+intentional negative requests were exercised, so no blanket console-clean claim.
+Temporary viewport/tab/services were removed; fixture cleanup verified its exact
+namespace `vfb-d032-e5952cd30c19` had no remaining containers/volumes/networks.
+
+**Browser coverage limit:** positive code disclosure and password-changing browser
+submission were not exercised because the browser credential-change policy requires
+user handoff. No real credentials were changed. Positive issuance/reset, strict
+client protocol and persistent success/replay/session outcomes are covered by fast
+client and actual API/Mongo tests. D04.3's individual check does not require a
+hosted account reset or future form release. React review covered client/server
+boundaries, hooks/ref guards, focus, native controls, uncached private data and
+absence of browser storage. No independent review is claimed.
+
+### Separate finding and operating limitations
+
+Full audit now reports **5 moderate** findings from the existing ESLint development
+chain, rooted in minimatch [GHSA-g3hv-75wg-m249 / CVE-2026-118764](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+The advisory concerns attacker-controlled glob pattern amplification, affects
+minimatch <11.0.1 and identifies 11.0.1 as patched. The locked dependency graph was
+unchanged by D04.3; production-only audit is zero. Recovery endpoints do not process
+glob patterns. This is a **pending tooling-maintenance finding**, not a failed
+recovery acceptance check or new task substitution. No forced npm audit fix,
+unverified cross-major override, dependency downgrade or broad upgrade was made.
+Do not process untrusted lint configuration/glob patterns; review compatibility
+for the patched dependency in a focused maintenance follow-up.
+
+Codes are offline, valid until consumed/replaced, with no time-based expiry. They
+must be saved before account loss; no email reset/MFA or all-secrets-lost override
+exists. Lost responses may mean a committed reset; normal sign-in/new unused code
+is the documented path. Admission remains process-local; deployment needs shared
+limits, TLS, proxy policy and database controls. Revocation cannot cancel an
+already authorized in-flight action. Workspaces/forms and release gates remain
+pending. No release, adoption, deployment, outreach or score increase is claimed.
+
+### Growth checklist delta against preserved baseline
+
+Every checkpoint in all eight phases was evaluated in item order. Prior baseline
+and history remain intact; these are this run's scoped outcomes, not permanent
+phase completion:
+
+- **Phase 0 — Completed for this run, 1–4:** verified implementation path/target,
+  actual identity/ownership, secret/data hygiene and unchanged first-user journey.
+  **Pending, 5:** no requested fresh GHFind baseline or score comparison.
+- **Phase 1 — Pending overall:** 1–3 gain working recovery, exact usage/contracts
+  and compatible unchanged pins; 6 gains clean-install/build evidence for this
+  foundation. Full product/release usability (1, 6), license/assets decision (4)
+  and synthetic form/answers demonstration (5) remain **Pending**.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible task, verified
+  prerequisite/individual check, coherent scope and separate audit/coverage limits.
+  **Not applicable, 3:** no coordination issue was required or created.
+- **Phase 3 — Completed for this run, 1–7 within scope:** shared architecture and
+  guarded private-data/failure behavior, meaningful tests, scoped browser evidence,
+  docs, reviewed diff, honest self-review/identity. Future tenant/version/form work
+  in 2 remains pending. **Pending at preparation, 8:** authorized commit/push and
+  remote/hosted read-back follow; actual publication will be recorded separately.
+- **Phase 4 — Pending, 1–5 overall:** release gates, full form journey, retry/
+  historical interpretation, broader accessibility/lifetime/deployment and release
+  notes/demo need later tasks. Auth keyboard/narrow/atomicity checks contribute
+  within scope. **Completed for this run within scope, 6:** accurate limitations
+  and reproducible reporting path. No release is claimed.
+- **Phase 5 — Not applicable, 1–5:** no authorized profile pinning, tutorial/outreach,
+  observed user feedback/adoption or contributor event; none invented.
+- **Phase 6 — Completed for this run within scope, 1–2:** actual implementation
+  check failures corrected; dependency compatibility/setup verified. **Pending:**
+  the separately triaged development-only minimatch advisory and future maintenance.
+  **Not applicable, 3–6:** no release, product-blocking upstream issue needing an
+  external contribution, accepted upstream fix or stable extraction need.
+- **Phase 7 — Pending overall:** 1 gains reproducible engineering evidence, not
+  release/user outcomes; 2 awaits compatible fresh scores. 3 is **Not applicable**
+  to score/rule inference here; authorship was checked independently. 4 selects
+  D05.1; useful maintenance over years remains **Pending**. No task-level growth
+  blocker is inferred from the absence of adoption/score evidence.
+
+### Publication and next eligible task
+
+**Publication status at preparation: ready for authorized D04.3 commit/push**
+on verified `main` at https://github.com/Niralempiric/visual-form-builder.
+The source commit containing recovery implementation can be resolved with
+`git log -1 --format=%H -- apps/api/src/modules/auth/recovery.ts` after committing.
+Exact commit, remote containment, GitHub attribution and hosted checks are recorded
+only after observation. No force-push, amend, history/identity/remote change, empty
+commit, PR, deployment or release is required. Implementation blockers: none.
+
+**Next eligible ID: D05.1 — workspaces, owner memberships and scoped form records
+with an empty initial draft. Prerequisite D04.3 verified complete.** Not started.
+Stop after D04.3 publication and its necessary verification.

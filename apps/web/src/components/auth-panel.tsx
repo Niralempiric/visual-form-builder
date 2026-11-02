@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { UserDto } from '@visual-form-builder/contracts';
+import { RecoveryCodes } from '@/components/recovery-codes';
 import { AuthRequestError, authMutation, getAuthor } from '@/lib/auth-api';
 
 type State = { kind: 'loading' | 'signedOut' | 'unavailable' } | { kind: 'signedIn'; user: UserDto };
@@ -106,6 +107,7 @@ export function AuthPanel({ mode }: { mode: 'login' | 'account' }) {
             <button type="submit">{busy ? 'Signing in…' : 'Sign in'}</button>
           </fieldset>
         </form>
+        <p><Link className="account-link" href="/recover">Use a recovery code</Link></p>
         <p className="account-help">Accounts are managed by your instance operator. Public signup is closed.</p>
       </> : null}
       {state.kind === 'signedIn' ? <>
@@ -116,6 +118,7 @@ export function AuthPanel({ mode }: { mode: 'login' | 'account' }) {
         <button type="button" onClick={() => { void mutate('logout', {}); }} disabled={busy}>
           {busy ? 'Signing out…' : 'Sign out'}
         </button>
+        {mode === 'account' && !busy ? <RecoveryCodes key={state.user.id} /> : null}
       </> : null}
       {message ? <p className="account-error" ref={alert} role="alert" tabIndex={-1}>{message}</p> : null}
     </section>

@@ -154,3 +154,22 @@ and revokes the old record before inserting the replacement; logout revokes with
 one guarded majority update. Disposable tests verify rotation rollback and race
 outcomes as well as independent-instance persistence. [Session documentation](SESSIONS.md)
 describes the opaque cookie and CSRF/Origin boundaries; no raw cookie token is stored.
+
+
+## Recovery serialization (D04.3)
+
+Saved recovery codes persist only as high-entropy SHA-256 digests in the existing
+private `users.recoveryHashes` field. Generating a set requires the current
+password and authenticated session. Recovery consumes one digest, replaces the
+password hash and revokes the request context plus all recovered-user sessions
+in a single snapshot/majority transaction. The additive `(userId, revokedAt)`
+index supports revocation. All public DTOs exclude these fields.
+
+A private `users.sessionSequence` counter supplies a real user-document write
+for login, issuance and recovery. Existing records acquire it on the first
+modification; no data reset/backfill is required. Login guards this write with
+the password hash it verified before rotating sessions, so it serializes with
+recovery instead of creating a late session from an older credential proof.
+Disposable D04.3 tests prove code replay/races, account isolation and rollback
+when a late author-session revocation fails. See [recovery](RECOVERY.md) for
+exact contracts, limits and observed browser/API verification boundaries.

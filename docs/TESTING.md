@@ -187,8 +187,9 @@ or a complete form-release gate.
 `tests/fast/auth.test.ts` adds real Argon2id salts/cost/verification, strict input
 and safe configuration errors, generic credential failures, admission/concurrency
 ceilings, expiry, token gates and bounded uncompressed JSON tests. It verifies
-login/signup/recovery remain absent instead of treating credential success as a
-session. `tests/integration/auth.test.ts` uses separate disposable replicas and
+login/signup/recovery remain absent on the bootstrap-only router instead of
+treating credential success as a session. The composed API adds login and recovery
+through separate routers. `tests/integration/auth.test.ts` uses separate disposable replicas and
 independent clients to check concurrent first-account creation, persistent
 bootstrap lockout, unique email, private hash projections/DTOs and intentional
 transaction rollback. Closed-pool failure returns safe errors. All accounts and
@@ -220,3 +221,28 @@ synthetic account. Viewport override and temporary preview services are removed
 after verification. No Playwright dependency, fake external review or hosted TLS
 claim is introduced. See [session contracts](SESSIONS.md) and implementation
 progress for this run's commands/results and evidence limits.
+
+
+## D04.3 recovery verification
+
+`tests/fast/recovery.test.ts` checks strict code/password bounds and independent
+recovery admission limits; `tests/fast/auth-client.test.ts` checks the actual web
+API helper's same-origin/no-store requests, CSRF sequence, allowlisted response
+parsing and safe error mapping. No frontend testing dependency was added.
+
+`tests/integration/recovery.test.ts` adds four real disposable-replica scenarios:
+code issuance/hash-only storage, one-time use across fresh API instances, all
+prior sessions revoked while another account remains signed in, password replacement,
+regeneration, Origin/CSRF/password gates, generic unknown/wrong/disabled/reused
+failures, rollback after author-session revocation fails, competing redemptions,
+a stale pre-recovery login proof and safe database unavailability. No mocked
+transaction substitutes for these tests. Existing session/bootstrap suites also
+run after the login serialization change. See [recovery](RECOVERY.md).
+
+Browser evidence covers new screen rendering, keyboard/native validation, masked
+inputs, negative confirmation/outage handling and 390×844 layout against actual
+Next.js/compiled Express on an isolated account. Successful credential-changing
+browser submission and code disclosure are not claimed: those UI actions require
+user handoff. Positive protocol and persistence behavior is tested through API/
+Mongo fixtures. This does not block D04.3's individual API/session completion check,
+and is recorded as a browser coverage limitation. No real credentials were changed.

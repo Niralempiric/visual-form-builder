@@ -19,6 +19,7 @@ export async function createSessionStore(connection: Connection) {
     revokedAt: { type: Date, default: null },
   }, { collection: 'sessions', strict: 'throw', bufferCommands: false });
   schema.index({ tokenHash: 1 }, { unique: true });
+  schema.index({ userId: 1, revokedAt: 1 });
   schema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
   schema.set('toJSON', { transform(_doc, value) {
     Reflect.deleteProperty(value, 'tokenHash');
@@ -40,8 +41,15 @@ export async function createSessionStore(connection: Connection) {
     async insert(record: SessionRecord) {
       await safe(async () => { await new sessions(record).save({ w: 'majority' }); });
     },
-    async rotate(oldHash: string, record: SessionRecord, now: Date) {
+    async rotate(oldHash: string, record: SessionRecord, now: Date, passwordHash: string) {
+      const userId = record.userId;
+      if (userId === null) throw new ApiError('UNAUTHENTICATED');
       await safe(() => connection.transaction(async session => {
+        // Serialize with recovery via a modifying user write. A credential verified
+        // before recovery cannot create a valid session after that recovery commits.
+        const user = await connection.collection('users').updateOne({ _id: userId, status: 'active', passwordHash },
+          { $inc: { sessionSequence: 1 } }, { session, maxTimeMS: 1000 });
+        if (user.matchedCount !== 1) throw new ApiError('UNAUTHENTICATED');
         const result = await sessions.updateOne(eligible(oldHash, now), { $set: { revokedAt: now } }, { session, maxTimeMS: 1000 });
         if (result.modifiedCount !== 1) throw new ApiError('UNAUTHENTICATED');
         await new sessions(record).save({ session });

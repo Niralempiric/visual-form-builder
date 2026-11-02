@@ -1,12 +1,13 @@
 # Author sign-in, sessions and request protection
 
-D04.2 | 30 October 2026
+D04.2–D04.3 | 2 November 2026
 
 Use [local setup](LOCAL_DEVELOPMENT.md) and [operator bootstrap](AUTHENTICATION.md),
 then open `/login`. Enter the existing author's credentials. Successful sign-in
 opens `/app`, displays the signed-in address and offers sign-out. Refresh and API
 restart preserve the session. This screen is an account preview; workspaces and
-forms are not implemented. Recovery codes remain D04.3; public signup stays closed.
+forms are not implemented. Saved [recovery codes](RECOVERY.md) are available from
+`/app`, with password reset at `/recover`; public signup stays closed.
 
 ## Configuration and cookies
 
@@ -89,8 +90,11 @@ an expiresAt TTL index eventually removes old rows. Every authorization lookup
 checks expiry and revocation **before** TTL deletion, then rechecks active user
 status. Repeated reads never slide the 24-hour deadline.
 
-Login rotation uses snapshot reads/majority writes in one transaction, guarding
-the old unexpired/unrevoked record before revocation and insert. Competing logins
+Login rotation uses snapshot reads/majority writes in one transaction, first
+writing the active user with its verified password-hash predicate, then guarding
+the old unexpired/unrevoked record before revocation and insert. This serializes
+with recovery; an older credential proof cannot establish a later session.
+See [recovery transactions](RECOVERY.md#api-contracts-and-transaction-boundary). Competing logins
 consume a pre-session once; insertion failure rolls back its revocation. Logout
 uses one guarded majority-write update. An already authorized in-flight request
 is not canceled by a later logout; subsequent lookups reject the revoked cookie.
@@ -99,7 +103,8 @@ Future sensitive mutations must apply their own transaction/authorization contra
 `createSessionManager` exposes `author(request)` and `mutation(request)` guards.
 Use them for subsequent management modules: `mutation` enforces Origin, a current
 author and CSRF. Browser UI guards grant no API access. No workspace role or tenant
-permission is inferred by this task, and no recovery-code operation is implemented.
+permission is inferred by this task. Recovery adds atomic account-wide revocation
+and the `(userId, revokedAt)` session index; it does not grant workspace permissions.
 
 ## Browser behavior and verification
 
@@ -120,7 +125,8 @@ failure. The browser was tested against actual Next.js plus the compiled API on
 an isolated synthetic database: keyboard sign-in, refresh, restart recovery,
 logout, anonymous access, 390px layout, loading/error/empty states. No real account
 or response data was used. Complete form journeys and hosted deployment are later
-release gates; this evidence does not complete M02 recovery or a form release.
+release gates. D04.3 recovery acceptance is recorded separately in [recovery](RECOVERY.md);
+authentication evidence does not complete a form release.
 
 References: [OWASP session management](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html),
 [OWASP CSRF prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html),

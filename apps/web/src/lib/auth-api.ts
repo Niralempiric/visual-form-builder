@@ -1,4 +1,4 @@
-import { csrfDtoSchema, errorEnvelopeSchema, logoutDtoSchema, successEnvelopeSchema, userDtoSchema } from '@visual-form-builder/contracts';
+import { csrfDtoSchema, errorEnvelopeSchema, recoveryCodesDtoSchema, recoveryDtoSchema, logoutDtoSchema, successEnvelopeSchema, userDtoSchema } from '@visual-form-builder/contracts';
 
 export class AuthRequestError extends Error {
   constructor(readonly status: number) { super('Account request failed.'); }
@@ -26,3 +26,13 @@ export async function authMutation(action: 'login' | 'logout', body: unknown) {
   if (action === 'login') return call('login', parseUser, init);
   return call('logout', parseLogout, init);
 }
+
+const parseCodes = (body: unknown) => successEnvelopeSchema(recoveryCodesDtoSchema).parse(body).data;
+const parseRecovery = (body: unknown) => successEnvelopeSchema(recoveryDtoSchema).parse(body).data;
+async function recoveryMutation<T>(path: string, body: unknown, parse: (body: unknown) => T) {
+  const { csrfToken } = await call('csrf', parseCsrf);
+  return call(path, parse, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+    body: JSON.stringify(body) });
+}
+export const issueRecoveryCodes = (password: string) => recoveryMutation('recovery-codes', { password }, parseCodes);
+export const recoverAccount = (body: unknown) => recoveryMutation('recover', body, parseRecovery);

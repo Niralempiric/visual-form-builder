@@ -97,9 +97,10 @@ export function createSessionManager(store: SessionStore, users: Pick<UserStore,
       requireCsrf(request, context.csrfSecret);
       return context;
     },
-    async signIn(response: Response, oldHash: string, user: UserDto) {
+    clearCookie(response: Response) { response.clearCookie(cookieName, cookieOptions); },
+    async signIn(response: Response, oldHash: string, user: UserDto, passwordHash: string) {
       const { token, record } = fresh(user.id);
-      await store.rotate(oldHash, record, now());
+      await store.rotate(oldHash, record, now(), passwordHash);
       setCookie(response, token, record.expiresAt);
     },
     async signOut(response: Response, hash: string) {

@@ -19,8 +19,9 @@ the first hosted run passed. D04.1 adds operator-controlled first-account creati
 Argon2id password storage and an internal throttled credential checker.
 [Authentication setup](docs/AUTHENTICATION.md) describes the disabled-by-default
 bootstrap. D04.2 adds persistent opaque sessions, CSRF/Origin checks and working
-[sign-in/sign-out views](docs/SESSIONS.md). Recovery, form editing, publishing and
-responses remain pending.
+[sign-in/sign-out views](docs/SESSIONS.md). D04.3 adds password-confirmed saved
+[recovery codes](docs/RECOVERY.md), one-time password reset and atomic revocation
+of prior sessions. Form editing, publishing and responses remain pending.
 
 ## Repository and setup
 

@@ -17,8 +17,9 @@ export function createSessionRouter(auth: AuthService, sessions: SessionManager)
   });
   router.post('/auth/login', async (req, res) => {
     const context = await sessions.loginContext(req);
-    const user = await auth.checkCredentials(await readAuthJson(req, res), req.socket.remoteAddress ?? 'unknown');
-    await sessions.signIn(res, context.tokenHash, user);
+    const credential = await auth.loginCredential(await readAuthJson(req, res), req.socket.remoteAddress ?? 'unknown');
+    const user = credential.dto;
+    await sessions.signIn(res, context.tokenHash, user, credential.passwordHash);
     res.json(successEnvelopeSchema(userDtoSchema).parse({ data: user, correlationId: res.locals.correlationId }));
   });
   router.post('/auth/logout', async (req, res) => {

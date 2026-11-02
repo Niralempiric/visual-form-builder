@@ -10,7 +10,18 @@ export async function createAuthService(store: Pick<UserStore, 'bootstrap' | 'cr
   const passwords = await createPasswords();
   const digest = (value: string) => createHash('sha256').update(value).digest();
   const expected = bootstrapToken === undefined ? undefined : digest(bootstrapToken);
+  async function credential(input: unknown, network: string) {
+    throttle.network(network);
+    const value = parseContract(credentialInputSchema, input);
+    throttle.account(value.email);
+    const record = await store.credential(value.email);
+    const valid = await passwords.verify(record?.passwordHash, value.password);
+    if (!record || !valid || record.dto.status !== 'active') throw new ApiError('UNAUTHENTICATED');
+    return record;
+  }
   return {
+    // Internal proof only: never serialize its password hash into an API response.
+    loginCredential: credential,
     admitAnonymous(network: string) { throttle.network(network); },
     authorizeBootstrap(token: string | undefined, network: string, origin: string | undefined) {
       throttle.network(network);
@@ -25,13 +36,7 @@ export async function createAuthService(store: Pick<UserStore, 'bootstrap' | 'cr
     // A credential result alone grants no management access; the HTTP login
     // route must rotate its CSRF-protected pre-session into a stored session.
     async checkCredentials(input: unknown, network: string) {
-      throttle.network(network);
-      const value = parseContract(credentialInputSchema, input);
-      throttle.account(value.email);
-      const record = await store.credential(value.email);
-      const valid = await passwords.verify(record?.passwordHash, value.password);
-      if (!record || !valid || record.dto.status !== 'active') throw new ApiError('UNAUTHENTICATED');
-      return record.dto;
+      return (await credential(input, network)).dto;
     },
   };
 }
