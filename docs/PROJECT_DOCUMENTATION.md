@@ -893,7 +893,7 @@ Modules: M03. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D04.3. **Individual completion check:** A signed-in owner creates a workspace and its first draft form.
 
-- [ ] **D05.2** Build the dashboard with form creation, workspace switching and loading/empty/error states.
+- [x] **D05.2** Build the dashboard with form creation, workspace switching and loading/empty/error states.
 
   Prerequisite: D05.1. **Individual completion check:** The owner opens the correct form from its workspace dashboard.
 

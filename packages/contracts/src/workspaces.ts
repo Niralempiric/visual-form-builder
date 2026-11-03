@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { draftTitleSchema, initialDraftSchema } from '@visual-form-builder/form-schema';
 import { objectIdSchema } from './identifiers.js';
+import { pageEnvelopeSchema } from './pagination.js';
 
 export const MAX_FORMS_PER_WORKSPACE = 25;
 export const membershipRoleSchema = z.enum(['owner', 'editor', 'viewer']);
@@ -23,3 +24,9 @@ export const initialFormDtoSchema = z.strictObject({
 });
 export type WorkspaceDto = z.infer<typeof workspaceDtoSchema>;
 export type InitialFormDto = z.infer<typeof initialFormDtoSchema>;
+
+export const formSummaryDtoSchema = initialFormDtoSchema.pick({ id: true, workspaceId: true, title: true,
+  availability: true, draftRevision: true, updatedAt: true });
+export const workspacePageSchema = pageEnvelopeSchema(workspaceDtoSchema);
+export const formPageSchema = pageEnvelopeSchema(formSummaryDtoSchema);
+export type FormSummaryDto = z.infer<typeof formSummaryDtoSchema>;

@@ -36,3 +36,5 @@ async function recoveryMutation<T>(path: string, body: unknown, parse: (body: un
 }
 export const issueRecoveryCodes = (password: string) => recoveryMutation('recovery-codes', { password }, parseCodes);
 export const recoverAccount = (body: unknown) => recoveryMutation('recover', body, parseRecovery);
+
+export const getCsrfToken = (signal?: AbortSignal) => call('csrf', parseCsrf, signal ? { signal } : {});

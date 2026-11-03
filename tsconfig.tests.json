@@ -4,7 +4,8 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "types": ["node"],
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
   "include": ["tests/**/*.ts", "vitest*.ts"],
   "exclude": ["node_modules", "**/dist", "**/.next"]

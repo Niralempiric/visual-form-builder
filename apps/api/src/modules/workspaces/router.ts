@@ -1,13 +1,24 @@
 import express from 'express';
 import { createFormInputSchema, createWorkspaceInputSchema, formParamsSchema, initialFormDtoSchema,
-  successEnvelopeSchema, workspaceDtoSchema, workspaceParamsSchema } from '@visual-form-builder/contracts';
-import { parseContract } from '../../http.js';
+  successEnvelopeSchema, workspaceDtoSchema, workspaceParamsSchema, workspacePageSchema, formPageSchema } from '@visual-form-builder/contracts';
+import { parseContract, parsePagination } from '../../http.js';
 import { readManagementJson } from '../../json.js';
 import type { SessionManager } from '../auth/sessions.js';
 import type { WorkspaceStore } from './store.js';
 
 export function createWorkspaceRouter(store: WorkspaceStore, sessions: SessionManager) {
   const router = express.Router();
+  router.get('/workspaces', async (req, res) => {
+    const { user } = await sessions.author(req);
+    const page = await store.listWorkspaces(user.id, parsePagination(req.query));
+    res.json(workspacePageSchema.parse({ ...page, correlationId: res.locals.correlationId }));
+  });
+  router.get('/workspaces/:workspaceId/forms', async (req, res) => {
+    const { user } = await sessions.author(req);
+    const { workspaceId } = parseContract(workspaceParamsSchema, req.params);
+    const page = await store.listForms(user.id, workspaceId, parsePagination(req.query));
+    res.json(formPageSchema.parse({ ...page, correlationId: res.locals.correlationId }));
+  });
   router.post('/workspaces', async (req, res) => {
     const { user } = await sessions.mutation(req);
     const { name } = parseContract(createWorkspaceInputSchema, await readManagementJson(req, res));

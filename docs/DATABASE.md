@@ -190,3 +190,12 @@ Published versions/responses are not created. Membership predicates participate
 in management reads; a random public ID grants no private access. Actual isolated
 tests check independent readers/instances, both late-write rollback boundaries,
 unique membership/public indexes and the 25-form race. See [workspace contracts](WORKSPACES.md).
+
+
+D05.2 adds a nonunique (userId, workspaceId) membership index without dropping or
+synchronizing existing indexes. Workspace discovery joins current memberships to
+active workspaces; scoped form lists use the existing workspace/updatedAt/ID
+index and exclude deleting records. Both apply updatedAt/ID keyset boundaries,
+limit+1 lookahead and bounded query execution. List reads do not alter creation
+transactions or introduce versions/responses. Equal-timestamp pagination,
+workspace separation and membership removal are verified in disposable Mongo.

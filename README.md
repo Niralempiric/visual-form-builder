@@ -22,8 +22,10 @@ bootstrap. D04.2 adds persistent opaque sessions, CSRF/Origin checks and working
 [sign-in/sign-out views](docs/SESSIONS.md). D04.3 adds password-confirmed saved
 [recovery codes](docs/RECOVERY.md), one-time password reset and atomic revocation
 of prior sessions. D05.1 adds protected [workspace and empty-draft APIs](docs/WORKSPACES.md)
-with owner memberships and atomic persistence. The dashboard UI, field editing,
-publishing and responses remain pending.
+with owner memberships and atomic persistence. D05.2 adds the protected
+[workspace dashboard](docs/DASHBOARD.md): create and switch workspaces, create
+empty forms, and open the correct saved draft. Field editing, publishing and
+responses remain pending.
 
 ## Repository and setup
 

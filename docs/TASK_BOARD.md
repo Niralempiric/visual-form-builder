@@ -76,7 +76,7 @@ Modules: M03.
 
   Prerequisite: D04.3. **Done when:** A signed-in owner creates a workspace and its first draft form.
 
-- [ ] **D05.2** Build the dashboard with form creation, workspace switching and loading/empty/error states.
+- [x] **D05.2** Build the dashboard with form creation, workspace switching and loading/empty/error states.
 
   Prerequisite: D05.1. **Done when:** The owner opens the correct form from its workspace dashboard.
 

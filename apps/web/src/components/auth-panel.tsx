@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { FormEvent, ReactNode } from 'react';
 import type { UserDto } from '@visual-form-builder/contracts';
 import { RecoveryCodes } from '@/components/recovery-codes';
 import { AuthRequestError, authMutation, getAuthor } from '@/lib/auth-api';
 
 type State = { kind: 'loading' | 'signedOut' | 'unavailable' } | { kind: 'signedIn'; user: UserDto };
 
-export function AuthPanel({ mode }: { mode: 'login' | 'account' }) {
+export function AuthPanel({ mode, children, heading }: { mode: 'login' | 'account'; children?: ReactNode; heading?: string }) {
   const router = useRouter();
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [busy, setBusy] = useState(false);
@@ -84,9 +84,9 @@ export function AuthPanel({ mode }: { mode: 'login' | 'account' }) {
   }
 
   return (
-    <section className="account-card" aria-labelledby="account-title" aria-busy={busy}>
+    <section className={children ? "account-card dashboard-card" : "account-card"} aria-labelledby="account-title" aria-busy={busy}>
       <p className="eyebrow">Your private instance</p>
-      <h1 id="account-title">{mode === 'login' ? 'Welcome back.' : 'Your account.'}</h1>
+      <h1 id="account-title">{heading ?? (mode === 'login' ? 'Welcome back.' : children ? 'Your forms.' : 'Your account.')}</h1>
       {state.kind === 'loading' ? <output>Checking your session…</output> : null}
       {state.kind === 'unavailable' ? <>
         <p role="alert">The account service is unavailable. Check your connection and try again.</p>
@@ -112,13 +112,12 @@ export function AuthPanel({ mode }: { mode: 'login' | 'account' }) {
       </> : null}
       {state.kind === 'signedIn' ? <>
         <output>Signed in as <strong className="account-email">{state.user.email}</strong>.</output>
-        {mode === 'login' ? <Link className="account-link" href="/app">Open your account</Link> :
-          <div className="account-empty"><h2>You’re ready for what’s next.</h2>
-            <p>Workspace creation and form editing are still being built.</p></div>}
+        {mode === 'login' ? <Link className="account-link" href="/app">Open workspace dashboard</Link> :
+          <nav className="account-navigation" aria-label="Account"><Link className="account-link" href={children ? '/app/account' : '/app'}>{children ? 'Account and recovery' : 'Workspace dashboard'}</Link></nav>}
         <button type="button" onClick={() => { void mutate('logout', {}); }} disabled={busy}>
           {busy ? 'Signing out…' : 'Sign out'}
         </button>
-        {mode === 'account' && !busy ? <RecoveryCodes key={state.user.id} /> : null}
+        {mode === 'account' && !busy ? children ? <div key={state.user.id}>{children}</div> : <RecoveryCodes key={state.user.id} /> : null}
       </> : null}
       {message ? <p className="account-error" ref={alert} role="alert" tabIndex={-1}>{message}</p> : null}
     </section>

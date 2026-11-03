@@ -5,9 +5,10 @@ D04.2–D04.3 | 2 November 2026
 Use [local setup](LOCAL_DEVELOPMENT.md) and [operator bootstrap](AUTHENTICATION.md),
 then open `/login`. Enter the existing author's credentials. Successful sign-in
 opens `/app`, displays the signed-in address and offers sign-out. Refresh and API
-restart preserve the session. This screen is an account preview; workspaces and
-forms are not implemented. Saved [recovery codes](RECOVERY.md) are available from
-`/app`, with password reset at `/recover`; public signup stays closed.
+restart preserve the session. D05.2 makes `/app` the protected [workspace
+dashboard](DASHBOARD.md). Saved [recovery codes](RECOVERY.md) are available from
+**Account and recovery** at `/app/account`, with password reset at `/recover`;
+public signup stays closed.
 
 ## Configuration and cookies
 

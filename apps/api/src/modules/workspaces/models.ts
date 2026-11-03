@@ -31,6 +31,7 @@ export function workspaceModels(connection: Connection) {
     role: { type: String, enum: ['owner', 'editor', 'viewer'], required: true },
   }, { ...options, collection: 'memberships' });
   membershipSchema.index({ workspaceId: 1, userId: 1 }, { unique: true });
+  membershipSchema.index({ userId: 1, workspaceId: 1 });
   const formSchema = new Schema<FormRecord>({
     workspaceId: { type: Schema.Types.ObjectId, required: true, immutable: true },
     publicId: { type: String, required: true, immutable: true },

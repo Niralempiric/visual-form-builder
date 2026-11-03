@@ -8,7 +8,8 @@ no migration, reset, real account or normal development data is changed by insta
 
 ## Save codes before losing access
 
-1. Open `/app` while signed in. Under **Recovery codes**, enter your current
+1. Open **Account and recovery** from the dashboard (`/app/account`) while signed in.
+   Under **Recovery codes**, enter your current
    password and select **Generate new recovery codes**. This immediately replaces
    all previous unused codes, so save the new set before closing the view.
 2. Five independent, cryptographically random 32-byte codes appear in read-only

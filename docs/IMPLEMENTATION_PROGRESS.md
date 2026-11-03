@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1 completed**; 107 implementation tasks remain pending.
-Next eligible task: **D05.2**. Authentication, recovery and protected workspace/empty-draft APIs work; the dashboard UI, field editing and publication remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.2 completed**; 106 implementation tasks remain pending.
+Next eligible task: **D05.3**. Authentication, recovery, protected workspace/empty-draft APIs and the workspace dashboard work; the broader management denial matrix, field editing and publication remain pending.
 
 ## Per task record template
 
@@ -2101,3 +2101,180 @@ independent review, release, deployment or adoption is claimed.
 
 Next eligible task remains **D05.2**, not started. Stop after this receipt's
 publication verification.
+
+
+## D05.2 — Workspace dashboard — 3 November 2026
+
+**Implementation status: Completed.** Selected exactly D05.2: “Build the dashboard
+with form creation, workspace switching and loading/empty/error states.” Prerequisite
+D05.1 verified from its source, real API/Mongo tests and published acceptance; prior
+source `3cb7c0dab0de3560fd50663e4d21f4df25466533`, receipt HEAD
+`6c6217a4aa8beb7d0af585d35b599adf1bf9a2fd`. The prior hosted receipt job
+`125736278086` passed all steps. Repository initialization/planning was not repeated.
+
+### Repository, authorization and attribution
+
+Actual implementation path:
+`/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+Authorized public URL: https://github.com/Niralempiric/visual-form-builder.
+Initial working tree clean; current branch `main`, upstream `origin/main`, fetch
+and push destinations verified exact; refreshed divergence 0/0 before publication.
+GitHub API verifies public ownership, authenticated login Niralempiric and push
+permission; main is unprotected and the existing workflow uses direct-main pushes.
+No PR/protection bypass is needed. This checkout is separate from Webhook Inbox.
+
+Effective author and committer remain **Niralempiric <niralempiric@gmail.com>**.
+GitHub attributes the prior HEAD's author and committer to Niralempiric; the new
+commit attribution is verified after publication. No identity/remotes were edited.
+Embedded credential location remains `.git/config` → `remote.origin.url`; values
+were neither printed nor changed. Credential-manager storage remains recommended.
+No private environment values, real answers or credentials enter committed files.
+
+### Work and affected files
+
+- `apps/api/src/modules/workspaces/{models,store,router}.ts` and
+  `packages/contracts/src/workspaces.ts`: authenticated current-membership workspace
+  discovery and scoped form-summary lists, strict bounded cursor queries,
+  updatedAt/ObjectId keyset ordering, safe uncached DTOs/errors, and an additive
+  (userId, workspaceId) membership index. No write transaction contract changed.
+- `apps/web/src/features/workspaces/{dashboard,draft-overview,controls}.tsx` and
+  `use-private-page.ts`: workspace creation/switching, empty-form creation,
+  explicit saved-draft opening, loading/empty/failure/retry/refresh/load-more,
+  scope cancellation and late-response suppression. No shared private-data cache
+  or browser-storage persistence; abort/timeout and focus/pageshow refresh.
+- `/app`, `/app/account`, `/app/forms/[formId]/edit` pages, `auth-panel.tsx`,
+  `lib/{auth-api,dashboard-api}.ts` and `globals.css`: protected navigation,
+  account/recovery separation, literal titles, native labelled controls,
+  pending/duplicate-submit guards, focused headings/errors and narrow layout.
+  The edit URL currently shows a saved empty draft; editing/publishing are pending.
+- Web/test TypeScript configs enable explicit `.ts` imports only for their
+  existing no-emit checking, resolving Next.js/NodeNext client-test compatibility.
+  Runtime, dependency pins, lockfile, CI, AGENTS and normal configuration unchanged.
+- `tests/fast/dashboard-client.test.ts`, fast workspace mock and the fifth
+  integration workspace scenario: client parsing/CSRF/cancellation and actual
+  Mongo list/pagination/scope/permission/query/summary behavior.
+- README; `docs/{DASHBOARD,WORKSPACES,SESSIONS,RECOVERY,API_CONTRACTS,DATABASE,TESTING}.md`;
+  this progress file, project plan and board: exact synthetic walkthrough, changed
+  API/account paths, limits and verified task state. Only D05.2 newly completed.
+
+### Individual completion check and browser evidence
+
+**Passed:** “The owner opens the correct form from its workspace dashboard.”
+An isolated Mongo replica set, actual compiled Express and actual Next.js ran
+locally. A synthetic existing author signed in, observed no workspaces, created
+**Synthetic workshop**, observed no forms, and created **Synthetic workshop
+registration**. The saved overview read back the correct title, workspace and
+unpublished empty draft. Returning to that workspace and activating **Open form**
+reopened the same form ID. A second **Synthetic volunteer** workspace/form remained
+separate during switching and reopening. Independent Mongo read-back confirmed
+exactly two workspaces and two correctly bound forms; reload retained them.
+
+Additional observed browser checks: required blank-input focus/validation; Enter
+creation; native keyboard select/link opening; literal `<script>` text; loading
+while a local proxy delayed genuine API reads; switching while an earlier list
+was delayed did not reveal its old forms; injected list failure hid stale results,
+focused a safe error, and Retry recovered after restoration. The 390×844 viewport
+stacked controls with no horizontal overflow (client/scroll width both 375 after
+scrollbar). Account/recovery navigation worked without generating/changing any
+credential. Sign-out and a subsequent protected `/app` visit showed only the
+session-ended message/sign-in link. Browser error/warning capture was empty at
+final observation. Temporary viewport reset and owned tab closed.
+
+Proof artifacts outside Git: `/tmp/vfb-d052-dashboard.png` and
+`/tmp/vfb-d052-saved-draft.png`; no credentials/answers in either. The local
+latency/failure proxy was test-only, forwards actual API traffic and adds no
+production debug feature. Fixture `vfb-d032-d9fb0270950c` removed its own containers,
+volumes and network with cleanup verification; normal development data untouched.
+
+### Verification commands and results
+
+Pinned Node **24.21.0**, npm **11.19.0** and committed lockfile used. Final run:
+
+| Check | Result |
+|---|---|
+| `npm ci` | Passed, clean dependency installation |
+| `npm run check` | Passed, runtime pins, both lint engines and application/test types |
+| `npm test` | Passed, 26 fast tests across 7 files |
+| `npm run test:db` | Passed, 18 actual Mongo tests across 5 files; generated-fixture cleanup verified |
+| `npm run build` | Passed, shared packages, compiled Express and production Next.js routes |
+| `npm run test:readiness` | Passed, 3 operational checks |
+| `npm run test:transactions` | Passed, 5 reported checks including 4 transaction subtests |
+| `npm audit --json` | Failed, exit 1: unchanged 5 moderate development-chain findings |
+| `npm audit --omit=dev --json` | Passed, zero production findings |
+| Actual browser/API/Mongo D05.2 acceptance | Passed, as detailed above |
+| Final self-review | Task-only diff, secret-pattern/manual review, local links, documented Python syntax, tracker consistency and `git diff --check` |
+
+Focused tests also passed (6 fast, 5 workspace Mongo). A preliminary build exposed
+an explicit `.js` client import that Turbopack could not resolve; corrected to
+`.ts` with appropriate no-emit compiler support, without suppressing types. The
+first disposable preview launch used a non-existent non-hoisted Next binary;
+corrected the harness path and reran successfully, with fixture cleanup. One check
+invocation used the app cwd accidentally and exited ENOENT; reran in the verified
+implementation path. These failed attempts are not acceptance evidence. Two interactive verification processes exited 143 during database tests before
+a result. Their exact orphaned fixture namespaces were removed only after checking
+Compose ownership/configuration labels. The full suite then ran as a terminal-
+independent verification job; no test failures were ignored. Full required checks passed on the final implementation; no independent review claimed.
+
+### Growth delta against the preserved checkpoint baseline
+
+Read/evaluated the entire growth checklist. Item numbers refer to each phase's
+items in order; the earlier baseline and history account for unchanged checkpoints.
+
+- **Phase 0 — Completed for this run, 1–4:** exact path/target, preserved truthful
+  attribution, synthetic/privacy review and observed initial author journey.
+  **Pending, 5:** no fresh scan requested; no score claim.
+- **Phase 1 — Pending overall:** 1–3 gain a working original dashboard, exact setup/
+  walkthrough and unchanged pins; 6 gains clean-install/build evidence. Complete
+  release usability (1, 6), license/assets decision (4), and full synthetic form/
+  answer demo (5) remain **Pending**. New UI uses existing CSS, no new external asset.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible task, exact acceptance,
+  coherent implementation and recorded limitations. **Not applicable, 3:** no
+  coordination issue needed or created.
+- **Phase 3 — Completed for this run, 1–7 within scope:** shared contracts,
+  current-membership lists, preserved transactions, meaningful tests, actual
+  browser states/accessibility checks, matching docs and honest self-review/
+  authorship. Broader tenant/version/response contracts in 2 remain **Pending**.
+  **Pending at preparation, 8:** authorized exact-remote push/hosted checks follow
+  actual publication; their observed result will be recorded separately.
+- **Phase 4 — Pending, 1–5 overall:** complete create-publish-submit-inspect-export,
+  closing/retry/history, release accessibility/data lifetime/deployment and release
+  notes/demo gates. Item 4 gains scoped keyboard/narrow evidence only.
+  **Completed within scope, 6:** reproducible synthetic walkthrough, honest limits
+  and existing sanitized reporting path. No release/deployment claim.
+- **Phase 5 — Not applicable, 1–5:** no profile pin, outreach/tutorial publication,
+  real feedback/adoption or contributor event requested or fabricated. The local
+  walkthrough documents working behavior; no public promotional post was made.
+- **Phase 6 — Completed for this run within scope, 1–2:** observed implementation/
+  verification failures corrected, compatibility/setup/tests maintained.
+  **Pending:** unchanged development audit finding and ongoing maintenance.
+  **Not applicable, 3–6:** no release, blocking upstream contribution or stable
+  renderer/schema extraction need in this task.
+- **Phase 7 — Pending overall:** 1 gains reproducible engineering evidence, not
+  user/release outcomes; 2 awaits compatible fresh scores. 3 is **Not applicable**
+  to score/rule inference here; attribution is verified. 4 identifies D05.3;
+  multi-year maintenance remains **Pending**. No adoption/score blocker inferred.
+
+### Limitations, publication and next eligible task
+
+The same five moderate development-only ESLint/minimatch-chain findings remain
+pending tooling maintenance ([advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249));
+production audit remains zero. No unrelated dependency update or force-fix.
+Lists are live keyset pages, not snapshots; concurrent changes can move records.
+Creation has no idempotent replay: a lost response may have committed, so refresh
+before retrying. Existing auth/deployment admission limits still apply.
+
+No field editing, publishing, responses, retention execution or complete release
+journey is implemented. The broader endpoint tenant-denial matrix is D05.3 and
+remains unmarked. No normal-data seed, deployment, PR, release, outreach, fake
+activity/adoption/review/score, force-push, amend or empty commit occurred.
+
+**Publication status at preparation: ready for authorized D05.2 commit/push** to
+verified `main` at https://github.com/Niralempiric/visual-form-builder. The source
+commit is resolved after committing via
+`git log -1 --format=%H -- apps/web/src/features/workspaces/dashboard.tsx`.
+Exact remote containment, new GitHub attribution and hosted CI await observation.
+Implementation blockers: none.
+
+**Next eligible ID: D05.3 — Apply tenant scoping to all management endpoints and
+add two-workspace denial tests.** Prerequisite D05.2 verified complete. Not started.
+Stop after this one task's publication and verification.

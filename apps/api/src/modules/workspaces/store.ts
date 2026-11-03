@@ -1,15 +1,15 @@
 import { randomUUID } from 'node:crypto';
 import { Types } from 'mongoose';
 import type { Connection } from 'mongoose';
-import { MAX_FORMS_PER_WORKSPACE, initialFormDtoSchema, workspaceDtoSchema } from '@visual-form-builder/contracts';
-import type { MembershipRole } from '@visual-form-builder/contracts';
+import { MAX_FORMS_PER_WORKSPACE, formSummaryDtoSchema, initialFormDtoSchema, workspaceDtoSchema } from '@visual-form-builder/contracts';
+import type { CursorPosition, MembershipRole } from '@visual-form-builder/contracts';
 import { createInitialDraft } from '@visual-form-builder/form-schema';
-import { ApiError } from '../../http.js';
+import { ApiError, encodeCursor } from '../../http.js';
 import { workspaceModels } from './models.js';
 import type { FormRecord, WorkspaceRecord } from './models.js';
 
 const transactionOptions = { readConcern: { level: 'snapshot' as const }, writeConcern: { w: 'majority' as const }, maxCommitTimeMS: 5000 };
-function workspaceDto(record: WorkspaceRecord, role: MembershipRole) {
+function workspaceDto(record: Pick<WorkspaceRecord, '_id' | 'name' | 'ownerId' | 'state' | 'createdAt' | 'updatedAt'>, role: MembershipRole) {
   return workspaceDtoSchema.parse({ id: String(record._id), name: record.name, ownerId: String(record.ownerId),
     state: record.state, role, createdAt: record.createdAt.toISOString(), updatedAt: record.updatedAt.toISOString() });
 }
@@ -37,6 +37,41 @@ export async function createWorkspaceStore(connection: Connection) {
     }
   });
   return {
+    async listWorkspaces(userId: string, { limit, after }: { limit: number; after: CursorPosition | null }) {
+      return safe(async () => {
+        const records = await memberships.aggregate<WorkspaceRecord & { role: MembershipRole }>([
+          { $match: { userId: new Types.ObjectId(userId), role: { $in: ['owner', 'editor', 'viewer'] } } },
+          { $lookup: { from: 'workspaces', localField: 'workspaceId', foreignField: '_id', as: 'workspace' } },
+          { $unwind: '$workspace' },
+          { $match: { 'workspace.state': 'active', ...(after ? { $or: [
+            { 'workspace.updatedAt': { $lt: new Date(after.at) } },
+            { 'workspace.updatedAt': new Date(after.at), 'workspace._id': { $lt: new Types.ObjectId(after.id) } },
+          ] } : {}) } },
+          { $sort: { 'workspace.updatedAt': -1, 'workspace._id': -1 } },
+          { $limit: limit + 1 },
+          { $project: { _id: '$workspace._id', name: '$workspace.name', ownerId: '$workspace.ownerId',
+            state: '$workspace.state', role: 1, createdAt: '$workspace.createdAt', updatedAt: '$workspace.updatedAt' } },
+        ]).option({ maxTimeMS: 1000 });
+        const page = records.slice(0, limit), last = page.at(-1);
+        return { data: page.map(record => workspaceDto(record, record.role)),
+          nextCursor: records.length > limit && last ? encodeCursor({ v: 1, at: last.updatedAt.toISOString(), id: String(last._id) }) : null };
+      });
+    },
+    async listForms(userId: string, workspaceId: string, { limit, after }: { limit: number; after: CursorPosition | null }) {
+      return safe(async () => {
+        const member = await memberships.findOne({ userId, workspaceId, role: { $in: ['owner', 'editor', 'viewer'] } }).lean().maxTimeMS(1000);
+        if (!member || !await workspaces.exists({ _id: workspaceId, state: 'active' }).maxTimeMS(1000)) throw new ApiError('NOT_FOUND');
+        const records = await forms.find({ workspaceId, availability: { $ne: 'deleting' }, ...(after ? { $or: [
+          { updatedAt: { $lt: new Date(after.at) } },
+          { updatedAt: new Date(after.at), _id: { $lt: new Types.ObjectId(after.id) } },
+        ] } : {}) }).select('_id workspaceId title availability draftRevision updatedAt').sort({ updatedAt: -1, _id: -1 })
+          .limit(limit + 1).lean().maxTimeMS(1000);
+        const page = records.slice(0, limit), last = page.at(-1);
+        return { data: page.map(record => formSummaryDtoSchema.parse({ id: String(record._id), workspaceId: String(record.workspaceId),
+          title: record.title, availability: record.availability, draftRevision: record.draftRevision, updatedAt: record.updatedAt.toISOString() })),
+          nextCursor: records.length > limit && last ? encodeCursor({ v: 1, at: last.updatedAt.toISOString(), id: String(last._id) }) : null };
+      });
+    },
     async createWorkspace(userId: string, name: string) {
       return safe(() => connection.transaction(async session => {
         const active = await connection.collection('users').findOne({ _id: new Types.ObjectId(userId), status: 'active' },

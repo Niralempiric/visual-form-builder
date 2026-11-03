@@ -1,12 +1,12 @@
 # Workspace and empty-draft foundation
 
-D05.1 | 3 November 2026
+D05.1–D05.2 | 3 November 2026
 
 A signed-in author can create a workspace, become its owner, and create/read its
-first empty draft through Express. This is the backend foundation: `/app` remains
-the account preview. Workspace/form dashboards, switching, lists and their UI
-states belong to D05.2. The later D05.3 task adds the broader management permission
-regression matrix; the endpoints shipped here already enforce their own scope.
+first empty draft through Express. D05.2 adds scoped lists and the protected
+[dashboard](DASHBOARD.md) at `/app`, including workspace switching and saved-draft
+opening. D05.3 remains the broader management permission regression task; these
+endpoints already enforce their own scope.
 
 ## Protected API
 
@@ -17,6 +17,8 @@ No management request is authorized by a private/public form ID alone.
 
 | Method/path | Input and permission | Result |
 |---|---|---|
+| `GET /workspaces` | Active author; bounded cursor/limit query | 200 page of active workspaces with current membership |
+| `GET /workspaces/:workspaceId/forms` | Active author with membership in the active workspace; bounded cursor/limit query | 200 page of form summaries |
 | `POST /workspaces` | Active author; JSON `{ name }` | 201 workspace with server-assigned owner membership |
 | `GET /workspaces/:workspaceId` | Active author with membership in an active workspace | 200 workspace and the caller's actual role |
 | `POST /workspaces/:workspaceId/forms` | Active workspace owner with its matching owner membership; JSON `{ title }` | 201 server-generated initial form/draft |
@@ -106,7 +108,8 @@ operations must preserve their own transaction/authorization contracts; this tas
 does not claim to cancel an already-authorized in-flight request.
 
 Each form has its own immutable workspace binding, random UUID publicId and
-unique publicId index. The workspace/updatedAt/ID index supports later lists.
+unique publicId index. The workspace/updatedAt/ID index supports scoped form lists. A second membership
+index on (userId, workspaceId) supports current-author workspace discovery.
 The public ID currently exposes no public endpoint or response-reading capability.
 The record starts with:
 
@@ -138,8 +141,8 @@ exactly 25 forms. Fixture cleanup verifies only its generated namespace is remov
 
 Run `npm run check`, `npm test`, `npm run test:db`, `npm run build`,
 `npm run test:readiness` and `npm run test:transactions` with the pinned toolchain.
-No UI changed in D05.1, so browser acceptance is not applicable to this task;
-D05.2 owns the dashboard flow. Field editing, publishing, submission, retention
+D05.1 was backend-only; D05.2 browser acceptance and reproduction are described
+in [dashboard usage](DASHBOARD.md). Field editing, publishing, submission, retention
 execution, role management, and the complete create-publish-submit-inspect-export
 release journey remain pending. Existing authentication deployment limits and the
 separate development-only audit finding remain recorded in progress. No new
@@ -147,3 +150,24 @@ production dependency, deployment, release or adoption is implied.
 
 References: [Mongoose transactions](https://mongoosejs.com/docs/transactions.html),
 [MongoDB unique indexes](https://www.mongodb.com/docs/manual/core/index-unique/).
+
+
+## List contracts (D05.2)
+
+Both list GETs return `{ data: [...], nextCursor: string | null, correlationId }`.
+They use the shared pagination contract: default 25, maximum 100; strict unknown,
+repeated or malformed query parameters fail with safe 400. Pass `nextCursor`
+unchanged as `cursor`. Ordering is updatedAt descending, then ObjectId descending;
+equal timestamps do not duplicate/skip records on a static dataset. This is a
+live keyset list, not a snapshot: concurrent changes can move records, and Refresh
+starts again. Cursors contain no authority; the current user/workspace predicates
+apply independently of the cursor. No totals or arbitrary filtering are exposed.
+
+Workspace lists join current owner/editor/viewer memberships with active
+workspaces. Form lists require current membership in the requested active
+workspace and exclude deleting records. Each form summary contains only id,
+workspaceId, title, availability, draftRevision and updatedAt; no draft content,
+public ID, internal counter, user credential or answer data. Existing initial
+forms have draft availability and revision zero. Queries have a bounded execution
+time and limit+1 lookahead. Expired identity is 401, unavailable scope 404 and
+dependency failure 503, using the existing safe errors and no-store policy.

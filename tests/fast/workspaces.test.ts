@@ -58,6 +58,7 @@ test('management HTTP guards precede JSON work; strict parser and IDs fail befor
   };
   const sessions = createSessionManager(store, { async active() { return user; } }, origin);
   const router = createWorkspaceRouter({
+    async listWorkspaces() { return { data: [], nextCursor: null }; }, async listForms() { return { data: [], nextCursor: null }; },
     async createWorkspace(userId, name) { writes++; expect(userId).toBe(id); return { ...workspace, name }; },
     async workspace() { return workspace; }, async createForm() { writes++; return initialFormDtoSchema.parse(form); }, async form() { return initialFormDtoSchema.parse(form); },
   }, sessions);

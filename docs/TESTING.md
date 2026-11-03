@@ -264,3 +264,23 @@ also checked. No normal development records are used or reset.
 The affected endpoints are backend-only; no browser UI changed. Dashboard browser
 checks belong to D05.2, and the broader two-workspace management regression matrix
 remains D05.3. See the reproducible synthetic client in [workspace usage](WORKSPACES.md).
+
+
+## D05.2 dashboard checks
+
+`tests/fast/dashboard-client.test.ts` checks strict page parsing, same-origin
+no-store reads, cancellation propagation, input validation before networking,
+CSRF-before-POST, cancellation before POST, and safe status-only failures.
+The fifth scenario in `tests/integration/workspaces.test.ts` verifies real list
+HTTP contracts, empty states, equal-timestamp ObjectId pagination, summary
+allowlists, workspace switching, cross-scope cursors, anonymous/foreign access,
+viewer reads, current membership removal, inactive workspaces and strict queries.
+These checks protect the new behavior; D05.3's broader endpoint matrix is pending.
+
+For the browser check, follow [the synthetic dashboard walkthrough](DASHBOARD.md)
+against actual Next.js, Express and a disposable Mongo replica set. Check loading,
+empty, failure/retry, correct workspace/form identity, refresh persistence,
+keyboard use and a 390px viewport. Never use real answers, capture credentials or
+reset an actual user's password. Test-only latency/failure injection belongs to a
+local forwarding harness, not a production API flag or debug route. Record each
+observed result in progress; a successful build alone is not browser acceptance.

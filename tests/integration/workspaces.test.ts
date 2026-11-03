@@ -4,7 +4,7 @@ import request from 'supertest';
 import type { Response } from 'supertest';
 import type { Server } from 'node:http';
 import type { Connection } from 'mongoose';
-import { errorEnvelopeSchema, initialFormDtoSchema, successEnvelopeSchema, workspaceDtoSchema } from '@visual-form-builder/contracts';
+import { errorEnvelopeSchema, formPageSchema, workspacePageSchema, initialFormDtoSchema, successEnvelopeSchema, workspaceDtoSchema } from '@visual-form-builder/contracts';
 import { createApp } from '../../apps/api/src/app.js';
 import { createUserStore } from '../../apps/api/src/modules/auth/store.js';
 import { createAuthService } from '../../apps/api/src/modules/auth/service.js';
@@ -172,5 +172,71 @@ test('two API instances cannot exceed the 25-form ceiling and dependency errors 
     expect(new Set(forms.map(form => form.publicId)).size).toBe(25);
     await secondConnection.close();
     failure(await request(second).get('/api/v1/workspaces/' + created.id).set('Cookie', owner.pair), 503);
+  });
+});
+
+
+test('dashboard lists use deterministic bounded cursors, summaries and current membership across workspace switches', async t => {
+  await withMongoFixture(async fixture => {
+    const connection = await fixture.connect(); const { server, users } = await setup(t, connection);
+    const owner = await login(server);
+    const get = (path: string, pair = owner.pair) => request(server).get('/api/v1' + path).set('Cookie', pair);
+    expect(workspacePageSchema.parse((await get('/workspaces')).body).data).toEqual([]);
+    const ids: string[] = [];
+    for (let i = 0; i < 3; i++) ids.push((await workspace(server, owner)).id);
+    const first = ids[0]!; const second = ids[1]!;
+    expect(formPageSchema.parse((await get('/workspaces/' + first + '/forms')).body).data).toEqual([]);
+    const formIds: string[] = [];
+    for (let i = 0; i < 3; i++) {
+      const response = await post(server, '/workspaces/' + first + '/forms', owner, { title: 'Synthetic dashboard form ' + i });
+      expect(response.status).toBe(201); formIds.push(String(response.body.data.id));
+    }
+    const otherForm = await post(server, '/workspaces/' + second + '/forms', owner, { title: 'Other workspace form' });
+    expect(otherForm.status).toBe(201);
+    // Equal timestamps exercise the ObjectId tie-breaker, rather than lucky wall-clock ordering.
+    const at = new Date('2026-11-03T00:00:00.000Z');
+    await connection.collection('workspaces').updateMany({}, { $set: { updatedAt: at } });
+    await connection.collection('forms').updateMany({}, { $set: { updatedAt: at } });
+    const workPage1 = workspacePageSchema.parse((await get('/workspaces?limit=2')).body);
+    expect(workPage1.data.map(item => item.id)).toEqual([...ids].sort().reverse().slice(0, 2));
+    expect(workPage1.nextCursor).not.toBeNull();
+    const workPage2 = workspacePageSchema.parse((await get('/workspaces?limit=2&cursor=' + workPage1.nextCursor)).body);
+    expect([...workPage1.data, ...workPage2.data].map(item => item.id)).toEqual([...ids].sort().reverse());
+    expect(workPage2.nextCursor).toBeNull();
+    const path = '/workspaces/' + first + '/forms';
+    const response = await get(path + '?limit=2');
+    const page1 = formPageSchema.parse(response.body);
+    const page2 = formPageSchema.parse((await get(path + '?limit=2&cursor=' + page1.nextCursor)).body);
+    expect([...page1.data, ...page2.data].map(item => item.id)).toEqual([...formIds].sort().reverse());
+    expect(page2.nextCursor).toBeNull(); expect(response.headers['cache-control']).toBe('no-store');
+    expect(response.headers['x-correlation-id']).toBe(response.body.correlationId);
+    expect(Object.keys(page1.data[0]!).sort()).toEqual(['id', 'workspaceId', 'title', 'availability', 'draftRevision', 'updatedAt'].sort());
+    const switched = formPageSchema.parse((await get('/workspaces/' + second + '/forms')).body);
+    expect(switched.data.map(item => item.id)).toEqual([otherForm.body.data.id]);
+    const cursorAcrossScope = formPageSchema.parse((await get('/workspaces/' + second + '/forms?cursor=' + page1.nextCursor)).body);
+    expect(cursorAcrossScope.data.every(item => item.workspaceId === second)).toBe(true);
+    const proof = await users.credential(email);
+    await connection.collection('users').insertOne({ normalizedEmail: 'dashboard-other@example.test', passwordHash: proof?.passwordHash, status: 'active' });
+    const other = await login(server, 'dashboard-other@example.test');
+    expect(workspacePageSchema.parse((await get('/workspaces', other.pair)).body).data).toEqual([]);
+    failure(await get(path, other.pair), 404);
+    failure(await request(server).get('/api/v1/workspaces'), 401);
+    failure(await request(server).get('/api/v1' + path), 401);
+    for (const query of ['limit=0', 'limit=101', 'limit=2&limit=3', 'cursor=invalid', 'extra=1', 'cursor[$ne]=x']) {
+      failure(await get('/workspaces?' + query), 400); failure(await get(path + '?' + query), 400);
+    }
+    const { Types } = await import('mongoose');
+    const otherUser = await users.credential('dashboard-other@example.test');
+    if (!otherUser) throw new Error('Fixture user missing.');
+    const member = await connection.collection('memberships').insertOne({ userId: new Types.ObjectId(otherUser.dto.id), workspaceId: new Types.ObjectId(first), role: 'viewer' });
+    expect(workspacePageSchema.parse((await get('/workspaces', other.pair)).body).data.map(item => item.id)).toEqual([first]);
+    expect(formPageSchema.parse((await get(path, other.pair)).body).data.length).toBe(3);
+    await connection.collection('memberships').deleteOne({ _id: member.insertedId });
+    failure(await get(path, other.pair), 404);
+    await connection.collection('workspaces').updateOne({ _id: new Types.ObjectId(first) }, { $set: { state: 'deleting' } });
+    expect(workspacePageSchema.parse((await get('/workspaces')).body).data.some(item => item.id === first)).toBe(false);
+    failure(await get(path), 404);
+    const indexes = await connection.collection('memberships').indexes();
+    expect(indexes.some(index => index.key.userId === 1 && index.key.workspaceId === 1)).toBe(true);
   });
 });

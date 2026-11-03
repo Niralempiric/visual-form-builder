@@ -151,3 +151,13 @@ it has no fields, answers or published version. Reads require current membership
 in an active workspace; POSTs require Origin/CSRF too. See [workspace contracts and
 synthetic client](WORKSPACES.md) for exact permissions, bounds, limits and errors.
 No list, edit, publish or submission API is introduced by this task.
+
+
+## Dashboard list contracts (D05.2)
+
+`GET /workspaces` and `GET /workspaces/:workspaceId/forms` use strict shared
+workspacePageSchema/formPageSchema, the bounded cursor/limit query and safe
+correlated errors. Workspace discovery follows current memberships; forms are
+scoped to the requested active workspace. Summary DTOs omit draft content and
+private counters. Cursors never authorize access. See [list contracts](WORKSPACES.md)
+and [dashboard behavior](DASHBOARD.md). Editing/publishing/submission remain later work.
