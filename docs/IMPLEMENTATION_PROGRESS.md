@@ -2278,3 +2278,31 @@ Implementation blockers: none.
 **Next eligible ID: D05.3 — Apply tenant scoping to all management endpoints and
 add two-workspace denial tests.** Prerequisite D05.2 verified complete. Not started.
 Stop after this one task's publication and verification.
+
+
+### D05.2 publication receipt — 3 November 2026
+
+**Publication status: implementation published and hosted-verified.** Source
+commit `5a53ce40cd2720f4546e17933e7a6bd511462655` was pushed to verified `main` at
+https://github.com/Niralempiric/visual-form-builder. Exact remote refs/heads/main
+read-back matched; GitHub attributes both author and committer to Niralempiric.
+Working tree was clean. Existing identity/remotes, public visibility and branch
+policy were preserved; no protection/PR workflow was bypassed.
+
+[CI run 41595126082](https://github.com/Niralempiric/visual-form-builder/actions/runs/41595126082)
+at that exact source SHA completed **successfully**. Job `125780567723` passed
+every setup/install/runtime/lint/type/fast-test/build/post step; none skipped.
+The connected GitHub job-steps tool independently confirmed every successful
+step. Actual local Mongo, browser, readiness and transaction acceptance remain
+separate evidence above; hosted CI does not claim to run them.
+
+Growth Phase 3 item 8 is now **Completed for this run**, resolving preparation-time
+publication status. Other scoped phase outcomes and pending audit/release/adoption
+items remain unchanged. This receipt records results observable only after the
+coherent implementation was pushed, without rewriting history. It changes no
+code/dependency/acceptance criteria, so local application checks are not repeated.
+Its exact final remote/hosted verification is reported in the run result. No
+independent review, release, deployment, external adoption or score claim is made.
+
+Next eligible task remains **D05.3**, not started. Stop after this receipt's
+publication verification.
