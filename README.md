@@ -21,7 +21,9 @@ Argon2id password storage and an internal throttled credential checker.
 bootstrap. D04.2 adds persistent opaque sessions, CSRF/Origin checks and working
 [sign-in/sign-out views](docs/SESSIONS.md). D04.3 adds password-confirmed saved
 [recovery codes](docs/RECOVERY.md), one-time password reset and atomic revocation
-of prior sessions. Form editing, publishing and responses remain pending.
+of prior sessions. D05.1 adds protected [workspace and empty-draft APIs](docs/WORKSPACES.md)
+with owner memberships and atomic persistence. The dashboard UI, field editing,
+publishing and responses remain pending.
 
 ## Repository and setup
 
@@ -98,9 +100,9 @@ and start because Next.js compiles rewrites into its output.
 | Location | Responsibility |
 |---|---|
 | `apps/web` | Next.js App Router preview page and API connection control |
-| `apps/api` | Express health, configuration, Mongo lifecycle, author accounts and revocable sessions |
+| `apps/api` | Express health, Mongo lifecycle, author sessions/recovery and protected workspace/empty-draft APIs |
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
-| `packages/form-schema` | Shared form definitions and validation scaffold |
+| `packages/form-schema` | Shared strict empty-draft creation schema; field registry remains pending |
 | `packages/form-renderer` | Shared preview/public React renderer scaffold |
 | `packages/contracts` | Shared strict API envelopes, identifiers and pagination schemas |
 | `packages/test-fixtures` | Future synthetic schema/answer fixtures |
@@ -129,8 +131,9 @@ and start because Next.js compiles rewrites into its output.
 | `npm run test:readiness` | Build shared packages/API and test isolated Docker replica-set readiness/failure/recovery |
 | `npm run test:transactions` | Build shared packages/API and verify isolated multi-collection commit, rollback and persistence |
 
-The form-schema and renderer packages still export no form behaviour. Shared API
-contracts now validate envelopes, IDs and page inputs; see
+The form-schema package validates server-generated empty initial drafts; arbitrary
+field/rule validation and the renderer remain pending. Shared API contracts validate
+envelopes, IDs, page inputs and workspace/form creation DTOs; see
 [API contracts](docs/API_CONTRACTS.md). The smoke script checks the
 initial page and direct/proxied health. The readiness suite verifies local replica-set
 availability. The transaction suite creates a separate disposable replica set,

@@ -173,3 +173,20 @@ recovery instead of creating a late session from an older credential proof.
 Disposable D04.3 tests prove code replay/races, account isolation and rollback
 when a late author-session revocation fails. See [recovery](RECOVERY.md) for
 exact contracts, limits and observed browser/API verification boundaries.
+
+
+## Workspace and initial-form persistence (D05.1)
+
+API startup additively creates workspaces, memberships and forms plus unique
+(workspaceId, userId), unique publicId and (workspaceId, updatedAt descending, _id
+descending) indexes. Workspace creation and its authenticated owner membership
+commit together. Form creation checks owner membership/active workspace, modifies
+private formSequence, counts non-deleting records and inserts the canonical empty
+form in one transaction. That workspace write serializes competing capacity checks;
+a failure rolls it and the timestamp back. No normal-data seed or reset is run.
+
+The shared empty-draft schema is validated on model persistence and API DTOs.
+Published versions/responses are not created. Membership predicates participate
+in management reads; a random public ID grants no private access. Actual isolated
+tests check independent readers/instances, both late-write rollback boundaries,
+unique membership/public indexes and the 25-form race. See [workspace contracts](WORKSPACES.md).

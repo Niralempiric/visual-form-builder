@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 completed**; 108 implementation tasks remain pending.
-Next eligible task: **D05.1**. Bootstrap, password checks, browser sessions and one-time recovery work; workspaces and forms remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1 completed**; 107 implementation tasks remain pending.
+Next eligible task: **D05.2**. Authentication, recovery and protected workspace/empty-draft APIs work; the dashboard UI, field editing and publication remain pending.
 
 ## Per task record template
 
@@ -1894,3 +1894,183 @@ release or adoption claim is made.
 
 Next eligible task remains **D05.1**, not started. Stop after this receipt's
 publication verification.
+
+
+## D05.1 — Workspaces, owner memberships and scoped form records with an empty initial draft — 3 November 2026
+
+**Implementation status: Completed.** Prerequisite D04.3 was verified against
+source/tests and its published `7999571`/`04aef30` commits. The connector confirmed
+all successful hosted steps for final D04.3 job `125110022334` on
+[CI run 41393590080](https://github.com/Niralempiric/visual-form-builder/actions/runs/41393590080).
+No unfinished publication remained. Only **D05.1** is newly completed in the plan
+and board: **13 complete, 107 pending**. D05.2 and D05.3 are not newly complete.
+
+### Repository and scope
+
+- Actual implementation path: `/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+  Verified authorized public URL: https://github.com/Niralempiric/visual-form-builder.
+- Began on clean `main`, tracking `origin/main`, at
+  `04aef308477b6f7c35b813c4da2501c11ad68f66`. Inspected applicable ancestor/web
+  instructions, plan/board/history, full growth checklist, relevant architecture/
+  contracts/development/testing docs, implementation, pins/lockfile and CI.
+  Safe fetch confirmed zero branch divergence; neither Webhook Inbox nor a
+  planning-artifact directory was used as the implementation checkout.
+- Verified **both** fetch/push destinations, public Niralempiric ownership, terminal
+  account Niralempiric with push permission and the established unprotected-main
+  workflow. The connector is read-only; terminal Git publishes the authorized work.
+- Effective author/committer remain `Niralempiric <niralempiric@gmail.com>`; GitHub
+  attributes both on the starting commit to Niralempiric. Ownership, authentication
+  and authorship were checked independently. No identity, remote URL, historical
+  attribution, visibility or unrelated work changed. Self-review only.
+- Embedded credential location remains `.git/config`, `remote.origin.url`;
+  credential-manager storage is recommended. No secret/env-file value, real
+  account, respondent data or customer form was printed, committed or modified.
+
+### Work and individual acceptance
+
+- Added API `modules/workspaces/models.ts`, `store.ts`, `router.ts`; startup wires
+  the actual store/router. Explicit additive setup creates workspaces, memberships,
+  forms and unique membership/publicId plus workspace/date/ID indexes. It never
+  resets data or synchronizes/drops existing indexes.
+- Workspace creation binds the authenticated user and inserts its owner membership
+  in one snapshot/majority transaction. A failed membership insert leaves no
+  orphan workspace. Caller-provided ownership/role/state fields are rejected.
+- Form creation requires matching owner membership and active workspace ownership.
+  A transactional private formSequence write serializes the non-deleting-form
+  count and insertion, enforcing the 25-form limit even across API instances.
+  Insertion/admission failure rolls back workspace counter/timestamp changes.
+- Added shared strict initialDraftSchema/factory in form-schema and workspace/form
+  contracts. Each server-generated form begins at revision 0, with matching title,
+  empty description/steps/fields/rules, neutral theme, no current version, draft
+  availability, empty admission windows, accepted count 0 and retentionDays 30.
+  This is only the canonical empty creation shape; the field registry remains D06.
+- New endpoints: POST /workspaces, GET /workspaces/:workspaceId,
+  POST /workspaces/:workspaceId/forms and GET /forms/:formId. Mutations reuse the
+  actual Origin/CSRF/session guards and bounded 8 KiB uncompressed parser. Reads
+  check current membership and active workspace; public/private form IDs alone
+  grant no access. Missing/inaccessible records share safe 404, while validation,
+  authentication, CSRF, capacity and dependency errors keep the shared catalog.
+- Every outgoing object is explicitly allowlisted and uncached; private counters,
+  Mongo internals and credential material do not enter DTOs. No list, edit,
+  publish, submission, invitation or role-management endpoint was added.
+- Added fast/integration workspace suites. Updated README, API_CONTRACTS, DATABASE,
+  TESTING, plan/board and this history; added WORKSPACES.md with exact contracts,
+  limits and a reproducible synthetic Python client. No frontend, dependency,
+  lockfile, runtime pin, infrastructure or CI change was needed.
+
+**Individual completion check: Passed — “A signed-in owner creates a workspace
+and its first draft form.”** Real API/replica-set acceptance showed:
+
+1. Login followed by workspace creation produces the authenticated owner and one
+   unique owner membership. First-form creation returns the canonical empty draft;
+   independent Mongo readers and another API instance observe the same form. No
+   form version or response is created. Unique membership/publicId and list indexes
+   are verified; duplicate membership is rejected by the actual database.
+2. Another account or absent membership cannot read/create private records; missing
+   and inaccessible resources have identical errors. A fixture viewer can read
+   but cannot create a form. Caller ownership/scope injection, missing Origin/CSRF,
+   disabled identity and inactive workspace are denied without extra forms.
+3. Forced membership insertion failure rolls back its already-inserted workspace.
+   Forced form insertion failure rolls back the workspace admission write and
+   updatedAt as well as the form. Corrected fixture validators allow success.
+4. At 24 forms, two independent API instances race: exactly one 201 and one 409,
+   with 25 distinct public IDs/forms and formSequence 25. A closed pool returns
+   safe 503 without driver/validation details.
+5. The **exact Python client block in WORKSPACES.md** ran unchanged against compiled
+   `apps/api/dist/index.js`, with only its prompts supplied synthetic test values.
+   It signed in, created/read a workspace/form and signed out. An independent
+   reader confirmed one owner membership, one persisted empty form and zero active
+   author sessions afterward. Generated fixture `vfb-d032-61805a298460` cleanup
+   verified no remaining containers, volumes or networks. Normal data was preserved.
+
+### Verification and review
+
+Pinned Node **24.21.0**, npm **11.19.0**, committed lockfile; no private config was
+loaded. Results observed this run:
+
+| Command/check | Result |
+|---|---|
+| `npm ci` | Passed: clean locked install, 305 packages/313 audited; lockfile unchanged |
+| `npm run check` | Passed: runtime, both lint engines, all workspaces and strict test/config types |
+| `npm test` | Passed: 23 tests, 6 files; 3 focused new contract/HTTP checks |
+| `npm run test:db` | Passed: 17 tests, 5 files; 4 new real Mongo workspace scenarios |
+| `npm run build` | Passed: shared packages, Express and unchanged Next.js route set |
+| `npm run test:readiness` | Passed: 3 operational checks |
+| `npm run test:transactions` | Passed: 5 reported checks including 4 transaction subtests |
+| Documented-client compiled acceptance | Passed: actual startup, owner journey, independent persistence and logout/fixture cleanup |
+| `npm audit --json` | **Failed, exit 1:** same 5 moderate existing development-chain findings |
+| `npm audit --omit=dev --json` | Passed: zero production findings |
+| Browser | Not applicable/not run: no UI changed; dashboard acceptance belongs to D05.2 |
+| Final review | Passed: task-only diff, whitespace, secret-pattern/manual review, local links, documented Python syntax and tracker consistency |
+
+Initial checks caught Mongoose literal/model typing and test null-narrowing issues;
+fixed without weakening types. The first focused DB run passed three scenarios
+and exposed a test-variable shadowing error in the capacity scenario. Corrected
+it; the final full 17-test run passed, including the capacity race. All fixtures
+cleaned up. No failure was skipped or treated as passing. No independent review
+or complete form-release/browser journey is claimed.
+
+### Growth delta against the preserved baseline
+
+The entire checklist was evaluated; numbers refer to each phase's items in order.
+Previous baseline/history remain intact, without a duplicated unchanged matrix.
+
+- **Phase 0 — Completed for this run, 1–4:** verified path/target and truthful
+  attribution, synthetic/private-data hygiene, unchanged intended first journey
+  with an observed API create step. **Pending, 5:** no requested fresh GHFind scan.
+- **Phase 1 — Pending overall:** 1–3 gain working owner/draft APIs, exact synthetic
+  usage and unchanged compatible pins; 6 gains clean-install/build evidence for
+  the foundation. Full product/release usability (1, 6), license/assets decision
+  (4) and full synthetic form/answer demo (5) remain **Pending**.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible ID, verified prior
+  acceptance/publication, exact individual check, coherent implementation and
+  separate limitations. **Not applicable, 3:** no coordination issue needed.
+- **Phase 3 — Completed for this run, 1–3, 5–7 within scope:** shared empty schema,
+  scoped writes/reads, real rollback/race/failure tests, matching docs, reviewed
+  diff and preserved actual authorship. Future version/response and broader tenant
+  contracts in 2 remain pending. **Not applicable, 4:** backend-only task, no UI
+  edits. **Pending at preparation, 8:** authorized publication/remote/hosted checks
+  follow and will be recorded only after observation.
+- **Phase 4 — Pending, 1–5 overall:** later release gates, complete form journey,
+  close/retry/history, UI accessibility/data-lifetime/deployment and release/demo
+  evidence. **Completed within this run's scope, 6:** honest limits, synthetic
+  reproduction and existing sanitized issue-reporting path. No release is claimed.
+- **Phase 5 — Not applicable, 1–5:** no profile pin/tutorial/outreach, actual user
+  feedback/adoption or contributor event was requested or invented.
+- **Phase 6 — Completed for this run within scope, 1–2:** observed check/test
+  failures corrected and setup/compatibility verified. **Pending:** the unchanged
+  development-only audit finding and ongoing maintenance. **Not applicable, 3–6:**
+  no release, product-blocking upstream contribution or stable extraction need.
+- **Phase 7 — Pending overall:** 1 gains reproducible engineering evidence, not
+  real user/release outcomes; 2 awaits compatible fresh scores. 3 is **Not
+  applicable** to score/rule inference here; authorship is independently verified.
+  4 identifies D05.2; maintenance across years remains **Pending**. No task-level
+  blocker is inferred from absent adoption or score evidence.
+
+### Limitations, publication and next eligible ID
+
+The prior [minimatch advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249)
+remains a separate **pending tooling-maintenance finding**: the same five moderate
+findings appear through existing ESLint development packages, with zero production
+audit findings. No pin, override, downgrade or forced audit fix was made. No
+untrusted lint configuration/glob pattern is part of the new API input.
+
+The account preview does not yet offer workspace/form UI; lists, switching and
+loading/empty/error dashboard states belong to D05.2. The broader two-workspace
+management matrix remains D05.3; field/rule definitions, editing, immutable
+publication, submissions, retention execution and release/deployment gates remain
+later work. Creation has no idempotent replay contract; an interrupted response
+may have committed, so inspect before retrying. Existing deployment/auth admission
+limits remain applicable. No real data, outreach or automatic deployment was used.
+
+**Publication status at preparation: ready for authorized D05.1 commit/push**
+on verified `main` at https://github.com/Niralempiric/visual-form-builder.
+Resolve the source commit after committing with
+`git log -1 --format=%H -- apps/api/src/modules/workspaces/store.ts`.
+Exact commit/remote containment, GitHub attribution and hosted results follow
+actual publication. No force-push, amend, identity/remote/history change, empty
+commit, protection bypass, PR, release or deployment is required. Blockers: none.
+
+**Next eligible ID: D05.2 — dashboard with form creation, workspace switching and
+loading/empty/error states. Prerequisite D05.1 verified complete.** Not started.
+Stop after D05.1 publication and necessary verification.

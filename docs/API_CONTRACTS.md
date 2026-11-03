@@ -138,3 +138,16 @@ login/logout, with Origin/CSRF checks before parsing. The body-parser dependency
 overridden and locked to patched 2.4.0. Browser sessions/CSRF now work as documented
 in [sessions](SESSIONS.md); tenant queries, immutable publishing and submissions
 remain later tasks. No complete form release is claimed.
+
+
+## Workspace and initial-form contracts (D05.1)
+
+`POST /workspaces`, `GET /workspaces/:workspaceId`,
+`POST /workspaces/:workspaceId/forms` and `GET /forms/:formId` use strict shared
+contracts and the existing uncached safe envelope. IDs and ownership come from
+validated paths/authentication, never an arbitrary request body. Creation inputs
+are only name or title. The form DTO embeds the shared canonical empty schema;
+it has no fields, answers or published version. Reads require current membership
+in an active workspace; POSTs require Origin/CSRF too. See [workspace contracts and
+synthetic client](WORKSPACES.md) for exact permissions, bounds, limits and errors.
+No list, edit, publish or submission API is introduced by this task.

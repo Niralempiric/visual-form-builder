@@ -11,6 +11,8 @@ import { createSessionManager } from './modules/auth/sessions.js';
 import { createSessionRouter } from './modules/auth/session-router.js';
 import { createRecoveryService } from './modules/auth/recovery.js';
 import { createRecoveryRouter } from './modules/auth/recovery-router.js';
+import { createWorkspaceStore } from './modules/workspaces/store.js';
+import { createWorkspaceRouter } from './modules/workspaces/router.js';
 
 let database: Awaited<ReturnType<typeof connectDatabase>> | undefined;
 try {
@@ -23,6 +25,7 @@ try {
   const router = createAuthRouter(auth);
   router.use(createSessionRouter(auth, sessions));
   router.use(createRecoveryRouter(await createRecoveryService(users, auth), sessions));
+  router.use(createWorkspaceRouter(await createWorkspaceStore(activeDatabase.connection), sessions));
   let stopping = false;
   const server = createServer(createApp(() => stopping ? Promise.resolve(false) : activeDatabase.isReady(), router));
   await new Promise<void>((resolve, reject) => {

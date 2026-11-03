@@ -72,7 +72,7 @@ Modules: M02.
 
 Modules: M03.
 
-- [ ] **D05.1** Implement workspaces, owner memberships and scoped form records with an empty initial draft.
+- [x] **D05.1** Implement workspaces, owner memberships and scoped form records with an empty initial draft.
 
   Prerequisite: D04.3. **Done when:** A signed-in owner creates a workspace and its first draft form.
 

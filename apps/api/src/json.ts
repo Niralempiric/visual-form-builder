@@ -12,3 +12,6 @@ export async function readAuthJson(request: Request, response: Response): Promis
   }));
   return request.body;
 }
+
+// Creation endpoints share the same bounded, uncompressed parser after auth/CSRF.
+export { readAuthJson as readManagementJson };

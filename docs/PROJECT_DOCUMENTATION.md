@@ -889,7 +889,7 @@ Modules: M02. Day-group estimate: 5 to 6 hours.
 
 Modules: M03. Day-group estimate: 5 to 6 hours.
 
-- [ ] **D05.1** Implement workspaces, owner memberships and scoped form records with an empty initial draft.
+- [x] **D05.1** Implement workspaces, owner memberships and scoped form records with an empty initial draft.
 
   Prerequisite: D04.3. **Individual completion check:** A signed-in owner creates a workspace and its first draft form.
 

@@ -92,7 +92,8 @@ no caller-supplied URI/project, ignores inherited Compose settings, and passes a
 empty Compose env file. Development `.env`, MONGODB_URI, replica name and port
 settings cannot redirect it to the normal database. Tests only write explicitly
 synthetic infrastructure records and fabricated account credentials, never real
-accounts, product forms or respondent data.
+accounts, customer forms or respondent data. D05.1 also creates explicitly synthetic
+workspace/form records in these isolated namespaces.
 
 `fixture.connect()` creates independent clients with buffering and automatic
 indexes/collections disabled and bounded connection/socket waits. Tests create
@@ -246,3 +247,20 @@ browser submission and code disclosure are not claimed: those UI actions require
 user handoff. Positive protocol and persistence behavior is tested through API/
 Mongo fixtures. This does not block D04.3's individual API/session completion check,
 and is recorded as a browser coverage limitation. No real credentials were changed.
+
+
+## D05.1 workspace and initial-draft checks
+
+`tests/fast/workspaces.test.ts` checks name/title bounds, strict server-owned input
+rejection, canonical empty drafts with separate mutable arrays, ID parsing, guarded
+HTTP parser behavior and success envelopes. It does not define the future field
+registry. `tests/integration/workspaces.test.ts` adds four actual Mongo scenarios:
+owner workspace/member/first-form persistence across independent readers/API
+instances, identity/scope/CSRF failures, late membership/form insertion rollback,
+and two-instance admission at the 25-form limit. Unique indexes, private DTOs,
+viewer read/creation denial, inactive workspace and safe dependency failure are
+also checked. No normal development records are used or reset.
+
+The affected endpoints are backend-only; no browser UI changed. Dashboard browser
+checks belong to D05.2, and the broader two-workspace management regression matrix
+remains D05.3. See the reproducible synthetic client in [workspace usage](WORKSPACES.md).
