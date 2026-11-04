@@ -2480,3 +2480,32 @@ activity/score, identity/remote edit, force-push, amend or empty commit is claim
 **Next eligible ID: D06.1 — Define allowlisted field types, stable UUIDs, option
 IDs, constraints and schema size bounds.** Prerequisite D05.3 verified complete.
 Not started. Stop after this task's publication and verification.
+
+
+### D05.3 publication receipt — 4 November 2026
+
+**Publication status: implementation published and hosted-verified.** Source
+commit `ce79287f7a11f2da0aeef99a3f5567dcd45aa6d0` was pushed to verified `main` at
+https://github.com/Niralempiric/visual-form-builder. Exact remote refs/heads/main
+read-back matched. GitHub attributes both author and committer to Niralempiric;
+working tree was clean. Existing identity, remotes, public visibility and branch
+policy were preserved; no protection or required review workflow was bypassed.
+
+[CI run 41836303957](https://github.com/Niralempiric/visual-form-builder/actions/runs/41836303957)
+at this exact SHA completed **successfully**. Job `126595980439` passed every
+setup/install/runtime/lint/type/fast-test/build/post step; none skipped. The
+connected GitHub job-steps tool confirmed all successful steps. Local real-Mongo,
+readiness and transaction evidence remains separately attributed above; the hosted
+workflow does not claim to run database/browser acceptance. No independent code
+review is implied by observing hosted checks through two read interfaces.
+
+Growth Phase 3 item 8 is now **Completed for this run**, resolving preparation-time
+publication status. Other phase outcomes, pending development-only advisory and
+release/adoption limits are unchanged. This receipt records observations available
+only after the coherent task implementation was pushed, without rewriting history.
+It changes no code, dependency or acceptance criteria, so local application checks
+are not repeated. Final receipt-commit remote/hosted verification is reported in
+the execution result. No PR, release, deployment, outreach or score claim is made.
+
+Next eligible task remains **D06.1**, not started. Stop after this receipt's
+publication verification.
