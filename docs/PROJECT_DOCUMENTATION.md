@@ -897,7 +897,7 @@ Modules: M03. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D05.1. **Individual completion check:** The owner opens the correct form from its workspace dashboard.
 
-- [ ] **D05.3** Apply tenant scoping to all management endpoints and add two-workspace denial tests.
+- [x] **D05.3** Apply tenant scoping to all management endpoints and add two-workspace denial tests.
 
   Prerequisite: D05.2. **Individual completion check:** Guessed object IDs cannot read or mutate another workspace.
 

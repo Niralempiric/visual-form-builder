@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.2 completed**; 106 implementation tasks remain pending.
-Next eligible task: **D05.3**. Authentication, recovery, protected workspace/empty-draft APIs and the workspace dashboard work; the broader management denial matrix, field editing and publication remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.3 completed**; 105 implementation tasks remain pending.
+Next eligible task: **D06.1**. Authentication, recovery, workspace/empty-draft APIs, the dashboard and shipped-endpoint tenant-denial checks work; field schemas/editing and publication remain pending.
 
 ## Per task record template
 
@@ -2306,3 +2306,177 @@ independent review, release, deployment, external adoption or score claim is mad
 
 Next eligible task remains **D05.3**, not started. Stop after this receipt's
 publication verification.
+
+
+## D05.3 — Management tenant isolation — 4 November 2026
+
+**Implementation status: Completed.** Selected exactly D05.3: “Apply tenant scoping
+to all management endpoints and add two-workspace denial tests.” Prerequisite
+D05.2 verified in the actual dashboard/API code and its published receipt at HEAD
+`97b33ac3d3a62a66b55ddf818a2bf88ae083d584`; the GitHub connector confirmed every
+step in its final hosted job `125781212481` succeeded. No unfinished publication
+remained. Earlier planning/scaffolding was not repeated and D06.1 was not started.
+
+### Repository and attribution
+
+Actual implementation path:
+`/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+Verified authorized public URL: https://github.com/Niralempiric/visual-form-builder.
+Initial working tree clean, `main` tracking `origin/main`. Every fetch/push URL was
+inspected with credentials redacted; the only configured remote resolves exactly
+to this target. Safe fetch showed divergence 0/0. GitHub verifies public ownership,
+authenticated login Niralempiric, push permission and unprotected main. Established
+direct-main workflow retained, without creating a PR merely for activity. This is
+the implementation checkout, separate from Webhook Inbox and planning artifacts.
+
+Effective author and committer remain **Niralempiric <niralempiric@gmail.com>**;
+GitHub maps both on the prior HEAD to Niralempiric. New commit attribution is checked
+after publication. Git identity, remote URLs, visibility and history unchanged.
+Embedded credential location: `.git/config` → `remote.origin.url`; credential-manager
+storage recommended. No credential was printed, removed or rotated. No private
+environment values, actual customer data or real response material were used.
+
+### Implementation and files
+
+- `apps/api/src/modules/workspaces/store.ts`: direct form reads now exclude forms
+  marked deleting before joining membership/active-workspace scope, matching list
+  behavior and returning safe 404 instead of an initial-draft DTO failure/503.
+  Existing tenant checks held; no foreign-data disclosure is asserted by that
+  prior 503. No authentication, schema, write-transaction or role policy expanded.
+- `tests/integration/tenant-isolation.test.ts`: three real Mongo/HTTP scenarios
+  covering the full six-endpoint inventory, two independent owners/workspaces,
+  current membership/lifecycle changes across two API instances and invalidated
+  author contexts. Independent state hashes compare denied-write effects without
+  dumping stored metadata; positive read/write controls prove legitimate access.
+- `tests/fast/tenant-guards.test.ts`: one focused six-route guard regression covering
+  author/Origin/CSRF checks before malformed input/persistence, and verified actor
+  propagation despite forged identity/tenant headers.
+- `docs/TENANT_ISOLATION.md`, API_CONTRACTS, WORKSPACES and TESTING: actual endpoint
+  inventory, permissions/errors, reproducible commands, evidence and future limits.
+  README capability/next-task references reconciled; plan/board mark only D05.3;
+  this file preserves history and records the run. No frontend, dependency,
+  toolchain, lockfile, CI, normal configuration or unrelated work changed.
+
+### Individual acceptance evidence
+
+**Passed:** “Guessed object IDs cannot read or mutate another workspace.”
+The disposable fixture bootstraps two synthetic accounts with separate sessions;
+each creates its own workspace and two empty forms through the authenticated API.
+Both directions of the owner matrix verify:
+
+- Discovery returns only the caller's workspace. Own form reads succeed; foreign
+  workspace/detail/list/form reads and create-form attempts return the same safe
+  404 code/message as missing objects, even with known valid foreign IDs/cursors.
+- Forged actor/role/workspace headers and query/body scope hints cannot override
+  session identity or ownership. Strict ownerId/workspaceId body injection fails
+  400, wrong-session CSRF fails 403, and public UUIDs grant no private access.
+- Anonymous requests fail all six endpoints with 401. Hashes of forms, workspaces
+  (including admission counters/timestamps) and memberships from an independent
+  Mongo reader match before/after all denied requests. Both owners subsequently
+  create their own forms successfully, leaving six correctly scoped forms.
+
+Additional fixture scenarios verify existing viewer/editor reads but no inherited
+ownership from another workspace; invalid/removed membership, ownerId without its
+membership, inactive/missing workspace and deleting form denial. Two API instances
+observe current membership/state without restarting or reissuing sessions. Disabling,
+expiring and actually logging out/replaying one author's session fails all six
+routes while the other owner retains access; target tenant state stays unchanged.
+HTTP responses retain strict safe errors, no-store and matching correlation IDs.
+Only generated isolated fixture namespaces are mutated/removed, with cleanup
+verified; normal development data and actual respondent answers remain untouched.
+
+The first focused DB run passed two scenarios and deliberately exposed the deleting-
+form mismatch (expected 404, actual 503). The query fix made all three pass; this
+failed-before result is recorded, not treated as passing or bypassed. Guard and
+TypeScript/lint checks also pass. No browser was used: no UI changed, and backend
+scope acceptance is proven by real HTTP/Mongo tests rather than older screenshots.
+
+### Verification results
+
+Pinned Node **24.21.0**, npm **11.19.0**, committed lockfile and isolated Docker
+replica sets used. The long full verification job ran independently of the
+interactive terminal lifetime; no normal database/configuration was used.
+
+| Command/check | Observed result |
+|---|---|
+| Focused `npm test -- tests/fast/tenant-guards.test.ts` | Passed, 1 guard test |
+| Focused `npm run test:db -- tests/integration/tenant-isolation.test.ts` | Passed after the recorded fix, 3 scenarios |
+| `npm ci` | Passed, clean locked installation |
+| `npm run check` | Passed, runtime pins, lint engines and all application/test types |
+| `npm test` | Passed, 27 fast tests in 8 files |
+| `npm run test:db` | Passed, 21 Mongo tests in 6 files; fixture cleanup verified |
+| `npm run build` | Passed, shared packages, Express and production Next.js |
+| `npm run test:readiness` | Passed, 3 operational checks |
+| `npm run test:transactions` | Passed, 5 reported checks including 4 transaction subtests |
+| `npm audit --json` | Failed, exit 1: unchanged 5 moderate development-chain findings |
+| `npm audit --omit=dev --json` | Passed, zero production findings |
+| Browser | Not applicable/not run: no UI changed in D05.3 |
+| Final self-review | Task-only diff, secret-pattern/manual review, local links, documented Python syntax, tracker consistency and whitespace checks |
+
+All required application checks passed without suppressions, weakened assertions,
+dependency changes or a forced audit fix. Self-review is not independent review.
+
+### Growth delta against the preserved baseline
+
+The entire checklist was evaluated; numbers identify items within each phase.
+Earlier baseline/history remain intact; unchanged checkpoints are not recopied.
+
+- **Phase 0 — Completed for this run, 1–4:** verified implementation/target,
+  truthful preserved attribution, private-data hygiene and the unchanged first
+  journey with independently verified author isolation. **Pending, 5:** no fresh
+  GHFind scan requested or score claim made.
+- **Phase 1 — Pending overall:** 1–3 gain working scope/failure behavior and exact
+  current contracts/reproduction with unchanged pins; 6 gains clean-install/build
+  evidence. Full release usability (1, 6), license/assets decision (4) and full
+  synthetic form/answer demonstration (5) remain **Pending**. No new external asset.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible task, verified
+  prerequisite, individual acceptance, coherent code/tests/docs and separate
+  limitations. **Not applicable, 3:** no coordination issue needed or created.
+- **Phase 3 — Completed for this run, 1–3, 5–7 within scope:** architecture/shared
+  DTOs, current tenant boundaries, actual denial/state/guard tests, matching docs,
+  reviewed diff and preserved authorship. Future version/response contracts in 2
+  remain **Pending**. **Not applicable, 4:** no affected UI. **Pending at preparation,
+  8:** authorized exact-target publication/hosted results follow observation.
+- **Phase 4 — Pending overall, 1–5:** later milestones, full form journey,
+  close/retry/history, release accessibility/data lifetime/deployment and versioned
+  release evidence. Scope tests contribute failure evidence, not a release gate.
+  **Completed within scope, 6:** reproducible safe checks, honest limits and existing
+  sanitized problem-reporting instructions. No release/deployment claimed.
+- **Phase 5 — Not applicable, 1–5:** no profile pin, promotional tutorial/post,
+  outreach, observed user feedback/adoption or contributor event requested or
+  fabricated. The committed local reproduction is engineering documentation.
+- **Phase 6 — Completed for this run within scope, 1–2:** observed 503/404 failure
+  corrected, compatible dependency/setup/tests preserved. **Pending:** unchanged
+  development-only audit finding and ongoing maintenance. **Not applicable, 3–6:**
+  no release, product-blocking upstream contribution or stable package extraction.
+- **Phase 7 — Pending overall:** 1 gains reproducible engineering evidence, not
+  real release/user outcomes; 2 awaits compatible fresh scores. 3 is **Not applicable**
+  to score/rule inference here; attribution verified. 4 identifies D06.1 while
+  maintenance across years remains **Pending**. No adoption/score blocker inferred.
+
+### Limitations, publication and next task
+
+The existing five moderate ESLint/minimatch development-chain findings remain
+pending tooling maintenance ([advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249));
+production findings remain zero. No unrelated upgrade/downgrade/force fix.
+
+Coverage applies to the six shipped workspace/form endpoints; auth account routes
+remain bound to their verified caller as tested by existing suites. New save,
+publish, response, export and team APIs must add their own scope tests when built.
+No future endpoint returning generic 404 is counted as permission coverage. Current
+form creation remains owner-only; the D21 permission policy is not implemented.
+Authorization changes do not promise to cancel an already-authorized in-flight
+operation. Existing creation replay/capacity and auth/deployment limits remain.
+Field registry/editing, immutable publication, responses and releases are pending.
+
+**Publication status at preparation: ready for authorized D05.3 commit/push** to
+verified `main` at https://github.com/Niralempiric/visual-form-builder. Resolve the
+source commit after committing using
+`git log -1 --format=%H -- tests/integration/tenant-isolation.test.ts`.
+Exact remote containment, new GitHub attribution and hosted CI await observation.
+No task blocker, independent review, PR/release/tag/deployment/outreach, fake
+activity/score, identity/remote edit, force-push, amend or empty commit is claimed.
+
+**Next eligible ID: D06.1 — Define allowlisted field types, stable UUIDs, option
+IDs, constraints and schema size bounds.** Prerequisite D05.3 verified complete.
+Not started. Stop after this task's publication and verification.

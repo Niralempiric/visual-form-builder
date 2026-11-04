@@ -1,12 +1,13 @@
 # Workspace and empty-draft foundation
 
-D05.1–D05.2 | 3 November 2026
+D05.1–D05.3 | 4 November 2026
 
 A signed-in author can create a workspace, become its owner, and create/read its
 first empty draft through Express. D05.2 adds scoped lists and the protected
 [dashboard](DASHBOARD.md) at `/app`, including workspace switching and saved-draft
-opening. D05.3 remains the broader management permission regression task; these
-endpoints already enforce their own scope.
+opening. D05.3 verifies the complete shipped endpoint inventory with
+[two-workspace tenant denial checks](TENANT_ISOLATION.md), including current
+membership/lifecycle boundaries and state preservation after denied writes.
 
 ## Protected API
 
@@ -35,9 +36,9 @@ is introduced here. Only the owner creates forms in this initial foundation;
 existing owner/editor/viewer memberships can read the records as in the plan.
 
 Missing identity is 401, Origin/CSRF mismatch 403, and malformed input 400 (oversize
-413). A missing workspace/form, inactive workspace or insufficient membership is
-indistinguishable as 404. The 25-active-form ceiling or uniqueness conflict returns
-409. Dependency failures return the safe 503 envelope without raw errors, query
+413). A missing workspace/form, deleting form, inactive workspace or insufficient
+membership is indistinguishable as 404. The 25-active-form ceiling or uniqueness
+conflict returns 409. Dependency failures return the safe 503 envelope without raw errors, query
 objects, credentials or validation details. Mutation success means its transaction
 committed; a lost response can still leave a committed record. Creation has no
 idempotency key/automatic retry contract: inspect the result before retrying, or

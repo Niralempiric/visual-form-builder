@@ -24,7 +24,9 @@ bootstrap. D04.2 adds persistent opaque sessions, CSRF/Origin checks and working
 of prior sessions. D05.1 adds protected [workspace and empty-draft APIs](docs/WORKSPACES.md)
 with owner memberships and atomic persistence. D05.2 adds the protected
 [workspace dashboard](docs/DASHBOARD.md): create and switch workspaces, create
-empty forms, and open the correct saved draft. Field editing, publishing and
+empty forms, and open the correct saved draft. D05.3 adds comprehensive
+[two-workspace isolation checks](docs/TENANT_ISOLATION.md) for the shipped management
+API and consistent unavailable-form handling. Field editing, publishing and
 responses remain pending.
 
 ## Repository and setup
@@ -208,5 +210,5 @@ The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D04.2: **D04.3**, one-time recovery codes and session
-revocation with generic failure messages. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D05.3: **D06.1**, allowlisted field types, stable UUIDs,
+option IDs, constraints and schema size bounds. No application has been deployed and no usable form-builder release is claimed.

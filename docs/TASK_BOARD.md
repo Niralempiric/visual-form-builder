@@ -80,7 +80,7 @@ Modules: M03.
 
   Prerequisite: D05.1. **Done when:** The owner opens the correct form from its workspace dashboard.
 
-- [ ] **D05.3** Apply tenant scoping to all management endpoints and add two-workspace denial tests.
+- [x] **D05.3** Apply tenant scoping to all management endpoints and add two-workspace denial tests.
 
   Prerequisite: D05.2. **Done when:** Guessed object IDs cannot read or mutate another workspace.
 

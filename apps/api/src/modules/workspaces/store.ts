@@ -110,7 +110,7 @@ export async function createWorkspaceStore(connection: Connection) {
         // Tenant membership and active-workspace predicates are part of this read.
         // A private/public form ID alone never grants author access.
         const records = await forms.aggregate<FormRecord>([
-          { $match: { _id: new Types.ObjectId(formId) } },
+          { $match: { _id: new Types.ObjectId(formId), availability: { $ne: 'deleting' } } },
           { $lookup: { from: 'memberships', localField: 'workspaceId', foreignField: 'workspaceId',
             pipeline: [{ $match: { userId: new Types.ObjectId(userId), role: { $in: ['owner', 'editor', 'viewer'] } } },
               { $project: { _id: 1 } }, { $limit: 1 }], as: 'membershipAccess' } },

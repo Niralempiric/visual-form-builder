@@ -161,3 +161,16 @@ correlated errors. Workspace discovery follows current memberships; forms are
 scoped to the requested active workspace. Summary DTOs omit draft content and
 private counters. Cursors never authorize access. See [list contracts](WORKSPACES.md)
 and [dashboard behavior](DASHBOARD.md). Editing/publishing/submission remain later work.
+
+
+## Management isolation (D05.3)
+
+All six shipped workspace/form routes use the verified session actor. Existing-
+workspace/form operations additionally require current membership in the target
+workspace; root creation assigns the new owner atomically. Tenant/actor hints
+never override that context. Direct
+form reads now exclude deleting records and return the same safe 404 as absent/
+inaccessible objects. Session/Origin/CSRF ordering, strict write inputs, correlated
+no-store errors and existing transaction admission rules are preserved. See the
+[endpoint inventory and denial evidence](TENANT_ISOLATION.md). This does not add
+future draft-save, publish, response, export or team APIs.

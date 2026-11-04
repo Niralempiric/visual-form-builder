@@ -284,3 +284,23 @@ keyboard use and a 390px viewport. Never use real answers, capture credentials o
 reset an actual user's password. Test-only latency/failure injection belongs to a
 local forwarding harness, not a production API flag or debug route. Record each
 observed result in progress; a successful build alone is not browser acceptance.
+
+
+## D05.3 tenant-denial checks
+
+`tests/fast/tenant-guards.test.ts` covers identity/Origin/CSRF guard ordering across
+all six current workspace/form routes, before input parsing or persistence, and
+positive controls prove caller headers cannot select the actor.
+`tests/integration/tenant-isolation.test.ts` adds three isolated real Mongo/API
+scenarios: symmetric two-owner read/write denials with unchanged state hashes;
+current workspace-specific membership/lifecycle checks across two API instances;
+and disabled/expired/revoked identity rejection across the endpoint inventory.
+Every denial scenario has legitimate access controls. Full contracts, reproduction
+commands and limitations are in [tenant isolation](TENANT_ISOLATION.md).
+
+The deleting-form check initially failed (503 instead of safe 404). The form-read
+query now excludes deleting records, matching list behavior. Future endpoint/role
+policies remain their own tasks; no non-existent PATCH/publish/response route is
+counted as authorization coverage. No frontend changed in D05.3, so browser
+verification is not applicable; the acceptance evidence comes from actual HTTP,
+Mongo persistence and guard tests, not prior dashboard screenshots.
