@@ -905,7 +905,7 @@ Modules: M03. Day-group estimate: 5 to 6 hours.
 
 Modules: M04. Day-group estimate: 5 to 6 hours.
 
-- [ ] **D06.1** Define allowlisted field types, stable UUIDs, option IDs, constraints and schema size bounds.
+- [x] **D06.1** Define allowlisted field types, stable UUIDs, option IDs, constraints and schema size bounds.
 
   Prerequisite: D05.3. **Individual completion check:** Valid fixture schemas parse and unsupported or oversized structures fail.
 

@@ -304,3 +304,20 @@ policies remain their own tasks; no non-existent PATCH/publish/response route is
 counted as authorization coverage. No frontend changed in D05.3, so browser
 verification is not applicable; the acceptance evidence comes from actual HTTP,
 Mongo persistence and guard tests, not prior dashboard screenshots.
+
+
+## D06.1 definition-schema checks
+
+`tests/fast/form-definition.test.ts` exercises the compiled shared package's twelve
+structural field variants, UUIDv4 identity/collisions, defaults, type-specific
+bounds, real Gregorian date ranges, choice cardinalities and strict unknown keys.
+It verifies unchanged empty creation, non-mutating stable-ID round trips, the
+inclusive 256 KiB UTF-8 boundary on input and canonical output, and rejected unsafe
+keys, cycles, accessors/hooks, depth/visit/array limits and non-JSON values.
+The documented synthetic JSON is parsed by the same package. Use the exact example
+and test commands in [form definitions](FORM_DEFINITIONS.md).
+
+No browser UI or management write contract changed. D06.2 answer semantics,
+D06.3 renderer mappings/fixtures and future save/publish APIs are not counted as
+passing this structural task. Full repository/operational checks still protect
+compatibility of existing API creation and tenant/transaction contracts.

@@ -88,7 +88,7 @@ Modules: M03.
 
 Modules: M04.
 
-- [ ] **D06.1** Define allowlisted field types, stable UUIDs, option IDs, constraints and schema size bounds.
+- [x] **D06.1** Define allowlisted field types, stable UUIDs, option IDs, constraints and schema size bounds.
 
   Prerequisite: D05.3. **Done when:** Valid fixture schemas parse and unsupported or oversized structures fail.
 

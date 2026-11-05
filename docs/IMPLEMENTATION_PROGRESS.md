@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.3 completed**; 105 implementation tasks remain pending.
-Next eligible task: **D06.1**. Authentication, recovery, workspace/empty-draft APIs, the dashboard and shipped-endpoint tenant-denial checks work; field schemas/editing and publication remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.3 and D06.1 completed**; 104 implementation tasks remain pending.
+Next eligible task: **D06.2**. Authentication, recovery, workspace/empty-draft APIs, the dashboard, shipped-endpoint tenant-denial checks and shared structural field/form schemas work; answer validation, rendering, editing and publication remain pending.
 
 ## Per task record template
 
@@ -2509,3 +2509,161 @@ the execution result. No PR, release, deployment, outreach or score claim is mad
 
 Next eligible task remains **D06.1**, not started. Stop after this receipt's
 publication verification.
+
+
+## D06.1 — Bounded shared field/form definitions — 5 November 2026
+
+**Implementation status: Completed. Publication status at preparation: ready for
+its authorized commit/push; remote containment and hosted results await observation.**
+
+Actual implementation path:
+`/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+Verified authorized public repository: https://github.com/Niralempiric/visual-form-builder.
+The app working directory/planning artifacts and Webhook Inbox are separate.
+
+Selected task: **Define allowlisted field types, stable UUIDs, option IDs,
+constraints and schema size bounds.** Prerequisite D05.3 was verified in the
+shipped HTTP/Mongo tests and source, not only tracker marks; its publication
+receipt was rechecked at initial HEAD `ee7a1a71853a92867c4c6bc61af77c769747c565`,
+including successful hosted job `126597140426`. Initial `main` tracked
+`origin/main` with a clean tree and no divergence. A fresh pre-publication fetch
+again found no remote advance. No previous task handoff remained unfinished.
+
+Repository ownership, terminal authentication and attribution were checked
+separately: all identify Niralempiric; effective author and committer remain
+`Niralempiric <niralempiric@gmail.com>`. GitHub attributes the prior commit's author
+and committer to Niralempiric; new commit attribution awaits publication. Fetch
+and push destinations were inspected programmatically and both match the exact
+authorized repository. Direct `main` publication follows existing workflow and
+observed unprotected branch policy. Git identity, remote URLs and visibility are
+unchanged. Embedded credentials remain at `.git/config` → `remote.origin.url`;
+use a credential manager for secure storage. No credential value was output,
+committed, removed or rotated.
+
+### Work and individual acceptance evidence
+
+The individual completion check **Passed**: “Valid fixture schemas parse and
+unsupported or oversized structures fail.” This is structural schema acceptance;
+the day-level renderer/answer completion evidence remains later work.
+
+- `packages/form-schema/src/definition.ts` adds strict shared validators and
+  inferred types for ten input types plus heading/description, required stable
+  UUIDv4 field/option IDs, canonical lowercase IDs, global ID uniqueness,
+  type-specific constraints, real Gregorian dates and serialization. Validation
+  never generates replacement IDs or mutates input. Unknown types/keys and
+  executable/regex configuration are rejected; text stays literal plain text.
+- `limits.ts` and `json-budget.ts` enforce at most 50 fields, 100 options per choice,
+  256 KiB inclusive compact UTF-8 JSON before structural parsing and after defaults,
+  bounded depth/visits/arrays and safe plain data. The text entry point checks wire
+  bytes including whitespace before JSON.parse. Unsafe keys, cycles, non-JSON
+  values, accessors and hooks fail without evaluation. Pure ES2022/Zod works in
+  the existing shared browser/server build; no dependency or runtime change.
+- `initial-draft.ts` retains the old exact empty creation schema/factory;
+  `index.ts` reexports the new and existing contracts. Management creation,
+  model/DTO storage, tenant, immutable-version and transaction contracts do not
+  widen. Current endpoints still create empty drafts only.
+- `tests/fast/form-definition.test.ts` adds ten meaningful tests covering all
+  twelve variants, stable-ID round trips, collisions, strict constraints,
+  unsupported values, field/option limits, precise UTF-8/escaping/default-expansion
+  boundaries, unsafe/deep/large data and unchanged empty creation. The committed
+  synthetic JSON is parsed through the same compiled package.
+- `docs/FORM_DEFINITIONS.md`, `docs/examples/workshop-definition.json`, README,
+  WORKSPACES and TESTING explain current contracts and reproducible commands.
+  Example definitions contain no answers or real respondent/account material.
+  Only D06.1 is newly complete in the plan and task board; this progress entry
+  preserves all prior records. No future application/UI feature was implemented.
+
+### Verification results
+
+Pinned Node **24.21.0**, npm **11.19.0** and the committed lockfile were used.
+Full checks ran after final code/test changes in a detached job, avoiding terminal
+lifetime limits. Database/operational checks use isolated disposable synthetic
+Docker replica sets and verify their cleanup, preserving normal development data.
+
+| Command/check | Observed result |
+|---|---|
+| Focused `npm test -- tests/fast/form-definition.test.ts` | Passed, 10 tests; final added byte cases also passed in the full suite |
+| Documented build/example commands in FORM_DEFINITIONS | Passed; compiled parser prints the synthetic title and shortText/email/dropdown types |
+| `npm ci` | Passed, locked installation |
+| `npm run check` | Passed, runtime pins, lint and all types |
+| `npm test` | Passed, 37 fast tests in 9 files |
+| `npm run test:db` | Passed, 21 real-Mongo tests in 6 files; cleanup verified |
+| `npm run build` | Passed, shared packages, Express and production Next.js |
+| `npm run test:readiness` | Passed, 3 operational checks |
+| `npm run test:transactions` | Passed, 5 reported checks including 4 transaction subtests |
+| `npm audit --json` | Failed, exit 1: 4 moderate development-chain findings; none high/critical |
+| `npm audit --omit=dev --json` | Passed, zero production findings |
+| Browser | Not applicable/not run: no affected UI in this structural-schema task |
+| Final self-review | Task-only files, secret/manual review, local links, documented block syntax, tracker/status consistency and whitespace checks |
+
+All required application checks passed without weakening assertions, dependency
+changes or a force fix. Self-review is not independent review. Existing CI runs
+install/check/fast tests/build; its observed result is recorded after publication,
+separately from local real-database/operational acceptance.
+
+### Growth delta against the preserved baseline
+
+Every checkpoint was evaluated; numbers are checklist items within each phase.
+The initial baseline and intervening evidence remain preserved above.
+
+- **Phase 0 — Completed for this run, 1–4:** exact implementation/target,
+  independently checked attribution, private-data hygiene and unchanged useful
+  first journey/intended users. **Pending, 5:** no fresh GHFind baseline requested;
+  no score or scan-freshness claim.
+- **Phase 1 — Pending overall:** 1–3 gain working shared parsing, exact setup/
+  format documentation and unchanged pins; 5 gains a runnable synthetic definition
+  example; 6 gains locked install/build evidence. Full form release usability
+  (1, 6), license/assets decision (4) and complete synthetic answer/journey demo
+  (5) remain **Pending**. No external asset introduced or usable release claimed.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one earliest eligible task,
+  verified prerequisite/check, coherent code/tests/docs and recorded limitations.
+  **Not applicable, 3:** no coordination issue needed or created.
+- **Phase 3 — Completed for this run, 1–3, 5–7 within scope:** shared architecture,
+  bounded strict failure behavior, compatibility/tenant/transaction tests, matching
+  example/docs, self-review and preserved identity. Future version/response
+  behavior in 2 remains **Pending**. **Not applicable, 4:** no affected UI.
+  **Pending at preparation, 8:** authorized publication/hosted result is observed
+  separately below, not inferred from local checks.
+- **Phase 4 — Pending overall, 1–5:** milestone/full create-publish-submit-inspect-
+  export, close/retry/history, accessibility/lifetime/deployment and release notes
+  await their tasks. **Completed within scope, 6:** reproducible checks, precise
+  limitations and existing sanitized problem-reporting guidance. No deployment.
+- **Phase 5 — Not applicable, 1–5:** no profile pin, promotional tutorial, outreach,
+  feedback/adoption or contributor event authorized/observed. The local engineering
+  example is not a public promotional post; no users or recognition invented.
+- **Phase 6 — Completed for this run within scope, 1–2:** reviewed failure paths,
+  preserved dependency compatibility/setup/tests and triaged the audit separately.
+  **Pending:** development-only advisory and ongoing maintenance. **Not applicable,
+  3–6:** no release, product-blocking upstream work/contribution or stable reusable
+  package extraction; the schema workspace already existed.
+- **Phase 7 — Pending overall:** 1 gains a reproducible engineering example, not
+  release/user outcomes; 2 has no compatible fresh score comparison. 3 is **Not
+  applicable** to score/rule inference, with attribution independently verified.
+  4 identifies D06.2; maintenance across years remains **Pending**. No score gains.
+
+### Limitations, publication and next task
+
+The audit currently reports **4 moderate development-only findings** in the
+ESLint/minimatch chain ([advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249)),
+compared with 5 recorded previously; dependencies/lockfile are unchanged and no
+code/score improvement is attributed to that observed count difference.
+Production findings remain zero. Unrelated tooling maintenance is deferred.
+
+This is a flat structural definition contract: steps/rules are empty and theme
+is neutral. D06.2 answer validation, D06.3 renderer mappings/fixtures and later
+editing/save/import/publish APIs are pending. A later editor/save contract must
+assign a new ID when type/meaning changes; snapshot parsing cannot compare
+historical definitions. Empty/layout-only drafts parse structurally; publication
+must later require at least one input. No arbitrary definition write endpoint or
+full end-user form journey is claimed. Existing auth/deployment limitations remain.
+
+Publication at preparation is **ready for authorized D06.1 commit/push** on `main`
+to https://github.com/Niralempiric/visual-form-builder. Resolve its source commit
+with `git log -1 --format=%H -- packages/form-schema/src/definition.ts` after
+committing. Exact remote containment/new attribution/hosted CI await observation.
+No task blocker, independent review, PR, release, tag, deployment, outreach,
+identity/remote edit, rewritten history or empty commit is claimed.
+
+**Next eligible ID: D06.2 — Implement shared answer validation including false,
+zero, empty optional values and layout-only blocks.** D06.1's individual check is
+verified complete. D06.2 is not started. Stop after D06.1 publication verification.
