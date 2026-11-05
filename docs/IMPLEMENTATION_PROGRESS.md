@@ -2667,3 +2667,33 @@ identity/remote edit, rewritten history or empty commit is claimed.
 **Next eligible ID: D06.2 — Implement shared answer validation including false,
 zero, empty optional values and layout-only blocks.** D06.1's individual check is
 verified complete. D06.2 is not started. Stop after D06.1 publication verification.
+
+
+### D06.1 publication receipt — 5 November 2026
+
+**Publication status: implementation published and hosted-verified.** Source
+commit `15612fabd7ed435e73a8e2a1cbb6b237362d43f6` was pushed to verified `main` at
+https://github.com/Niralempiric/visual-form-builder. Exact refs/heads/main read-back
+matched; GitHub attributes both author and committer to Niralempiric. The tree
+was clean. Existing identity, remotes, public visibility, history and branch
+policy were preserved; no protection or required review workflow was bypassed.
+
+[CI run 41970884188](https://github.com/Niralempiric/visual-form-builder/actions/runs/41970884188)
+at that exact SHA completed **successfully**. Job `127058596229` passed every
+setup/install/runtime/lint/type/fast-test/build/post step; none skipped. The
+connected GitHub job-steps tool also confirmed all successful steps. Local
+real-Mongo, readiness and transaction evidence remains separately recorded above;
+hosted CI does not claim to run database/browser acceptance. Observing CI via two
+read interfaces is not independent code review.
+
+Growth Phase 3 item 8 is now **Completed for this run**, resolving preparation-time
+publication status. Other phase outcomes and pending development-advisory,
+release, adoption and long-term checkpoints remain as recorded. This receipt adds
+only observed publication evidence after the coherent implementation commit; it
+does not change application code, dependencies or acceptance criteria. Local
+application checks are not repeated for this documentation-only update. Final
+receipt-commit remote/hosted verification is reported in the execution result;
+no amend, history rewrite, empty commit, PR, release, deployment or outreach.
+
+Next eligible task remains **D06.2**, not started. Stop after this receipt's
+publication verification.
