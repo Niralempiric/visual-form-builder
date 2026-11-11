@@ -2867,3 +2867,35 @@ commit is claimed.
 **Next eligible ID: D06.3 — Build field registry mappings and synthetic fixtures
 for every supported input type.** Prerequisite D06.2's individual check is verified
 complete; D06.3 is not started. Stop after D06.2 publication and verification.
+
+
+### D06.2 publication receipt — 11 November 2026
+
+**Publication status: implementation published and hosted-verified.** Source
+commit `358bf1875396642bfe9294b2a74ed64014cddcb2` was pushed to verified `main` at
+https://github.com/Niralempiric/visual-form-builder. Exact refs/heads/main read-back
+matched, and GitHub attributes both author and committer to Niralempiric. The
+working tree was clean. Identity, remotes, public visibility, history and branch
+policy were preserved; no required review or protection was bypassed.
+
+[CI run 43003013324](https://github.com/Niralempiric/visual-form-builder/actions/runs/43003013324)
+at this exact SHA completed **successfully**. Job `130463509254` passed every
+setup/install/runtime/lint/type/fast-test/build/post step; none skipped. The
+connected GitHub job-steps tool also confirmed all successful steps. Hosted CI
+does not run database/browser acceptance or security audits. Local real-Mongo,
+readiness/transactions and the **failed audits with one high production Mongoose
+finding plus four moderate development findings** remain separately recorded above.
+Successful CI does not resolve those findings or imply production readiness.
+Observing CI through two read interfaces is not independent code review.
+
+Growth Phase 3 item 8 is now **Completed for this run**, resolving preparation-time
+publication status. All other scope/release/adoption/long-term statuses and
+unresolved dependency advisories remain unchanged. This documentation receipt
+records observations available after the coherent implementation commit without
+rewriting history. No code, dependencies or acceptance criteria changed; local
+application checks are not repeated. Final receipt-commit remote/hosted results
+are reported in the execution result. No empty commit, PR, release, deployment,
+outreach or score claim is made.
+
+Next eligible task remains **D06.3**, not started. Stop after this receipt's
+publication verification.
