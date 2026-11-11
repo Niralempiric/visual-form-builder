@@ -909,7 +909,7 @@ Modules: M04. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D05.3. **Individual completion check:** Valid fixture schemas parse and unsupported or oversized structures fail.
 
-- [ ] **D06.2** Implement shared answer validation including false, zero, empty optional values and layout-only blocks.
+- [x] **D06.2** Implement shared answer validation including false, zero, empty optional values and layout-only blocks.
 
   Prerequisite: D06.1. **Individual completion check:** Browser-independent fixtures demonstrate consistent field semantics.
 

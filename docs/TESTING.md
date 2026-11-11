@@ -321,3 +321,20 @@ No browser UI or management write contract changed. D06.2 answer semantics,
 D06.3 renderer mappings/fixtures and future save/publish APIs are not counted as
 passing this structural task. Full repository/operational checks still protect
 compatibility of existing API creation and tenant/transaction contracts.
+
+
+## D06.2 shared-answer checks
+
+`npm test -- tests/fast/answers.test.ts tests/fast/form-definition.test.ts`
+builds the shared package and runs browser-independent fixtures in Node. The
+answer suite covers every input and both layout types; required/optional empty
+values; numeric zero and boolean false; literal preserved text; exact option IDs,
+choice cardinalities/order; email/calendar/rating bounds; snapshot-specific
+validation; nonmutation; safe static failures and the inclusive 128 KiB UTF-8 map
+budget. The same exported validator parses the documented synthetic example.
+
+The original ten structure tests also protect the reused calendar/JSON guards and
+unchanged empty creation. No UI, renderer mapping, HTTP submission, version write
+or database persistence is added. Those future flows need their own acceptance;
+current local/CI package checks are not end-to-end response acceptance. See
+[answer validation](ANSWER_VALIDATION.md) for contracts and exact example commands.

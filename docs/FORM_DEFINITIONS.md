@@ -5,15 +5,17 @@ D06.1 | 5 November 2026
 `@visual-form-builder/form-schema` now exports `fieldDefinitionSchema`,
 `formDefinitionSchema`, `formDefinitionJsonSchema`, `definitionIdSchema`,
 `fieldTypeSchema`, `fieldTypes`, `formDefinitionLimits` and inferred
-`FieldDefinition`/`FormDefinition` output types. These are structural validators,
-not answer validation, rendering, publication validation or a new save/import API.
+`FieldDefinition`/`FormDefinition` output types. These exports validate structure;
+[D06.2 answer validation](ANSWER_VALIDATION.md) is a separate shared function. Rendering, publication validation and save/import
+APIs remain pending.
 
 The existing `initialDraftSchema`/`createInitialDraft` exports retain the canonical
 empty creation shape. Current management creation still accepts only a name/title
 and saves an empty draft; it does not accept arbitrary definitions. The new
 structural parser also accepts that canonical empty draft. Saving nonempty drafts
-and revision control remain D09; answer validation is D06.2, and renderer mappings/
-matching renderer fixtures are D06.3. No later task is completed by this foundation.
+and revision control remain D09; answer validation is now available in D06.2,
+and renderer mappings/matching renderer fixtures remain D06.3. No later task is
+completed by this foundation.
 
 ## Format and identifiers
 
@@ -49,11 +51,11 @@ regex, expression, executable callback, arbitrary styling or answer payload.
 |---|---|
 | shortText | minLength 0–2000 (default 0), maxLength 1–2000 (default 2000), min ≤ max |
 | longText | minLength 0–10000 (default 0), maxLength 1–10000 (default 10000), min ≤ max |
-| email | maxLength 1–254, default 254; syntactic answer checks are D06.2 |
+| email | maxLength 1–254, default 254; syntactic answer checks use D06.2 |
 | number | Optional finite numeric min/max within ±10^12; min ≤ max when both supplied; no coercion |
 | dropdown, radio | 1–100 options with distinct UUIDs; constraints is `{}` |
 | multipleChoice | 1–100 options; minChoices 0–100 (default 0), explicit maxChoices 1–100; min ≤ max ≤ option count |
-| checkbox | constraints is `{}`; required-answer semantics are D06.2 |
+| checkbox | constraints is `{}`; required-answer semantics use D06.2 |
 | date | Optional min/max real Gregorian YYYY-MM-DD dates, years 0001–9999, min ≤ max; no Date objects/timezones |
 | rating | Integer min/max within 1–10, defaults 1/5; min < max |
 | heading, description | required must be false and constraints is `{}`; layout-only, with no options |
@@ -107,5 +109,5 @@ The [example JSON](examples/workshop-definition.json) contains synthetic definit
 only, with no answers, account context or credentials. It is not an imported or
 published form. Tests exercise all structural variants, IDs/constraints, exact
 UTF-8 budget boundaries, malformed/unsafe/deep/large JSON and unchanged empty-draft
-creation. Full renderer/answer fixtures remain later work. See [testing](TESTING.md)
-and [progress](IMPLEMENTATION_PROGRESS.md) for observed verification and limitations.
+creation. Shared answer fixtures now exist in D06.2; matching renderer fixtures
+remain later work. See [testing](TESTING.md) and [progress](IMPLEMENTATION_PROGRESS.md) for observed verification and limitations.

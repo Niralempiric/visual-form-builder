@@ -28,8 +28,9 @@ empty forms, and open the correct saved draft. D05.3 adds comprehensive
 [two-workspace isolation checks](docs/TENANT_ISOLATION.md) for the shipped management
 API and consistent unavailable-form handling. D06.1 adds bounded shared
 [field/form definition schemas](docs/FORM_DEFINITIONS.md) with UUIDs, allowlisted
-types and constraints. Answer validation, rendering, field editing, publishing
-and responses remain pending.
+types and constraints. D06.2 adds [shared answer validation](docs/ANSWER_VALIDATION.md),
+canonical empty/false/zero handling and bounded safe failures. Rendering, field
+editing, publishing and responses remain pending.
 
 ## Repository and setup
 
@@ -108,7 +109,7 @@ and start because Next.js compiles rewrites into its output.
 | `apps/web` | Next.js App Router preview page and API connection control |
 | `apps/api` | Express health, Mongo lifecycle, author sessions/recovery and protected workspace/empty-draft APIs |
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
-| `packages/form-schema` | Shared structural field/form definitions plus strict empty-draft creation; answer validation/renderer registry pending |
+| `packages/form-schema` | Shared structural definitions and answer validation plus strict empty-draft creation; renderer registry pending |
 | `packages/form-renderer` | Shared preview/public React renderer scaffold |
 | `packages/contracts` | Shared strict API envelopes, identifiers and pagination schemas |
 | `packages/test-fixtures` | Future synthetic schema/answer fixtures |
@@ -138,8 +139,8 @@ and start because Next.js compiles rewrites into its output.
 | `npm run test:transactions` | Build shared packages/API and verify isolated multi-collection commit, rollback and persistence |
 
 The form-schema package validates server-generated empty initial drafts and bounded
-structural definitions with allowlisted fields. Answer/rule validation and the
-renderer remain pending. Shared API contracts validate
+structural definitions with allowlisted fields and canonical answer validation.
+Rule evaluation and the renderer remain pending. Shared API contracts validate
 envelopes, IDs, page inputs and workspace/form creation DTOs; see
 [API contracts](docs/API_CONTRACTS.md). The smoke script checks the
 initial page and direct/proxied health. The readiness suite verifies local replica-set
@@ -213,5 +214,5 @@ The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D06.1: **D06.2**, shared answer validation including false,
-zero, empty optional values and layout-only blocks. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D06.2: **D06.3**, field registry mappings and synthetic
+fixtures for every supported input type. No application has been deployed and no usable form-builder release is claimed.

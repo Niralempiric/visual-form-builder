@@ -92,7 +92,7 @@ Modules: M04.
 
   Prerequisite: D05.3. **Done when:** Valid fixture schemas parse and unsupported or oversized structures fail.
 
-- [ ] **D06.2** Implement shared answer validation including false, zero, empty optional values and layout-only blocks.
+- [x] **D06.2** Implement shared answer validation including false, zero, empty optional values and layout-only blocks.
 
   Prerequisite: D06.1. **Done when:** Browser-independent fixtures demonstrate consistent field semantics.
 

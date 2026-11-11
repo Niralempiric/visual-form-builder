@@ -11,13 +11,13 @@ function utf8Bytes(value: string) {
   }
   return bytes;
 }
-export function boundedJson(value: unknown): boolean {
+export function withinJsonBudget(value: unknown, maxBytes: number): boolean {
   let bytes = 0, nodes = 0;
   const ancestors = new WeakSet<object>();
-  const spend = (amount: number) => (bytes += amount) <= limits.bytes;
+  const spend = (amount: number) => (bytes += amount) <= maxBytes;
   function string(value: string) {
     // Escaping/UTF-8 cannot use fewer bytes than UTF-16 code units.
-    return value.length <= limits.bytes - bytes && spend(utf8Bytes(JSON.stringify(value)));
+    return value.length <= maxBytes - bytes && spend(utf8Bytes(JSON.stringify(value)));
   }
   function walk(value: unknown, depth: number): boolean {
     if (++nodes > limits.nodes || depth > limits.depth) return false;
@@ -51,6 +51,7 @@ export function boundedJson(value: unknown): boolean {
   }
   try { return walk(value, 0); } catch { return false; }
 }
+export const boundedJson = (value: unknown): boolean => withinJsonBudget(value, limits.bytes);
 export const boundedJsonSchema = z.custom<unknown>(boundedJson, 'Expected bounded plain JSON data.');
 export const boundedJsonTextSchema = z.string().refine(value =>
   value.length <= limits.bytes && utf8Bytes(value) <= limits.bytes, 'JSON exceeds the byte limit.').transform((value, context): unknown => {

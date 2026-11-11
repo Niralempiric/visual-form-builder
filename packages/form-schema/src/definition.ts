@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { realDate } from './calendar.js';
 import { draftTitleSchema } from './initial-draft.js';
 import { boundedJson, boundedJsonSchema, boundedJsonTextSchema } from './json-budget.js';
 import { formDefinitionLimits as limits } from './limits.js';
@@ -20,13 +21,6 @@ function textConstraints(max: number) {
 const magnitude = z.number().min(-limits.numberMagnitude).max(limits.numberMagnitude);
 const numberConstraints = z.strictObject({ min: magnitude.optional(), max: magnitude.optional() })
   .refine(value => value.min === undefined || value.max === undefined || value.min <= value.max, 'Minimum exceeds maximum.');
-function realDate(value: string) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const year = Number(value.slice(0, 4)), month = Number(value.slice(5, 7)), day = Number(value.slice(8, 10));
-  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return year >= 1 && month >= 1 && month <= 12 && day >= 1 && day <= (days[month - 1] ?? 0);
-}
 const date = z.string().refine(realDate, 'Expected a real YYYY-MM-DD calendar date.');
 const dateConstraints = z.strictObject({ min: date.optional(), max: date.optional() })
   .refine(value => value.min === undefined || value.max === undefined || value.min <= value.max, 'Minimum date exceeds maximum date.');

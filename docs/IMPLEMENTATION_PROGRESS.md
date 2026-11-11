@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.3 and D06.1 completed**; 104 implementation tasks remain pending.
-Next eligible task: **D06.2**. Authentication, recovery, workspace/empty-draft APIs, the dashboard, shipped-endpoint tenant-denial checks and shared structural field/form schemas work; answer validation, rendering, editing and publication remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.3 and D06.1–D06.2 completed**; 103 implementation tasks remain pending.
+Next eligible task: **D06.3**. Authentication, recovery, workspace/empty-draft APIs, the dashboard, shipped-endpoint tenant-denial checks, shared structural definitions and answer validation work; renderer mappings, rendering, editing and publication remain pending.
 
 ## Per task record template
 
@@ -2697,3 +2697,173 @@ no amend, history rewrite, empty commit, PR, release, deployment or outreach.
 
 Next eligible task remains **D06.2**, not started. Stop after this receipt's
 publication verification.
+
+
+## D06.2 — Shared answer validation — 11 November 2026
+
+**Implementation status: Completed. Publication status at preparation: ready for
+authorized commit/push; new remote containment, attribution and CI await observation.**
+
+Actual implementation path:
+`/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+Verified authorized public URL: https://github.com/Niralempiric/visual-form-builder.
+This checkout is separate from Webhook Inbox and the app/planning working folder.
+Initial `main` tracked `origin/main` with a clean tree, no divergence and HEAD
+`f58d5c21fe99c22f0a3b1a5d12915ac21081d1c8`. D06.1 source, its ten structural tests
+and publication were verified again; connected hosted job `127059332324` reports
+all steps successful. No previous publication handoff remained unfinished.
+D06.2 is the earliest pending task whose prerequisite is verified complete.
+
+Ownership, authentication and attribution were checked separately. Both remote
+fetch/push destinations match the exact authorized repository; public/default-main
+state, push permission and the existing unprotected direct-main workflow were
+verified. Terminal authentication is Niralempiric. Effective author and committer
+remain `Niralempiric <niralempiric@gmail.com>`; GitHub attributes prior HEAD's author
+and committer to Niralempiric. No Git identity, URL, visibility or branch-policy
+setting changed. Embedded credentials remain at `.git/config` → `remote.origin.url`;
+secure storage through a credential manager is recommended. No credential values
+were revealed, rotated, removed or committed. New attribution is verified after push.
+
+### Work, files and individual acceptance
+
+Selected task: **Implement shared answer validation including false, zero, empty
+optional values and layout-only blocks.** Individual completion check **Passed**:
+“Browser-independent fixtures demonstrate consistent field semantics.”
+
+- `packages/form-schema/src/answers.ts` and its public `index.ts` export validate
+  unknown answer input against the exact supplied, strictly validated definition
+  snapshot. All ten inputs enforce their published constraints; layout-only blocks
+  reject any supplied value. Unknown field/option IDs, wrong types, duplicate
+  choices, invalid email/calendar/rating values and out-of-range values fail.
+- Missing/null/empty optional values are omitted; optional text whitespace and
+  multiple-choice empty arrays are omitted. Required answers fail when empty;
+  required confirmation needs true. Numeric zero and optional false are retained,
+  accepted nonempty text stays literal, negative zero becomes zero and choices
+  canonicalize to definition order without mutating input. No partial answers are
+  returned on failure. Bounded static issues contain no respondent values, labels
+  or attacker-controlled keys; at most 51 issues at current field limits.
+- `calendar.ts` shares the existing exact Gregorian check with `definition.ts`;
+  `json-budget.ts` reuses the existing plain-JSON guard with a parameterized byte
+  cap, retaining the original 256 KiB definition contract. Answers have a separate
+  inclusive 128 KiB compact UTF-8 cap. Unsafe keys, non-JSON values, cycles,
+  getters/hooks and excessive structures fail before field processing. No new
+  dependency, package pin, environment value, persistence or transport behavior.
+- `tests/fast/answers.test.ts` adds **16 Node-only tests** for every input/layout,
+  empty/false/zero semantics, literal text, ID/count/order constraints, email/date/
+  numeric/rating limits, snapshot consistency, nonmutation, static failures,
+  exact UTF-8/escaping byte boundaries and the committed synthetic example.
+- `docs/ANSWER_VALIDATION.md` and `docs/examples/workshop-answers.json` provide the
+  exact contract and runnable synthetic demonstration. README, FORM_DEFINITIONS,
+  WORKSPACES and TESTING describe current behavior and future boundaries. This
+  progress history and both trackers mark only D06.2 newly complete.
+
+### Verification commands and observed results
+
+Pinned Node **24.21.0**, npm **11.19.0**, committed lockfile and unchanged CI used.
+All source/tests were final before the full verification job. The long job ran
+independently of the terminal lifetime. DB/operational fixtures use generated,
+isolated disposable replica sets; normal development configuration/data is not
+consumed, and fixture cleanup is checked by the existing suites.
+
+| Command/check | Result |
+|---|---|
+| Prerequisite `npm test -- tests/fast/form-definition.test.ts` | Passed, 10 tests before implementation |
+| Focused `npm test -- tests/fast/answers.test.ts tests/fast/form-definition.test.ts` | Passed, 26 tests across 2 files |
+| Focused `npm run check` | Passed |
+| `npm ci` | Passed, locked installation |
+| `npm run check` | Passed, runtime/lint/types |
+| `npm test` | Passed, 53 fast tests in 10 files |
+| `npm run test:db` | Passed, 21 real-Mongo tests in 6 files |
+| `npm run build` | Passed, packages, Express and production Next.js |
+| `npm run test:readiness` | Passed, 3 operational checks |
+| `npm run test:transactions` | Passed, 5 reported checks including 4 transaction subtests |
+| Documented ANSWER_VALIDATION bash example | Passed; synthetic result is success true, answerCount 3; included focused tests pass |
+| Synthetic trailing-newline date probe | Passed: both definition bounds and answers reject malformed dates |
+| Browser | Not applicable/not run: no affected UI or renderer implemented |
+| Diff review | Task-only files, secret/manual review, relative links, documented block syntax, tracker consistency and whitespace passed |
+| `npm audit --json` | Failed, exit 1: 5 findings, including 4 moderate; 1 high, 0 critical |
+| `npm audit --omit=dev --json` | Failed, exit 1: 1 production finding(s), 1 high |
+
+No required check was weakened or skipped. No failed task acceptance or independent
+review is claimed; this is self-review plus actual local/hosted check evidence.
+The hosted workflow covers install/check/fast tests/build, not local DB/browser
+acceptance. Hosted results for this new commit are recorded after publication.
+
+### Growth delta against the preserved baseline
+
+Every checkpoint was evaluated; item numbers refer to each checklist phase.
+Previous baseline and historical evidence remain; unchanged matrices are not copied.
+
+- **Phase 0 — Completed for this run, 1–4:** actual path/target, truthful preserved
+  attribution, synthetic-only hygiene and unchanged intended users/first journey.
+  **Pending, 5:** no new GHFind baseline/compatible score measurement requested.
+- **Phase 1 — Pending overall:** 1–3 gain working shared behavior/exact docs with
+  unchanged pins; 5 gains reproducible synthetic answers paired with definitions;
+  6 gains clean locked install/build evidence. Full usable-release evidence (1, 6),
+  license/assets decision (4), and a complete running form demo (5) remain **Pending**.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible task/check, verified
+  prerequisite, coherent implementation/tests/docs and recorded limits. **Not
+  applicable, 3:** no coordination issue needed or created.
+- **Phase 3 — Completed for this run, 1–3, 5–7 within scope:** shared deterministic
+  validation, supplied-snapshot/tenant/transaction compatibility, meaningful tests,
+  matching docs, self-review and preserved identity. Future version/response APIs
+  in 2 remain **Pending**. **Not applicable, 4:** no affected UI. **Pending at
+  preparation, 8:** exact-target publication/new hosted results await observation.
+- **Phase 4 — Pending overall, 1–5:** later milestone, actual full form journey,
+  close/retry/history, accessibility/lifetime/deployment and release notes. **Completed
+  within scope, 6:** exact limits, safe reproduction and existing problem-reporting
+  guidance; no end-user release/deployment claim.
+- **Phase 5 — Not applicable, 1–5:** no pinning, promotional tutorial/post, outreach,
+  observed feedback/adoption or contributor event authorized/invented. The local
+  engineering example demonstrates validation only.
+- **Phase 6 — Completed for this run within scope, 1–2:** reviewed/triaged actual
+  failure paths and audit separately, preserved compatible setup/tests/pins.
+  **Pending:** production Mongoose advisories, development-only advisory and ongoing dependency maintenance. **Not applicable, 3–6:** no release,
+  product-blocking upstream work/contribution or package extraction.
+- **Phase 7 — Pending overall:** 1 gains a reproducible engineering example, not
+  real release/user outcomes; 2 awaits compatible fresh scores; 3 is **Not applicable**
+  to stale/rule/score inference, with attribution verified. 4 selects D06.3 while
+  years of maintenance remain **Pending**. No users, activity or score gains fabricated.
+
+### Limitations, publication and next task
+
+Current definitions are flat, with no visibility rules. All current fields are
+visible. Future rules must independently compute visibility and prune known hidden
+answers before visible-required validation; no caller-supplied hidden IDs are
+trusted. Renderer mappings/fixtures are D06.3; actual controls, editor/save, publish,
+public submit, admission/idempotency and version-bound persistence remain later
+tasks. Supplying a snapshot proves validation consistency, not storage immutability.
+No new API, answer logging/storage, release, deployment or outreach was added.
+
+The 128 KiB object-map cap does not measure original wire whitespace or future
+HTTP envelope overhead; future routes must enforce body bounds before parsing.
+Email syntax does not prove ownership. Undefined own properties are not JSON;
+omit them. Static codes still need future UI wording/API envelope mapping.
+
+Audit observed 5 total findings: 4 moderate development-chain
+findings and 1 high production finding in the existing Mongoose 9.11.3 pin,
+compared with 4 moderate/zero production findings recorded previously. The
+lockfile/dependencies are unchanged. Both audits failed (exit 1); no clean security
+audit or production-readiness claim is made. This is unresolved dependency
+maintenance outside D06.2; no force fix or unrelated upgrade was applied.
+
+The production finding aggregates four Mongoose advisories affecting the current
+pin: [connection sanitizeFilter](https://github.com/advisories/GHSA-gg4r-jv3p-qx3c),
+[discriminator casting](https://github.com/advisories/GHSA-wr5m-5jph-8m96),
+[inherited-property handling](https://github.com/advisories/GHSA-8332-j7wj-wjw4)
+and [virtual prototype pollution](https://github.com/advisories/GHSA-6972-9mcm-vhwj).
+This run observed advisory metadata, not a demonstrated exploit or complete
+exposure analysis. Prioritize separately verified dependency remediation before
+public deployment; no deployment is authorized here. The existing development
+[minimatch advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249) also remains.
+
+Publication at preparation is **ready for authorized D06.2 commit/push** on `main`
+at https://github.com/Niralempiric/visual-form-builder. Resolve the source commit
+with `git log -1 --format=%H -- packages/form-schema/src/answers.ts` after committing.
+New remote containment, attribution and hosted CI await observation. No task blocker,
+PR/independent review, identity/remote edit, force push, history rewrite or empty
+commit is claimed.
+
+**Next eligible ID: D06.3 — Build field registry mappings and synthetic fixtures
+for every supported input type.** Prerequisite D06.2's individual check is verified
+complete; D06.3 is not started. Stop after D06.2 publication and verification.

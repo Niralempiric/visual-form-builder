@@ -123,8 +123,9 @@ The record starts with:
 contracts use that same definition. This validates **only the canonical empty
 creation shape**, not arbitrary fields/rules. D06.1 adds separate
 [structural definition validation](FORM_DEFINITIONS.md); it does not widen these
-creation endpoints. Answer validation/renderer mappings, draft editing/revision
-increments and immutable publication belong to later tasks. No placeholder field
+creation endpoints. D06.2 adds [shared answer validation](ANSWER_VALIDATION.md)
+without a submission endpoint. Renderer mappings, draft editing/revision increments
+and immutable publication belong to later tasks. No placeholder field
 IDs, answers, versions or signed contexts are created. Root Mongo schemas are strict; the draft's Mixed storage is constrained
 by the strict shared validator. Defaults are server-generated, not client-supplied.
 Every response is explicitly allowlisted; Mongo internal fields and private
