@@ -3038,3 +3038,34 @@ empty commit is claimed.
 **Next eligible ID: D07.1 — Build the palette, canvas, selection state and field
 property editor with immutable state updates.** D06.3's individual check is
 verified complete; D07.1 is not started. Stop after publication and verification.
+
+
+### D06.3 publication receipt — 12 November 2026
+
+**Publication status: implementation published and hosted-verified.** Source
+commit `5f5b968b13a7d8147b0597fab84c1d2accb66f31` was pushed to verified `main` at
+https://github.com/Niralempiric/visual-form-builder. Exact refs/heads/main read-back
+matched, and GitHub attributes both author and committer to Niralempiric. The
+working tree was clean. Identity, remotes, public visibility, history and branch
+policy were preserved; no required review or protection was bypassed.
+
+[CI run 43162728873](https://github.com/Niralempiric/visual-form-builder/actions/runs/43162728873)
+at this exact SHA completed **successfully**. Job `130997445486` passed all
+setup/install/runtime/lint/type/fast-test/build/post steps; none skipped. The
+connected GitHub job-steps tool also confirmed all successful steps. Hosted CI
+runs neither database/browser acceptance nor security audits. The separately
+observed **failed audits with one high production Mongoose finding and four
+moderate development findings** remain unresolved; CI does not change them or
+establish production readiness. Observing CI twice is not independent review.
+
+Growth Phase 3 item 8 is now **Completed for this run**, resolving preparation-time
+publication status. Other scoped, release, adoption and long-term outcomes and the
+dependency advisories remain as recorded. This documentation-only receipt captures
+observations available after the coherent implementation commit without rewriting
+history. No code, dependencies or acceptance criteria changed; local application
+checks were not repeated. Final receipt-commit remote/CI verification is reported
+in the execution result. No empty commit, PR, release, deployment, outreach or
+score claim is made.
+
+Next eligible task remains **D07.1**, not started. Stop after this receipt's
+publication verification.
