@@ -913,7 +913,7 @@ Modules: M04. Day-group estimate: 5 to 6 hours.
 
   Prerequisite: D06.1. **Individual completion check:** Browser-independent fixtures demonstrate consistent field semantics.
 
-- [ ] **D06.3** Build field registry mappings and synthetic fixtures for every supported input type.
+- [x] **D06.3** Build field registry mappings and synthetic fixtures for every supported input type.
 
   Prerequisite: D06.2. **Individual completion check:** Every allowed input type has a renderer contract and matching validation fixture.
 

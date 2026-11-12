@@ -1,2 +1,1 @@
-// Workspace entry point; implementation is scheduled in later tasks.
-export {};
+export * from './registry.js';

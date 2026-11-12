@@ -11,8 +11,8 @@ Actual repository absolute path: `/home/empiric-60/Public/project/ghfind-score/v
 Verified authorized GitHub URL: https://github.com/Niralempiric/visual-form-builder.
 Owner: Niralempiric.
 
-Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.3 and D06.1–D06.2 completed**; 103 implementation tasks remain pending.
-Next eligible task: **D06.3**. Authentication, recovery, workspace/empty-draft APIs, the dashboard, shipped-endpoint tenant-denial checks, shared structural definitions and answer validation work; renderer mappings, rendering, editing and publication remain pending.
+Current status: **D01.1–D01.3, D02.1–D02.3 and D03.1–D03.3 and D04.1–D04.3 and D05.1–D05.3 and D06.1–D06.3 completed**; 102 implementation tasks remain pending.
+Next eligible task: **D07.1**. Authentication, recovery, workspace/empty-draft APIs, the dashboard, tenant-denial checks, shared structural definitions, answer validation and renderer contracts work; interactive rendering, editing and publication remain pending.
 
 ## Per task record template
 
@@ -2899,3 +2899,142 @@ outreach or score claim is made.
 
 Next eligible task remains **D06.3**, not started. Stop after this receipt's
 publication verification.
+
+
+## D06.3 — Field registry mappings and synthetic fixtures — 12 November 2026
+
+**Implementation status: Completed. Publication status at preparation: ready for
+authorized commit/push; new remote containment, attribution and CI await observation.**
+
+Actual implementation path:
+`/home/empiric-60/Public/project/ghfind-score/visual-form-builder`.
+Verified authorized public repository: https://github.com/Niralempiric/visual-form-builder.
+This is separate from Webhook Inbox and the app's planning working folder. Initial
+`main` tracked `origin/main` with a clean tree and HEAD
+`26b105be849eeb0ef81fb4a23e92601df4b4b57b`; a fetch found no divergence. D06.2
+source and 26 prerequisite tests passed again, and connected hosted job
+`130464468722` confirmed the prior receipt's successful CI. No publication handoff
+remained unfinished. D06.3 was the earliest pending task with a verified prerequisite.
+
+Ownership, authentication and authorship were checked separately: fetch and push
+match the exact authorized public repository, Niralempiric is authenticated, main
+is default/unprotected with push permission, and the established workflow is direct
+main. GitHub attributes previous HEAD's author and committer to Niralempiric;
+effective author and committer remain `Niralempiric <niralempiric@gmail.com>`.
+Identity, remote URLs, visibility and history remain unchanged. Embedded credentials
+remain at `.git/config` → `remote.origin.url`; secure storage with a credential
+manager is recommended. Values were not output, changed or committed. New GitHub
+attribution and remote containment await observation.
+
+### Work and individual acceptance evidence
+
+Selected task: **Build field registry mappings and synthetic fixtures for every
+supported input type.** Its individual check **Passed**: “Every allowed input type
+has a renderer contract and matching validation fixture.” No interactive rendering
+or end-to-end day/release milestone is claimed by this contract-level check.
+
+- `packages/form-renderer/src/registry.ts` and its `index.ts` export an exhaustive,
+  frozen, typed mapping for ten inputs and two layout blocks. Each validated field
+  resolves to a discriminated contract with control/value kind, option source,
+  label target, parsed field and fresh options. Choice values are stable option IDs;
+  rating values are bounded numbers over the configured range. Invalid/unsafe
+  fields receive only a static failure, and input data is not mutated.
+- `packages/test-fixtures/src/field-contracts.ts` and its `index.ts` export a
+  fresh synthetic fixture factory with a valid answer/canonical result and invalid
+  answer/expected issue for each type. It includes zero, false, choice ordering,
+  UUID identity, date and layout semantics; no real respondent data.
+- `tests/fast/field-contracts.test.ts` independently checks the expected mapping,
+  exact allowlist/fixture coverage, each fixture against shared `validateAnswers`,
+  choice IDs/order, numeric rating range, layout behavior, malformed data/accessor
+  rejection, immutable registry entries and independent inputs. Existing D06.1 and
+  D06.2 tests continue to pass. No dependencies, schema, API, database or UI changed.
+- `docs/FIELD_REGISTRY.md` documents contracts, boundaries and a runnable synthetic
+  example. README, FORM_DEFINITIONS, ANSWER_VALIDATION, WORKSPACES and TESTING match
+  the result. This progress record and both trackers mark only D06.3 newly complete.
+
+### Verification results
+
+Pinned Node **24.21.0**, npm **11.19.0**, committed lockfile and unchanged CI were
+used. All implementation/tests were final before the CI-equivalent run.
+
+| Command/check | Result |
+|---|---|
+| Prerequisite/focused `npm test -- tests/fast/answers.test.ts tests/fast/form-definition.test.ts` | Passed, 26 tests |
+| Focused `npm test -- tests/fast/field-contracts.test.ts tests/fast/answers.test.ts tests/fast/form-definition.test.ts` | Passed, 33 tests in 3 files |
+| `npm ci` | Passed, locked installation |
+| `npm run check` | Passed, runtime, lint and all types |
+| `npm test` | Passed, 60 fast tests in 11 files |
+| `npm run build` | Passed, shared packages, Express and production Next.js |
+| Documented FIELD_REGISTRY bash example | Passed; 12 contracts, 10 input types, 2 layout types; 33 focused tests |
+| Browser | Not applicable/not run; no UI or interactive controls changed |
+| Database, readiness and transaction suites | Not run; registry/fixture changes neither touch database/API code nor require these suites in CI |
+| Final self-review | Task-only changes, no credential patterns or real response data, local links, documented syntax, tracker consistency and whitespace checks |
+| `npm audit --json` | Failed, exit 1: 5 findings (4 moderate, 1 high) |
+| `npm audit --omit=dev --json` | Failed, exit 1: 1 production finding(s), 1 high |
+
+All CI-equivalent and individual acceptance checks passed. Audit failures are
+reported separately and remain unresolved. Self-review is not independent review.
+The existing hosted workflow runs install/check/fast tests/build; its result for
+this commit is observed after publication rather than inferred from local runs.
+
+### Growth delta against the preserved baseline
+
+Every checklist checkpoint was evaluated; item numbers refer to each phase. The
+initial baseline and previous records remain intact without repeating their matrix.
+
+- **Phase 0 — Completed for this run, 1–4:** verified path/target, truthful author,
+  private-data hygiene and existing first journey/users. **Pending, 5:** no fresh
+  GHFind scan requested and no score claim made.
+- **Phase 1 — Pending overall:** 1–3 gain usable internal registry contracts and
+  exact docs with unchanged pins; 5 gains reproducible synthetic fixture examples;
+  6 gains locked install/build evidence. Full usable-release evidence (1, 6),
+  license/assets decision (4) and complete running form demo (5) remain **Pending**.
+- **Phase 2 — Completed for this run, 1–2, 4–5:** one eligible task, verified
+  prerequisite/acceptance, cohesive code/tests/docs and limitations. **Not
+  applicable, 3:** no coordination issue needed or created.
+- **Phase 3 — Completed for this run, 1–3, 5–7 within scope:** typed shared
+  contracts, snapshot-specific option IDs, matching validation tests, docs,
+  self-review and preserved identity. Future version/response/API behavior (2)
+  remains **Pending**. **Not applicable, 4:** no affected UI. **Pending at
+  preparation, 8:** authorized publication and hosted CI await observation.
+- **Phase 4 — Pending overall, 1–5:** the complete form journey, close/retry/
+  history, accessibility/lifetime/deployment evidence and versioned release
+  remain later tasks. **Completed within scope, 6:** reproducible synthetic
+  checks, limitations and existing safe problem-reporting guidance.
+- **Phase 5 — Not applicable, 1–5:** no profile pin, promotional post, outreach,
+  observed feedback/adoption or contributor event authorized or fabricated.
+- **Phase 6 — Completed for this run within scope, 1–2:** maintained package
+  compatibility, setup, tests and triaged existing audit results. **Pending:**
+  production Mongoose and development minimatch advisories and ongoing maintenance.
+  **Not applicable, 3–6:** no release, product-blocking upstream work, upstream
+  contribution or new package extraction.
+- **Phase 7 — Pending overall:** 1 gains a reproducible engineering example, not
+  a release/user outcome; 2 awaits compatible fresh score comparisons; 3 is **Not
+  applicable** to score/rule inference and attribution was verified. 4 selects
+  D07.1 while years of maintenance remain **Pending**. No score gain claimed.
+
+### Limitations, publication and next task
+
+Registry metadata is not an interactive React renderer, editor, accessible UI,
+preview/public parity or form submission. Future controls must validate the whole
+form, preserve UUID/number answer types, render labels/help as plain text and
+implement the stated label/group semantics. Visibility, immutable version storage,
+admission, API security, persistence and release behavior remain their own tasks.
+
+Both audits still fail on the unchanged dependency graph: one high-severity
+production Mongoose 9.11.3 finding (four linked advisories) and four moderate
+development findings. Advisory links and limitations are recorded under D06.2
+above. No exploit or exposure assessment is claimed; prioritize separately
+verified dependency remediation before public deployment. No upgrade, force fix,
+deployment, release or outreach was authorized or performed here.
+
+Publication at preparation is **ready for authorized D06.3 commit/push** on `main`
+at https://github.com/Niralempiric/visual-form-builder. Resolve the source commit
+with `git log -1 --format=%H -- packages/form-renderer/src/registry.ts` after
+committing. New remote containment, attribution and hosted CI await observation.
+No blocker, independent review, PR, identity/remote edit, force push, rewrite or
+empty commit is claimed.
+
+**Next eligible ID: D07.1 — Build the palette, canvas, selection state and field
+property editor with immutable state updates.** D06.3's individual check is
+verified complete; D07.1 is not started. Stop after publication and verification.

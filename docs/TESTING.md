@@ -338,3 +338,19 @@ unchanged empty creation. No UI, renderer mapping, HTTP submission, version writ
 or database persistence is added. Those future flows need their own acceptance;
 current local/CI package checks are not end-to-end response acceptance. See
 [answer validation](ANSWER_VALIDATION.md) for contracts and exact example commands.
+
+
+## D06.3 renderer-contract and fixture checks
+
+`npm test -- tests/fast/field-contracts.test.ts tests/fast/answers.test.ts tests/fast/form-definition.test.ts`
+checks the compiled shared packages in Node. An independent expected-control table
+checks every allowed type. Each of twelve fresh synthetic definitions resolves to
+its contract and has valid canonical answers and an invalid answer with the
+expected shared-validation issue. Tests also check actual option IDs/order, numeric
+rating ranges, layout blocks, frozen registry entries, fresh fixtures, nonmutation
+and static rejection of unsafe fields. See [field registry](FIELD_REGISTRY.md) for
+an exact example.
+
+No UI or control components changed; this does not claim preview/public rendering,
+accessibility conformance, response persistence or server/browser parity. Those
+flows have their own later tasks and acceptance evidence.

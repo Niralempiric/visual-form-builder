@@ -29,8 +29,9 @@ empty forms, and open the correct saved draft. D05.3 adds comprehensive
 API and consistent unavailable-form handling. D06.1 adds bounded shared
 [field/form definition schemas](docs/FORM_DEFINITIONS.md) with UUIDs, allowlisted
 types and constraints. D06.2 adds [shared answer validation](docs/ANSWER_VALIDATION.md),
-canonical empty/false/zero handling and bounded safe failures. Rendering, field
-editing, publishing and responses remain pending.
+canonical empty/false/zero handling and bounded safe failures. D06.3 adds
+[field renderer contracts and synthetic fixtures](docs/FIELD_REGISTRY.md). The
+interactive renderer, field editing, publishing and responses remain pending.
 
 ## Repository and setup
 
@@ -109,10 +110,10 @@ and start because Next.js compiles rewrites into its output.
 | `apps/web` | Next.js App Router preview page and API connection control |
 | `apps/api` | Express health, Mongo lifecycle, author sessions/recovery and protected workspace/empty-draft APIs |
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
-| `packages/form-schema` | Shared structural definitions and answer validation plus strict empty-draft creation; renderer registry pending |
-| `packages/form-renderer` | Shared preview/public React renderer scaffold |
+| `packages/form-schema` | Shared structural definitions and answer validation plus strict empty-draft creation |
+| `packages/form-renderer` | Typed field renderer contracts; interactive preview/public renderer remains pending |
 | `packages/contracts` | Shared strict API envelopes, identifiers and pagination schemas |
-| `packages/test-fixtures` | Future synthetic schema/answer fixtures |
+| `packages/test-fixtures` | Synthetic renderer contracts and matching valid/invalid answer fixtures |
 | `infra` | Local single-node Mongo replica-set Compose and idempotent initialization |
 | `tests` | Focused contracts, readiness and transaction checks; broader harnesses remain future work |
 | `tests/e2e` | Placeholder for later browser suites |
@@ -140,7 +141,8 @@ and start because Next.js compiles rewrites into its output.
 
 The form-schema package validates server-generated empty initial drafts and bounded
 structural definitions with allowlisted fields and canonical answer validation.
-Rule evaluation and the renderer remain pending. Shared API contracts validate
+Rule evaluation and interactive rendering remain pending; the renderer package now
+provides bounded field contracts and option mappings. Shared API contracts validate
 envelopes, IDs, page inputs and workspace/form creation DTOs; see
 [API contracts](docs/API_CONTRACTS.md). The smoke script checks the
 initial page and direct/proxied health. The readiness suite verifies local replica-set
@@ -214,5 +216,5 @@ The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D06.2: **D06.3**, field registry mappings and synthetic
-fixtures for every supported input type. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D06.3: **D07.1**, build the palette, canvas, selection
+state and field property editor with immutable state updates. No application has been deployed and no usable form-builder release is claimed.

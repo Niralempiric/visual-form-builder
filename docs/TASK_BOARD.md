@@ -96,7 +96,7 @@ Modules: M04.
 
   Prerequisite: D06.1. **Done when:** Browser-independent fixtures demonstrate consistent field semantics.
 
-- [ ] **D06.3** Build field registry mappings and synthetic fixtures for every supported input type.
+- [x] **D06.3** Build field registry mappings and synthetic fixtures for every supported input type.
 
   Prerequisite: D06.2. **Done when:** Every allowed input type has a renderer contract and matching validation fixture.
 

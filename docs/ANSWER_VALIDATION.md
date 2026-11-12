@@ -99,7 +99,8 @@ All fields in the current flat definition contract are visible: visibilityRules
 is empty. Future rule evaluation must independently compute visibility and prune
 known hidden answers before validating visible required fields. This task does
 not trust caller-supplied hidden IDs or implement conditional/multistep behavior.
-D06.3 renderer mappings and matching renderer fixtures remain pending.
+[D06.3 renderer mappings and matching synthetic fixtures](FIELD_REGISTRY.md) are
+now available; interactive renderer components remain later work.
 
 ## Reproduce the synthetic example
 

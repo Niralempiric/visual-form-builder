@@ -14,8 +14,8 @@ empty creation shape. Current management creation still accepts only a name/titl
 and saves an empty draft; it does not accept arbitrary definitions. The new
 structural parser also accepts that canonical empty draft. Saving nonempty drafts
 and revision control remain D09; answer validation is now available in D06.2,
-and renderer mappings/matching renderer fixtures remain D06.3. No later task is
-completed by this foundation.
+and [renderer contracts and matching fixtures](FIELD_REGISTRY.md) are available
+from D06.3. Interactive rendering and draft persistence remain later work.
 
 ## Format and identifiers
 
@@ -109,5 +109,5 @@ The [example JSON](examples/workshop-definition.json) contains synthetic definit
 only, with no answers, account context or credentials. It is not an imported or
 published form. Tests exercise all structural variants, IDs/constraints, exact
 UTF-8 budget boundaries, malformed/unsafe/deep/large JSON and unchanged empty-draft
-creation. Shared answer fixtures now exist in D06.2; matching renderer fixtures
-remain later work. See [testing](TESTING.md) and [progress](IMPLEMENTATION_PROGRESS.md) for observed verification and limitations.
+creation. Shared answer validation is available in D06.2; matching renderer
+contract fixtures are available in D06.3. See [testing](TESTING.md) and [progress](IMPLEMENTATION_PROGRESS.md) for observed verification and limitations.
