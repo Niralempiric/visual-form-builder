@@ -104,7 +104,7 @@ Modules: M04.
 
 Modules: M05.
 
-- [ ] **D07.1** Build the palette, canvas, selection state and field property editor with immutable state updates.
+- [x] **D07.1** Build the palette, canvas, selection state and field property editor with immutable state updates.
 
   Prerequisite: D06.3. **Done when:** An author adds fields and edits labels/options without hand-writing JSON.
 

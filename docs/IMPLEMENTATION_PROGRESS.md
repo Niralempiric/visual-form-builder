@@ -3069,3 +3069,129 @@ score claim is made.
 
 Next eligible task remains **D07.1**, not started. Stop after this receipt's
 publication verification.
+
+
+### D07.1 — Visual form editor foundation — 12 November 2026
+
+**Status: completed; authorized publication pending.** The individual task is to
+build the palette, canvas, selection state and property editor using immutable
+state updates. Its check **passed**: an author adds fields and edits labels and
+options without hand-writing JSON. D06.3's registry and shared validation were
+verified with 33 focused prerequisite tests and its hosted CI receipt before this
+work began. Only D07.1 was newly marked complete in the plan and task board.
+
+The implementation checkout is
+`/home/empiric-60/Public/project/ghfind-score/visual-form-builder`; the verified
+public target is https://github.com/Niralempiric/visual-form-builder. Initial
+`main` was clean and synchronized at `0b575e4eccccbcccd4b5b5f8239ad5fd01c9cf48`.
+Both remote directions matched the target, the authenticated account was
+Niralempiric with push access, and prior GitHub attribution and effective author
+and committer were Niralempiric. Identity, existing URLs and visibility were
+preserved. A credential is embedded at `.git/config` → `remote.origin.url`;
+use a credential manager instead. Its value was neither printed nor committed.
+
+#### Work and acceptance evidence
+
+- `apps/web/src/features/editor/store.ts` adds an isolated per-draft Zustand
+  store with immutable selection, field and option updates. It creates valid,
+  distinct field/choice UUIDs, applies schema limits and safe collision failure,
+  retains stable IDs on edits and permits transient blank labels while typing.
+- `apps/web/src/features/editor/form-editor.tsx` and the form edit page expose
+  all 12 field types in a palette, selectable canvas and label/help/required and
+  choice-option properties. The existing schema reports invalid definitions.
+  Responsive styling and accessible labels/buttons support the workflow.
+- `draft-overview.tsx` loads the existing authorized draft and workspace;
+  owner/editor roles get the local editor and viewers receive a read-only message.
+  `auth-panel.tsx` marks sign-out for the unsaved-change confirmation. No new
+  API write, persistence, respondent data, published form or schema change exists.
+- `tests/fast/editor-store.test.ts` tests all supported field defaults, immutable
+  edits, UUID isolation/collisions, choice behavior and schema bounds. The web
+  manifest and lockfile add exact Zustand 5.1.0 and the existing shared schema
+  workspace dependency; the pinned React and Node versions satisfy its published
+  peer/engine requirements ([Zustand documentation](https://github.com/pmndrs/zustand)).
+- `docs/EDITOR.md`, README, DASHBOARD, FIELD_REGISTRY, TESTING and WORKSPACES
+  describe the actual local-only behavior and boundaries. Progress, project plan
+  and task board record this task; future tasks remain pending.
+
+#### Verification results
+
+Pinned Node 24.21.0 and npm 11.19.0 were used with the committed lockfile.
+
+| Check | Result |
+|---|---|
+| Prerequisite/focused registry and schema tests | Passed, 33 tests |
+| Focused editor store tests | Passed, 5 tests |
+| `npm ci` | Passed |
+| `npm run check` | Passed, runtime, lint and types |
+| `npm test` | Passed, 65 tests in 12 files |
+| `npm run build` | Passed, including production Next.js build |
+| `npm audit --json` | Failed, exit 1: one high production and four moderate development findings |
+| `npm audit --omit=dev --json` | Failed, exit 1: one high production finding |
+| Browser, isolated synthetic fixture | Passed individual workflow, viewer/read-only, empty, loading and unavailable states, keyboard selection, narrow viewport, and canceled navigation/sign-out confirmations |
+| Final self-review | Task-only changes, tracker consistency, links, whitespace, and secret/real-response-data review; not independent review |
+
+The first lint run exposed an invalid status-role element and the first full
+type check exposed a NodeNext import extension; both were fixed and the complete
+locked checks above rerun successfully. The browser fixture's first startup
+needed an ESM setting in its temporary directory; it was corrected and rerun.
+The browser exercised a real Next → Express → isolated Mongo replica set with
+synthetic owner/viewer accounts. A second tab showed the unchanged saved draft
+after local edits; at 375 pixels there was no horizontal overflow. A delayed
+fixture response showed the loading state. Both isolated fixture instances and
+their temporary processes were stopped and fixture cleanup verified. No real
+response data was used. The browser's unload warning itself was not exercised;
+only ordinary navigation and sign-out confirmation cancellation were observed.
+Database, readiness and transaction test suites were not run because no API or
+database code changed; the browser did exercise isolated database reads.
+
+#### Growth checklist outcomes
+
+Every checkpoint was evaluated against the preserved baseline and prior records;
+item numbers refer to each phase. This records the scoped delta, not permanent
+completion of broader phases.
+
+- **Phase 0 — Completed for this run, 1–4:** actual path, public target, truthful
+  attribution, data hygiene and first journey verified. **Pending, 5:** no fresh
+  GHFind baseline available or score claimed.
+- **Phase 1 — Pending overall:** 1–3 gain working scoped editor behavior, setup
+  and pinned dependency information; 5 gains synthetic browser examples; 6 gains
+  clean locked install and build evidence. Full release usability, license/assets
+  decision and complete running form demo remain pending (1, 4–6).
+- **Phase 2 — Completed for this run, 1–2 and 4–5:** one eligible task, verified
+  prerequisite and individual check, cohesive changes and recorded limitations.
+  **Not applicable, 3:** no coordination issue was needed or created.
+- **Phase 3 — Completed for this run, 1–7 within scope:** shared-schema editor,
+  membership boundaries, tests, actual browser checks, documentation, self-review
+  and truthful authorship. Immutable publication and response behavior remain
+  pending future work (2). **Pending at preparation, 8:** publication and remote
+  containment/hosted checks await observation.
+- **Phase 4 — Pending, 1–5:** complete create-publish-submit-export, history,
+  accessibility, deployment and release evidence belong to future tasks.
+  **Completed within scope, 6:** limitations and existing reporting guidance.
+- **Phase 5 — Not applicable, 1–5:** no profile pin, promotional post, outreach,
+  observed adoption, feedback or contribution event was authorized or invented.
+- **Phase 6 — Completed within scope, 1–2:** maintained dependency compatibility
+  and triaged actual checks. **Pending:** existing high Mongoose production and
+  moderate minimatch development advisories and ongoing maintenance. **Not
+  applicable, 3–6:** no release, blocking upstream investigation, contribution
+  or new package extraction.
+- **Phase 7 — Pending overall:** 1 gains reproducible engineering evidence but no
+  release or user outcome; 2 awaits compatible fresh scores; 3 has no new scoring
+  rules to compare and attribution was verified; 4 selects D07.2 while long-term
+  maintenance remains pending. No score improvement or user activity is claimed.
+
+#### Limitations and next task
+
+The editor is deliberately in-memory only; leaving, reload, session loss or
+browser behavior can discard changes. Browser history and session loss may bypass
+confirmations. Field duplication/deletion/reordering, undo, respondent rendering,
+save, publication and submissions remain later tasks. No full accessibility or
+release gate is claimed. The existing Mongoose 9.11.3 high finding aggregates four
+advisories, alongside four moderate development findings; advisory links are in
+the D06.2 record. Neither audit passed; assess and remediate separately before
+deployment. No release, deployment, outreach or independent review occurred.
+
+Authorized publication is prepared for `main` at the verified URL above; new
+remote containment, attribution and hosted CI await observation. **Next eligible
+ID: D07.2 — Implement duplicate/delete and pointer ordering plus explicit
+move-up/move-down controls.** Do not start it in this run.

@@ -921,7 +921,7 @@ Modules: M04. Day-group estimate: 5 to 6 hours.
 
 Modules: M05. Day-group estimate: 5 to 6 hours.
 
-- [ ] **D07.1** Build the palette, canvas, selection state and field property editor with immutable state updates.
+- [x] **D07.1** Build the palette, canvas, selection state and field property editor with immutable state updates.
 
   Prerequisite: D06.3. **Individual completion check:** An author adds fields and edits labels/options without hand-writing JSON.
 

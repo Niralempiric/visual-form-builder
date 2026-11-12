@@ -109,3 +109,42 @@ footer { display: flex; justify-content: space-between; gap: 16px; color: #5b6d6
   .entry-row, .dashboard-heading, .form-list li { flex-direction: column; align-items: stretch; }
   .entry-row button, .dashboard-card button { width: 100%; }
 }
+
+/* D07.1: the editor is an in-memory draft, not a respondent preview. */
+.editor { margin-top: 24px; }
+.editor-notice { border: 1px solid #d4bd7e; border-radius: 10px; background: #fff8df; color: #59471d; padding: 14px 16px; line-height: 1.5; font-size: 14px; }
+.editor-grid { display: grid; grid-template-columns: minmax(150px, .8fr) minmax(210px, 1.25fr) minmax(190px, 1fr); gap: 14px; margin-top: 18px; align-items: start; }
+.editor-panel { min-width: 0; background: #fff; border: 1px solid #d6ddcf; border-radius: 12px; padding: 18px; }
+.editor-panel h3 { font-size: 17px; letter-spacing: -.3px; margin: 0; }
+.editor-panel p { font-size: 13px; line-height: 1.5; }
+.editor-kicker { color: #60754c !important; font-size: 11px !important; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 9px; }
+.editor-palette-list { display: grid; gap: 6px; }
+.account-card .editor button { width: auto; margin: 0; }
+.account-card .editor-palette-button { width: 100%; text-align: left; color: #284739; background: #f1f5eb; border: 1px solid transparent; padding: 10px 12px; }
+.account-card .editor-palette-button:hover { background: #e4edda; border-color: #afc4a2; }
+.editor-palette-button span { color: #57764c; font-size: 18px; margin-right: 5px; }
+.editor-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.editor-heading span { color: #607365; font-size: 12px; }
+.editor-empty { border: 1px dashed #aebca8; background: #f8faf5; border-radius: 10px; text-align: center; padding: 32px 16px; color: #425d4d; }
+.editor-empty p { margin: 8px 0 0; }
+.editor-field-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.account-card .editor-field { width: 100%; text-align: left; display: grid; gap: 7px; padding: 14px; border: 1px solid #d6ddcf; color: #284136; background: #f9fbf7; overflow-wrap: anywhere; }
+.account-card .editor-field:hover { background: #eef5e9; }
+.account-card .editor-field[aria-pressed="true"] { border: 2px solid #567c46; background: #f0f6ea; }
+.editor-field-meta { color: #647b69; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; }
+.editor-field > span:last-child { font-size: 12px; color: #596f60; font-weight: 400; }
+.account-card .editor-properties label { margin: 16px 0 6px; }
+.editor-properties label span { font-size: 12px; font-weight: 400; color: #5b6d62; }
+.account-card .editor-properties textarea { width: 100%; min-height: 78px; border: 1px solid #7b8c7c; border-radius: 8px; padding: 10px; font: inherit; color: #203b30; resize: vertical; }
+.account-card .editor-properties input { min-height: 44px; }
+.account-card .editor-properties .editor-check { display: flex; align-items: center; gap: 9px; }
+.account-card .editor-properties .editor-check input { width: 18px; min-height: 18px; height: 18px; margin: 0; }
+.account-card .editor-options { border-top: 1px solid #d6ddcf; padding-top: 16px; margin-top: 18px; }
+.editor-options legend { font-size: 14px; font-weight: 700; }
+.editor-option-row { display: flex; align-items: stretch; gap: 6px; }
+.account-card .editor-option-row input { flex: 1; width: 1px; }
+.account-card .editor-secondary { background: #edf3e9; color: #294b36; border: 1px solid #bdcdb7; padding: 9px 10px; }
+.account-card .editor-secondary:hover { background: #dce9d4; }
+.editor-error { color: #8b3024 !important; margin: 6px 0; }
+@media (max-width: 860px) { .editor-grid { grid-template-columns: 1fr; } .editor-palette-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .editor-palette-list { grid-template-columns: 1fr; } .editor-panel { padding: 14px; } }

@@ -12,9 +12,11 @@
   "dependencies": {
     "@visual-form-builder/contracts": "*",
     "@visual-form-builder/form-renderer": "*",
+    "@visual-form-builder/form-schema": "*",
     "next": "16.4.2",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "zustand": "5.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.3",

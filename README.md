@@ -30,8 +30,10 @@ API and consistent unavailable-form handling. D06.1 adds bounded shared
 [field/form definition schemas](docs/FORM_DEFINITIONS.md) with UUIDs, allowlisted
 types and constraints. D06.2 adds [shared answer validation](docs/ANSWER_VALIDATION.md),
 canonical empty/false/zero handling and bounded safe failures. D06.3 adds
-[field renderer contracts and synthetic fixtures](docs/FIELD_REGISTRY.md). The
-interactive renderer, field editing, publishing and responses remain pending.
+[field renderer contracts and synthetic fixtures](docs/FIELD_REGISTRY.md). D07.1
+adds an [in-memory visual editor](docs/EDITOR.md) for adding fields and editing
+labels, help and options. Saving, respondent rendering, publishing and
+responses remain pending.
 
 ## Repository and setup
 
@@ -107,7 +109,7 @@ and start because Next.js compiles rewrites into its output.
 
 | Location | Responsibility |
 |---|---|
-| `apps/web` | Next.js App Router preview page and API connection control |
+| `apps/web` | Next.js App Router dashboard, authenticated in-memory editor and API connection control |
 | `apps/api` | Express health, Mongo lifecycle, author sessions/recovery and protected workspace/empty-draft APIs |
 | `apps/worker` | Separate Node cleanup/reconciliation worker scaffold |
 | `packages/form-schema` | Shared structural definitions and answer validation plus strict empty-draft creation |
@@ -141,7 +143,7 @@ and start because Next.js compiles rewrites into its output.
 
 The form-schema package validates server-generated empty initial drafts and bounded
 structural definitions with allowlisted fields and canonical answer validation.
-Rule evaluation and interactive rendering remain pending; the renderer package now
+Rule evaluation and respondent rendering remain pending; the renderer package now
 provides bounded field contracts and option mappings. Shared API contracts validate
 envelopes, IDs, page inputs and workspace/form creation DTOs; see
 [API contracts](docs/API_CONTRACTS.md). The smoke script checks the
@@ -171,6 +173,7 @@ dependency was introduced.
 | TypeScript / tsx | 7.0.2 / 4.23.15 |
 | Next.js | 16.4.2 |
 | React / React DOM | 19.3.1 / 19.3.1 |
+| Zustand editor state | 5.1.0 |
 | Express / Express types | 5.3.0 / 5.0.6 |
 | Mongoose | 9.11.3 |
 | Argon2 / body-parser override | 0.45.1 / 2.4.0 |
@@ -190,8 +193,9 @@ and accepts React 19. React DOM's peer requirement matches React 19.3.1.
 See [Node release status](https://nodejs.org/en/about/previous-releases),
 [Next.js installation](https://nextjs.org/docs/app/getting-started/installation)
 and the package manifests for requirements. Mongoose requires Node >=20.19.0
-and is MIT licensed. Other planned tools such as Zustand, TanStack Query, React Hook Form, dnd-kit remain for the
-tasks that introduce their behaviour and configuration.
+and is MIT licensed. Zustand 5.1.0 is pinned for the editor and supports the
+selected React version;
+TanStack Query, React Hook Form and dnd-kit remain for later tasks.
 
 Private workspace packages are linked locally using `*`; these links are not
 unbounded external dependencies. External direct packages use exact versions. The npm install-script approval is
@@ -209,6 +213,7 @@ dependencies, build output and local environment files are ignored.
 - [Local development](docs/LOCAL_DEVELOPMENT.md)
 - [Shared API contracts](docs/API_CONTRACTS.md)
 - [Operator bootstrap and authentication foundation](docs/AUTHENTICATION.md)
+- [Visual editor](docs/EDITOR.md)
 - [Repository checks and fixtures](docs/TESTING.md)
 - [Reusable one-task prompt](docs/DAILY_TASK_PROMPT.md)
 
@@ -216,5 +221,5 @@ The plan has 40 development-day groups and 24 modules. One invocation completes
 one individual task, not all three tasks in a day group. Estimates and future
 release outcomes are planning targets, not implemented features or adoption claims.
 
-Next eligible task after D06.3: **D07.1**, build the palette, canvas, selection
-state and field property editor with immutable state updates. No application has been deployed and no usable form-builder release is claimed.
+Next eligible task after D07.1: **D07.2**, implement field duplication, deletion
+and ordering controls. No application has been deployed and no usable form-builder release is claimed.

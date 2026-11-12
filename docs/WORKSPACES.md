@@ -125,9 +125,10 @@ creation shape**, not arbitrary fields/rules. D06.1 adds separate
 [structural definition validation](FORM_DEFINITIONS.md); it does not widen these
 creation endpoints. D06.2 adds [shared answer validation](ANSWER_VALIDATION.md)
 without a submission endpoint. D06.3 provides [renderer contracts](FIELD_REGISTRY.md);
-interactive rendering, draft editing/revision increments and immutable publication
-belong to later tasks. No placeholder field
-IDs, answers, versions or signed contexts are created. Root Mongo schemas are strict; the draft's Mixed storage is constrained
+D07.1 adds [in-memory draft editing](EDITOR.md) without widening this API.
+Respondent rendering, draft saving/revision increments and immutable publication
+belong to later tasks. The creation endpoint creates no field IDs, answers,
+versions or signed contexts; the editor generates field IDs only in local memory. Root Mongo schemas are strict; the draft's Mixed storage is constrained
 by the strict shared validator. Defaults are server-generated, not client-supplied.
 Every response is explicitly allowlisted; Mongo internal fields and private
 formSequence are not returned. Startup creates collections/indexes additively,

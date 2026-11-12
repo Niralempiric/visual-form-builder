@@ -49,8 +49,9 @@ are rejected. Fixture UUIDs, labels and email are synthetic, with no real respon
 The registry validates one definition field, not the whole form. A future renderer
 must validate the containing definition, use the matching version snapshot, call
 shared answer validation, preserve option value types and implement accessible
-controls. Visibility, editor integration, UI events, preview/public rendering,
-submission, persistence and publication remain later tasks. Management APIs still
+controls. D07.1 uses these contracts in its in-memory editor. Visibility, respondent UI
+events, preview/public rendering, submission, persistence and publication remain
+later tasks. Management APIs still
 create empty drafts only. The registry/fixture task does not claim an end-to-end
 form journey or browser/server rendering parity.
 

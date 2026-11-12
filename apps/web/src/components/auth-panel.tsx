@@ -114,7 +114,7 @@ export function AuthPanel({ mode, children, heading }: { mode: 'login' | 'accoun
         <output>Signed in as <strong className="account-email">{state.user.email}</strong>.</output>
         {mode === 'login' ? <Link className="account-link" href="/app">Open workspace dashboard</Link> :
           <nav className="account-navigation" aria-label="Account"><Link className="account-link" href={children ? '/app/account' : '/app'}>{children ? 'Account and recovery' : 'Workspace dashboard'}</Link></nav>}
-        <button type="button" onClick={() => { void mutate('logout', {}); }} disabled={busy}>
+        <button type="button" data-draft-exit onClick={() => { void mutate('logout', {}); }} disabled={busy}>
           {busy ? 'Signing out…' : 'Sign out'}
         </button>
         {mode === 'account' && !busy ? children ? <div key={state.user.id}>{children}</div> : <RecoveryCodes key={state.user.id} /> : null}

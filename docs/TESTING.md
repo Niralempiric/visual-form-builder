@@ -354,3 +354,16 @@ an exact example.
 No UI or control components changed; this does not claim preview/public rendering,
 accessibility conformance, response persistence or server/browser parity. Those
 flows have their own later tasks and acceptance evidence.
+
+
+## D07.1 in-memory editor checks
+
+`npm test -- tests/fast/editor-store.test.ts` checks every palette type, valid
+schema defaults, stable unique IDs, immutable field/option edits, selection,
+transient invalid labels, limits, safe collision handling and independent stores.
+The editor is exercised in a browser against an isolated synthetic Mongo/API
+fixture. The walkthrough covers owner add/edit, option add/edit, keyboard
+selection, empty/invalid/unavailable states, viewer access, unsaved navigation and
+sign-out warnings, narrow layout and a second tab reading the unchanged saved
+draft. See [editor guide](EDITOR.md) and progress for exact observed results.
+No production data, published form, save endpoint or respondent preview is used.
