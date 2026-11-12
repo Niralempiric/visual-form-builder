@@ -3195,3 +3195,30 @@ Authorized publication is prepared for `main` at the verified URL above; new
 remote containment, attribution and hosted CI await observation. **Next eligible
 ID: D07.2 — Implement duplicate/delete and pointer ordering plus explicit
 move-up/move-down controls.** Do not start it in this run.
+
+
+#### D07.1 publication receipt — 12 November 2026
+
+**Publication status: implementation published and hosted-verified.** Source
+commit `b2f89b5c47473992a5394e5a9ba299e4937e78c0` was pushed to verified `main`
+at https://github.com/Niralempiric/visual-form-builder. The remote branch matched
+the commit exactly, and GitHub attributed both author and committer to
+Niralempiric. Identity, URLs, visibility and history were preserved.
+
+[CI run 43167249390](https://github.com/Niralempiric/visual-form-builder/actions/runs/43167249390)
+completed **successfully** at that commit. Job `131011882176` passed setup, locked
+install, runtime/lint/types, fast tests and Next.js/Express builds; its step
+results were also confirmed through the GitHub job-steps tool. Hosted CI does
+not run browser acceptance, the database suites or dependency audits. The failed
+audits and remaining high production and four moderate development findings
+remain as documented above; CI does not establish deployment readiness.
+
+Growth Phase 3 item 8 is **Completed for this run**. Other release, community
+and long-term checkpoints and the audit limitations remain as recorded. This
+documentation-only receipt captures observations made after the implementation
+commit without rewriting history. No code or acceptance criteria changed; local
+application checks were not repeated. The receipt commit's remote and hosted
+CI verification are reported in the execution result. No independent review,
+release, deployment, outreach or score claim is implied.
+
+**Next eligible task: D07.2**, not started. Stop after receipt publication.
